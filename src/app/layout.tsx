@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import { AppSidebar } from "./app-sidebar";
+import { Toaster } from "@/components/ui/sonner";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const inter = Inter({
+  subsets: ["vietnamese"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -24,10 +24,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${inter.variable}`}>
+        <GoogleOAuthProvider clientId="486285301849-fjcp1e941fdrhkpj0ufjom8mqu8r0chv.apps.googleusercontent.com">
+          <SidebarProvider>
+            <Toaster />
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <AppSidebar />
+              <SidebarTrigger />
+
+              {children}
+            </ThemeProvider>
+          </SidebarProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
