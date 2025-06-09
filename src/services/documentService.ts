@@ -1,7 +1,7 @@
 import axios from "axios";
-import { ApiDomain } from "../constant";
-import { getCookie } from "../helpers/Cookies";
-import { DocumentVectorStore } from "../types/document";
+import { ApiDomain } from "@/constant";
+import { getCookie } from "@/helpers/Cookies";
+import { DocumentVectorStore } from "../../types/document";
 
 // API URLs
 const VECTOR_STORE_URL = `${ApiDomain}/vector-store`;

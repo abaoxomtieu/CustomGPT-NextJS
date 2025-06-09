@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getCookie } from "../helpers/Cookies";
+import { getCookie } from "@/helpers/Cookies";
 import { ApiDomain } from "@/constant";
 
 export const login = async (

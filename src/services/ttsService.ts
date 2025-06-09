@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiDomain } from "../constants";
+import { ApiDomain } from "@/constant";
 
 export const ttsService = {
   textToSpeech: async (text: string, provider: string = "huggingface") => {

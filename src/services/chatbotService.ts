@@ -1,6 +1,6 @@
 import axios from "axios";
-import { getCookie } from "../helpers/Cookies";
-import { ApiDomain } from "../constant";
+import { getCookie } from "@/helpers/Cookies";
+import { ApiDomain } from "@/constant";
 
 // API URLs
 const CHATBOTS_URL = `${ApiDomain}/ai/chatbots`;

@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AppSidebar } from "./app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,21 +23,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable}`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable}`} suppressHydrationWarning>
         <GoogleOAuthProvider clientId="486285301849-fjcp1e941fdrhkpj0ufjom8mqu8r0chv.apps.googleusercontent.com">
           <SidebarProvider>
             <Toaster />
             <ThemeProvider
               attribute="class"
-              defaultTheme="system"
+              defaultTheme="light"
               enableSystem
               disableTransitionOnChange
             >
               <AppSidebar />
-              <SidebarTrigger />
-
-              {children}
+              <SidebarInset className="w-full">{children}</SidebarInset>
             </ThemeProvider>
           </SidebarProvider>
         </GoogleOAuthProvider>

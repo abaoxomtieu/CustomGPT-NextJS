@@ -1,17 +1,27 @@
 "use client";
-import { Award, Home, LogOut, MessageCircle, Users } from "lucide-react";
+import {
+  Award,
+  Home,
+  LogOut,
+  MessageCircle,
+  Users,
+  Plus,
+  ChevronRight,
+  ChevronDown,
+  ChevronLeft,
+} from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import { LoginButton } from "@/components/login-button";
@@ -21,23 +31,37 @@ import useAppState from "@/context/state";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ModeToggle } from "@/components/mode-toggle";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import Link from "next/link";
+import { useState } from "react";
 
-// Menu items.
-const items = [
+// Menu items, chỉnh lại icon cho mục con của Chatbot
+const data = [
   {
     title: "Home",
     url: "/",
     icon: Home,
   },
   {
-    title: "Danh sách chatbot",
-    url: "/assistants",
+    title: "Chatbot",
+    url: "#",
     icon: MessageCircle,
-  },
-  {
-    title: "Tạo chatbot",
-    url: "/create-prompt",
-    icon: MessageCircle,
+    items: [
+      {
+        title: "Tạo chatbot",
+        url: "/create-prompt",
+        icon: Plus,
+      },
+      {
+        title: "Danh sách chatbot",
+        url: "/assistants",
+        icon: MessageCircle,
+      },
+    ],
   },
   {
     title: "Đấu trường",
@@ -52,52 +76,139 @@ const items = [
 ];
 
 export function AppSidebar() {
-  const { isLogin } = useAuth();
+  const { isLogin, userInfo } = useAuth();
   const { setUserInfo, setIslogin } = useAppState();
   const router = useRouter();
-  return (
-    <Sidebar>
-      <SidebarContent>
-        <SidebarHeader>
-          <Image src="/logo.svg" alt="logo" width={200} height={200} />
-        </SidebarHeader>
-        <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-              {!isLogin && <LoginButton />}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <ModeToggle />
+  const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
+  const { state, toggleSidebar } = useSidebar();
 
-        {isLogin && (
-          <Button
-            variant="outline"
-            onClick={() => {
-              deleteCookie("token");
-              router.push("/");
-              setUserInfo(null);
-              setIslogin(false);
-            }}
-          >
-            Đăng xuất
-            <LogOut />
-          </Button>
+  const toggleItem = (title: string) => {
+    setOpenItems((prev) => ({
+      ...prev,
+      [title]: !prev[title],
+    }));
+  };
+
+  return (
+    <div className="relative">
+      <Sidebar className="min-w-[250px] bg-background border-r">
+        <SidebarContent>
+          <SidebarHeader className="py-6 flex justify-center">
+            <Image src="/logo.svg" alt="logo" width={250} height={250} />
+            {userInfo && (
+              <div className="flex items-center gap-2 mt-4">
+                <Image
+                  src={userInfo.picture}
+                  alt="avatar"
+                  width={32}
+                  height={32}
+                  className="rounded-full w-10 h-10"
+                />
+                <p className="text-sm text-muted-foreground font-bold">
+                  {userInfo.name}
+                </p>
+              </div>
+            )}
+          </SidebarHeader>
+          <SidebarGroup>
+            <SidebarGroupLabel>Ứng dụng</SidebarGroupLabel>
+            <SidebarMenu>
+              {/* Loop các mục */}
+              {data.map((item) =>
+                item.items ? (
+                  <Collapsible
+                    key={item.title}
+                    className="w-full"
+                    open={openItems[item.title]}
+                    onOpenChange={() => toggleItem(item.title)}
+                  >
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton className="flex items-center w-full px-3 py-2 gap-2 group hover:bg-sidebar-accent/60 transition rounded-2xl">
+                        <item.icon className="w-5 h-5 text-muted-foreground group-data-[state=open]:text-primary transition" />
+                        <span className="font-medium">{item.title}</span>
+                        {openItems[item.title] ? (
+                          <ChevronDown className="ml-auto w-4 h-4 transition-transform" />
+                        ) : (
+                          <ChevronRight className="ml-auto w-4 h-4 transition-transform" />
+                        )}
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="ml-6 flex flex-col gap-1 mt-1">
+                        {item.items.map((subItem) => (
+                          <SidebarMenuItem key={subItem.title}>
+                            <SidebarMenuButton
+                              asChild
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-accent transition"
+                            >
+                              <Link href={subItem.url}>
+                                <subItem.icon className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-sm">{subItem.title}</span>
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                ) : (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      className="flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-sidebar-accent/60 transition"
+                    >
+                      <Link href={item.url}>
+                        <item.icon className="w-5 h-5 text-muted-foreground" />
+                        <span className="font-medium">{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              )}
+            </SidebarMenu>
+          </SidebarGroup>
+          <SidebarGroup>
+            {!isLogin && (
+              <SidebarGroupLabel>
+                <LoginButton />
+              </SidebarGroupLabel>
+            )}
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter className="flex flex-col items-center gap-3 p-4">
+          <ModeToggle />
+          {isLogin && (
+            <Button
+              variant="outline"
+              className="w-full flex justify-between items-center gap-2"
+              onClick={() => {
+                deleteCookie("token");
+                router.push("/");
+                setUserInfo(null);
+                setIslogin(false);
+              }}
+            >
+              Đăng xuất
+              <LogOut className="w-4 h-4 ml-1" />
+            </Button>
+          )}
+        </SidebarFooter>
+      </Sidebar>
+
+      {/* Custom Sidebar Trigger positioned at center right border */}
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={toggleSidebar}
+        className="absolute top-1/2 -translate-y-1/2 -right-4 z-20 h-8 w-8 rounded-full bg-background border shadow-md hover:shadow-lg transition-all duration-200"
+      >
+        {state === "expanded" ? (
+          <ChevronLeft className="h-4 w-4" />
+        ) : (
+          <ChevronRight className="h-4 w-4" />
         )}
-      </SidebarFooter>
-    </Sidebar>
+        <span className="sr-only">Toggle Sidebar</span>
+      </Button>
+    </div>
   );
 }

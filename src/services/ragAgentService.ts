@@ -1,5 +1,5 @@
-import { ApiDomain } from "../constants";
-import { getCookie } from "../helpers/Cookies";
+import { ApiDomain } from "@/constant";
+import { getCookie } from "@/helpers/Cookies";
 
 // RAG Agent payload that matches the backend RagAgentBody
 export interface RagAgentPayload {

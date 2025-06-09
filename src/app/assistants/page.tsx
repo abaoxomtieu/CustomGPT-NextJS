@@ -1,4 +1,3 @@
-// Đổi your-path thành đường dẫn bạn muốn nhé, ví dụ: app/chatbots/page.tsx
 import { Metadata } from "next";
 import ChatbotListClient from "./ChatbotListClient";
 

@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import React from "react";
 import Link from "next/link";
 import {
@@ -10,6 +11,28 @@ import {
   FcSettings,
 } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
+import CombatContainer from "@/components/combat/combat-wrapper";
+import { Brain } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "FTES - First Technology Education Services",
+  description:
+    "Hệ thống học tập thông minh ứng dụng trí tuệ nhân tạo (AI) nhằm mang đến trải nghiệm học tập cá nhân hóa, hiện đại và hiệu quả cho mọi đối tượng yêu thích công nghệ thông tin.",
+  keywords: [
+    "AI",
+    "education",
+    "technology",
+    "learning",
+    "chatbot",
+    "combat arena",
+  ],
+  openGraph: {
+    title: "FTES - First Technology Education Services",
+    description:
+      "Hệ thống học tập thông minh ứng dụng trí tuệ nhân tạo (AI) nhằm mang đến trải nghiệm học tập cá nhân hóa, hiện đại và hiệu quả cho mọi đối tượng yêu thích công nghệ thông tin.",
+    type: "website",
+  },
+};
 
 // Animation styles
 const styles = `
@@ -138,12 +161,12 @@ const LandingPage: React.FC = () => {
             style={{ animationDelay: "0.4s" }}
           >
             <Link href="/assistants">
-              <Button className="bg-blue-500 text-white hover:bg-blue-600 h-14 px-10 text-lg transition-all duration-300 rounded-full">
+              <Button className="bg-foreground text-background hover:bg-foreground/80 h-14 px-10 text-lg transition-all duration-300 rounded-full">
                 Bắt đầu ngay
               </Button>
             </Link>
             <Link href="/create-prompt">
-              <Button className="border-blue-500 text-blue-500 hover:bg-blue-50 h-14 px-10 text-lg transition-all duration-300 rounded-full">
+              <Button className="border-foreground text-background hover:bg-foreground/10 h-14 px-10 text-lg transition-all duration-300 rounded-full">
                 Tạo Chatbot
               </Button>
             </Link>
@@ -155,7 +178,7 @@ const LandingPage: React.FC = () => {
       <div className="bg-background py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-8 text-blue-500">
+            <h2 className="text-4xl font-bold mb-8 text-foreground">
               Sứ mệnh của chúng tôi
             </h2>
             <p className="text-xl text-muted-foreground leading-relaxed">
@@ -169,15 +192,13 @@ const LandingPage: React.FC = () => {
 
       {/* Features Section */}
       <div className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold text-center mb-16 text-blue-500">
+        <h2 className="text-4xl font-bold text-center mb-16 text-foreground">
           Tính năng nổi bật
         </h2>
         <div className="grid md:grid-cols-3 gap-10">
           <div className="feature-card">
-            <div className="icon-wrapper animate-float">
-              <FcReading />
-            </div>
-            <h3 className="text-2xl font-semibold mb-4 text-blue-500">
+            <FcReading className="text-3xl" />
+            <h3 className="text-2xl font-semibold mb-4 text-foreground">
               Tạo Chatbot với AI
             </h3>
             <p className="text-muted-foreground">
@@ -186,13 +207,8 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
           <div className="feature-card">
-            <div
-              className="icon-wrapper animate-float"
-              style={{ animationDelay: "0.2s" }}
-            >
-              <FcReading />
-            </div>
-            <h3 className="text-2xl font-semibold mb-4 text-blue-500">
+            <Brain className="text-3xl" />
+            <h3 className="text-2xl font-semibold mb-4 text-foreground">
               Đấu trường AI
             </h3>
             <p className="text-muted-foreground">
@@ -201,13 +217,8 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
           <div className="feature-card">
-            <div
-              className="icon-wrapper animate-float"
-              style={{ animationDelay: "0.4s" }}
-            >
-              <FcDataBackup />
-            </div>
-            <h3 className="text-2xl font-semibold mb-4 text-blue-500">
+            <FcDataBackup className="text-3xl" />
+            <h3 className="text-2xl font-semibold mb-4 text-foreground">
               API Integration
             </h3>
             <p className="text-muted-foreground">
@@ -227,7 +238,7 @@ const LandingPage: React.FC = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="feature-card">
               <div className="icon-wrapper animate-float">
-                <FcSettings />
+                <FcSettings className="text-4xl" />
               </div>
               <h3 className="text-xl font-semibold mb-3 text-foreground">
                 Quản lý Chatbot
@@ -238,27 +249,17 @@ const LandingPage: React.FC = () => {
               </p>
             </div>
             <div className="feature-card">
-              <div
-                className="icon-wrapper animate-float"
-                style={{ animationDelay: "0.2s" }}
-              >
-                <FcGlobe />
-              </div>
+              <FcGlobe className="text-3xl" />
               <h3 className="text-xl font-semibold mb-3 text-foreground">
                 Public Chatbot
               </h3>
               <p className="text-muted-foreground">
-                Chia sẻ chatbot của bạn với cộng đồng, cho phép nhiều người cùng
-                sử dụng và tương tác.
+                Chia sẻ chatbot của bạn với cộng đồng và nhận phản hồi từ người
+                dùng.
               </p>
             </div>
             <div className="feature-card">
-              <div
-                className="icon-wrapper animate-float"
-                style={{ animationDelay: "0.4s" }}
-              >
-                <FcVoicePresentation />
-              </div>
+              <FcVoicePresentation className="text-4xl" />
               <h3 className="text-xl font-semibold mb-3 text-foreground">
                 Quản lý Hội thoại
               </h3>
@@ -268,12 +269,7 @@ const LandingPage: React.FC = () => {
               </p>
             </div>
             <div className="feature-card">
-              <div
-                className="icon-wrapper animate-float"
-                style={{ animationDelay: "0.6s" }}
-              >
-                <FcTimeline />
-              </div>
+              <FcTimeline className="text-4xl" />
               <h3 className="text-xl font-semibold mb-3 text-foreground">
                 Lịch sử Chat
               </h3>
@@ -286,14 +282,33 @@ const LandingPage: React.FC = () => {
         </div>
       </div>
 
+      {/* AI Combat Arena Section */}
+      <div className="bg-background py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-16 text-foreground">
+            Đấu Trường AI
+          </h2>
+          <div className="max-w-4xl mx-auto">
+            <p className="text-xl text-muted-foreground text-center mb-8">
+              Khám phá khả năng của các AI trong việc đối thoại và tranh luận
+            </p>
+            <Link href="/rag-agent" className="flex justify-center">
+              <Button className=" bg-foreground text-background hover:bg-foreground/80 h-14 px-10 text-lg transition-all duration-300 rounded-full">
+                Bắt đầu ngay
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Training Section */}
       <div className="blue-gradient text-white py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="text-white mb-8 animate-pulse">
-              <FcCollaboration className="text-6xl" />
-            </div>
-            <h2 className="text-4xl font-bold mb-8 text-foreground">Đào tạo chuyên sâu</h2>
+          <div className="flex flex-col items-center max-w-4xl mx-auto text-center">
+            <FcCollaboration className="text-6xl text-white mb-8 animate-pulse" />
+            <h2 className="text-4xl font-bold mb-8 text-foreground">
+              Đào tạo chuyên sâu
+            </h2>
             <p className="text-xl mb-12 leading-relaxed text-foreground">
               FTES tổ chức các buổi tập huấn chuyên đề AI cho đội ngũ giáo viên
               tại các trường THPT/THCS, góp phần nâng cao chất lượng giảng dạy
@@ -322,7 +337,7 @@ const LandingPage: React.FC = () => {
             và phát triển kỹ năng.
           </p>
           <Link href="/assistants">
-            <Button className="bg-blue-500 text-white hover:bg-blue-600 h-14 px-10 text-lg transition-all duration-300 rounded-full">
+            <Button className="bg-foreground text-background hover:bg-foreground/80 h-14 px-10 text-lg transition-all duration-300 rounded-full">
               Xem Chatbot
             </Button>
           </Link>
