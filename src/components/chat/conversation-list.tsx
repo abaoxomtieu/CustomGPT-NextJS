@@ -32,7 +32,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       {/* Sidebar Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-100">
         {!isSidebarCollapsed && (
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-foreground">
             Conversations
           </span>
         )}

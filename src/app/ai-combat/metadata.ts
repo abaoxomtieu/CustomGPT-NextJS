@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import AICombatClient from "./ai-combat-client";
 
 export const metadata: Metadata = {
   title: "AI Combat Arena - Đấu trường AI",
@@ -31,13 +30,4 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/ai-combat',
   },
-};
-
-export default function AICombatPage() {
-  return (
-    <main>
-      <h1 className="sr-only">AI Combat Arena - Đấu trường AI</h1>
-      <AICombatClient />
-    </main>
-  );
-}
+}; 

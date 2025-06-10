@@ -31,6 +31,8 @@ import {
   LogIn,
   Menu,
   MenuSquare,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 
 import ChatInput from "@/components/chat/chat-input";
@@ -51,7 +53,7 @@ interface StructuredMessage {
 }
 
 const fadeInOut = {
-  animation: 'fadeInOut 2s ease-in-out infinite',
+  animation: "fadeInOut 2s ease-in-out infinite",
 };
 
 const styles = `
@@ -62,6 +64,15 @@ const styles = `
   100% { opacity: 0; }
 }
 `;
+
+const thinkingMessages = [
+  "Đang phân tích câu hỏi của bạn...",
+  "Đang tìm kiếm thông tin phù hợp...",
+  "Đang xử lý dữ liệu...",
+  "Đang suy nghĩ về câu trả lời...",
+  "Đang tổng hợp thông tin...",
+  "Đang chuẩn bị phản hồi...",
+];
 
 const CreatePromptClient = () => {
   // State
@@ -97,8 +108,8 @@ const CreatePromptClient = () => {
     { label: "Gemini 2.5 (mới)", value: "gemini-2.5-flash-preview-05-20" },
     { label: "Gemini 2.0 Flash", value: "gemini-2.0-flash" },
   ];
-  const thinkingMessages = ["Đang xử lý...", "Đang suy nghĩ..."];
   const [currentThinkingIndex, setCurrentThinkingIndex] = useState(0);
+  const thinkingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const existingId = conversationIdParams;
@@ -121,7 +132,7 @@ const CreatePromptClient = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, streamingMessage]);
+  }, [messages, streamingMessage, thinkingText]);
 
   useEffect(() => {
     const storageKey = `${CHAT_HISTORY_KEY}_${conversationId}`;
@@ -138,17 +149,29 @@ const CreatePromptClient = () => {
     }
   }, [conversationId]);
 
+  // Thinking text rotation effect
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (thinkingText) {
-      interval = setInterval(() => {
-        setCurrentThinkingIndex((prev) => (prev + 1) % thinkingMessages.length);
-      }, 2000); // Change message every 2 seconds
+    if (loading && !streamingMessage) {
+      let index = 0;
+      setThinkingText(thinkingMessages[0]);
+      thinkingIntervalRef.current = setInterval(() => {
+        index = (index + 1) % thinkingMessages.length;
+        setThinkingText(thinkingMessages[index]);
+      }, 2000);
+    } else {
+      if (thinkingIntervalRef.current) {
+        clearInterval(thinkingIntervalRef.current);
+        thinkingIntervalRef.current = null;
+      }
+      setThinkingText("");
     }
+
     return () => {
-      if (interval) clearInterval(interval);
+      if (thinkingIntervalRef.current) {
+        clearInterval(thinkingIntervalRef.current);
+      }
     };
-  }, [thinkingText]);
+  }, [loading, streamingMessage]);
 
   const handleStreamingChat = async (query: string, files: File[]) => {
     try {
@@ -259,7 +282,13 @@ const CreatePromptClient = () => {
         setAllowFirstRequest(false);
       } else {
         toast.warning(
-          "Bạn chưa thiết lập gemini apikey, đến trang <a style={{ color: '#1677ff', textDecoration: 'underline' }} onClick={() => navigate('/profile')}>Profile</a> để thiết lập"
+          "Bạn chưa thiết lập gemini apikey, đến trang Profile để thiết lập gemini apikey", 
+          {
+            action: {
+              label: "Thiết lập ngay",
+              onClick: () => router.push("/profile"),
+            },
+          }
         );
         return;
       }
@@ -304,10 +333,10 @@ const CreatePromptClient = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Đang kiểm tra thông tin đăng nhập...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Đang kiểm tra thông tin đăng nhập...</p>
         </div>
       </div>
     );
@@ -315,25 +344,25 @@ const CreatePromptClient = () => {
 
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-screen bg-background">
         {/* Header */}
-        <div className="flex-none bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-100 py-4">
+        <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-4">
           <div className="max-w-7xl mx-auto flex justify-between items-center px-4">
             <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 onClick={() => router.push("/")}
-                className="text-gray-600 hover:text-blue-600"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <ChevronLeft className="mr-1 w-4 h-4" /> Quay lại
               </Button>
-              <Bot className="w-6 h-6" />
+              <Bot className="w-6 h-6 text-primary" />
               <div>
-                <h1 className="text-xl font-semibold text-gray-800">
-                  Trợ Lý Tạo Chatbot
+                <h1 className="text-xl font-semibold text-card-foreground">
+                  Trợ Lý Tạo Chatbot AI
                 </h1>
-                <p className="text-sm text-gray-500">
-                  Trợ lý AI giúp bạn tạo chatbot nhanh chóng.
+                <p className="text-sm text-muted-foreground">
+                  Trợ lý AI giúp bạn tạo chatbot nhanh chóng và thông minh.
                 </p>
               </div>
               {!isLogin && (
@@ -343,12 +372,13 @@ const CreatePromptClient = () => {
                       <LogIn className="w-4 h-4 mr-1" /> Chưa đăng nhập
                     </Badge>
                   </PopoverTrigger>
-                  <PopoverContent>
-                    Bạn chưa đăng nhập.{" "}
+                  <PopoverContent className="bg-card border-border">
+                    <p className="text-card-foreground">Bạn chưa đăng nhập.{" "}</p>
                     <Button
                       onClick={() => router.push("/login")}
                       size="sm"
                       variant="link"
+                      className="text-primary"
                     >
                       Đăng nhập ngay
                     </Button>
@@ -360,8 +390,8 @@ const CreatePromptClient = () => {
                   <Badge
                     className={`ml-2 ${
                       geminiApiKey
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
+                        ? "bg-green-500/10 text-green-500"
+                        : "bg-yellow-500/10 text-yellow-500"
                     } cursor-pointer`}
                   >
                     <KeyRound className="w-4 h-4 mr-1" />
@@ -369,33 +399,36 @@ const CreatePromptClient = () => {
                     {geminiApiKey ? "Đã thiết lập" : "Chưa thiết lập"}
                   </Badge>
                 </PopoverTrigger>
-                <PopoverContent>
-                  {geminiApiKey ? (
-                    "Bạn đã thiết lập Gemini API Key, có thể sử dụng đầy đủ tính năng AI Gemini."
-                  ) : (
-                    <span>
-                      Bạn chưa thiết lập Gemini API Key.
-                      <br />
-                      <Button
-                        size="sm"
-                        variant="link"
-                        onClick={() => router.push("/profile")}
-                      >
-                        Thiết lập ngay
-                      </Button>
-                    </span>
-                  )}
+                <PopoverContent className="bg-card border-border">
+                  <p className="text-card-foreground">
+                    {geminiApiKey ? (
+                      "Bạn đã thiết lập Gemini API Key, có thể sử dụng đầy đủ tính năng AI Gemini."
+                    ) : (
+                      <span>
+                        Bạn chưa thiết lập Gemini API Key.
+                        <br />
+                        <Button
+                          size="sm"
+                          variant="link"
+                          onClick={() => router.push("/profile")}
+                          className="text-primary"
+                        >
+                          Thiết lập ngay
+                        </Button>
+                      </span>
+                    )}
+                  </p>
                 </PopoverContent>
               </Popover>
             </div>
             <div className="flex items-center gap-2">
               <Select value={modelName} onValueChange={setModelName}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px] bg-background border-border">
                   <SelectValue placeholder="Chọn mô hình AI" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background border-border">
                   {modelOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
+                    <SelectItem key={opt.value} value={opt.value} className="text-foreground">
                       {opt.label}
                     </SelectItem>
                   ))}
@@ -415,8 +448,10 @@ const CreatePromptClient = () => {
         <div className="flex-1 flex overflow-hidden">
           {/* Left Side - Create Chatbot Form */}
           {!isFormCollapsed && (
-            <div className="w-1/3 border-r border-gray-200 transition-all duration-300 ease-in-out overflow-hidden">
-              <div className="p-4 overflow-y-auto h-full">
+            <div
+              className={`w-1/3 transition-all duration-300 ease-in-out overflow-hidden`}
+            >
+              <div className="overflow-y-auto h-full border-r border-border">
                 <CreateChatbotForm
                   onSuccess={() => {
                     toast.success("Tạo chatbot thành công!");
@@ -429,16 +464,17 @@ const CreatePromptClient = () => {
           {/* Right Side - Chat Messages */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Collapse Button */}
-            <div className="flex-none p-2 border-b border-gray-100">
+            <div className="flex-none p-2 border-b border-border">
               <Button
                 variant="ghost"
                 onClick={() => setIsFormCollapsed(!isFormCollapsed)}
-                className="text-gray-600 hover:text-blue-600"
+                className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                title={isFormCollapsed ? "Mở rộng form" : "Thu gọn form"}
               >
                 {isFormCollapsed ? (
-                  <Menu className="w-4 h-4" />
+                  <PanelLeftOpen className="w-4 h-4" />
                 ) : (
-                  <MenuSquare className="w-4 h-4" />
+                  <PanelLeftClose className="w-4 h-4" />
                 )}
               </Button>
             </div>
@@ -448,57 +484,97 @@ const CreatePromptClient = () => {
               <div className="w-full max-w-none space-y-6">
                 {messages.length === 0 ? (
                   <div className="text-center py-10">
-                    <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
-                      <Bot className="text-4xl text-blue-500 mb-4" />
-                      <h3 className="text-xl font-bold text-gray-800 mb-4">
-                        🤖 Trợ Lý Tạo Chatbot
-                      </h3>
-                      <div className="bg-blue-50 rounded-lg p-6 mb-6 border-blue-500">
-                        <p className="text-gray-700 text-base leading-relaxed mb-4">
-                          <strong>
-                            Trợ lý AI này sẽ hỗ trợ bạn tạo ra một chatbot theo
-                            yêu cầu của bạn.
+                    <div className="bg-card rounded-xl p-8 shadow-sm border border-border">
+                      <div className="flex flex-col items-center mb-8">
+                        <div className="bg-primary/10 p-4 rounded-full mb-4">
+                          <Bot className="text-4xl text-primary" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-card-foreground mb-3">
+                          🤖 Trợ Lý Tạo Chatbot AI
+                        </h2>
+                        <p className="text-muted-foreground max-w-2xl">
+                          Trợ lý AI thông minh sẽ giúp bạn tạo ra một chatbot hoàn chỉnh theo yêu cầu của bạn.
+                        </p>
+                      </div>
+
+                      <div className="bg-primary/5 rounded-xl p-6 mb-8 border border-primary/10">
+                        <p className="text-card-foreground text-lg leading-relaxed mb-4">
+                          <strong className="text-primary">
+                            Tương tác với trợ lý AI
                           </strong>
                         </p>
-                        <p className="text-gray-600 text-sm leading-relaxed">
-                          Hãy trao đổi thông tin với trợ lý thông qua chat để
-                          thu thập đủ dữ liệu tạo chatbot mới.
+                        <p className="text-muted-foreground">
+                          Hãy trao đổi thông tin với trợ lý thông qua chat để thu thập đủ dữ liệu tạo chatbot mới.
+                          Trợ lý sẽ hướng dẫn bạn từng bước để có được một chatbot hoàn chỉnh.
                         </p>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                          <div className="flex items-center mb-2">
-                            <span className="text-lg">💡</span>
-                            <h4 className="font-semibold text-green-800 ml-2">
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div className="bg-secondary/50 p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
+                          <div className="flex items-center mb-4">
+                            <div className="bg-primary/10 p-2 rounded-lg mr-3">
+                              <span className="text-xl">💡</span>
+                            </div>
+                            <h3 className="font-semibold text-card-foreground text-lg">
                               Hướng dẫn sử dụng
-                            </h4>
+                            </h3>
                           </div>
-                          <ul className="text-sm text-green-700 space-y-1">
-                            <li>• Mô tả mục đích chatbot của bạn</li>
-                            <li>• Cung cấp thông tin về người dùng mục tiêu</li>
-                            <li>• Chia sẻ yêu cầu tính năng cụ thể</li>
+                          <ul className="text-muted-foreground space-y-3">
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              Mô tả mục đích chatbot của bạn
+                            </li>
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              Cung cấp thông tin về người dùng mục tiêu
+                            </li>
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              Chia sẻ yêu cầu tính năng cụ thể
+                            </li>
                           </ul>
                         </div>
-                        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                          <div className="flex items-center mb-2">
-                            <span className="text-lg">🎯</span>
-                            <h4 className="font-semibold text-purple-800 ml-2">
+
+                        <div className="bg-secondary/50 p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
+                          <div className="flex items-center mb-4">
+                            <div className="bg-primary/10 p-2 rounded-lg mr-3">
+                              <span className="text-xl">🎯</span>
+                            </div>
+                            <h3 className="font-semibold text-card-foreground text-lg">
                               Ví dụ tạo chatbot
-                            </h4>
+                            </h3>
                           </div>
-                          <ul className="text-sm text-purple-700 space-y-1">
-                            <li>• Chatbot hỗ trợ khách hàng</li>
-                            <li>• Chatbot tư vấn sản phẩm</li>
-                            <li>• Chatbot giáo dục</li>
+                          <ul className="text-muted-foreground space-y-3">
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              Chatbot hỗ trợ khách hàng
+                            </li>
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              Chatbot tư vấn sản phẩm
+                            </li>
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              Chatbot giáo dục
+                            </li>
                           </ul>
                         </div>
                       </div>
-                      <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <p className="text-sm text-yellow-800">
-                          <span className="font-semibold">💬 Bắt đầu:</span> Hãy
-                          nhập câu hỏi hoặc mô tả chatbot bạn muốn tạo vào ô
-                          chat bên dưới!
-                        </p>
+
+                      <div className="bg-secondary/50 rounded-xl p-6 border border-border">
+                        <div className="flex items-center">
+                          <div className="bg-primary/10 p-2 rounded-lg mr-3">
+                            <span className="text-xl">💬</span>
+                          </div>
+                          <div>
+                            <p className="text-card-foreground font-medium">
+                              Bắt đầu ngay
+                            </p>
+                            <p className="text-muted-foreground text-sm mt-1">
+                              Hãy nhập câu hỏi hoặc mô tả chatbot bạn muốn tạo vào ô chat bên dưới!
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -515,11 +591,13 @@ const CreatePromptClient = () => {
                 )}
                 {/* Thinking Text with Animation */}
                 {thinkingText && (
-                  <div className="flex items-center space-x-2 text-gray-500">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500"></div>
-                    <span className="animate-fade-in-out">
-                      {thinkingMessages[currentThinkingIndex]}
-                    </span>
+                  <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+                    <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                      <span className="animate-fade-in-out">
+                        {thinkingText}
+                      </span>
+                    </div>
                   </div>
                 )}
                 {/* Streaming Message */}
@@ -532,7 +610,7 @@ const CreatePromptClient = () => {
               </div>
             </div>
             {/* Input Area */}
-            <div className="flex-none p-4 bg-white/90 backdrop-blur-sm">
+            <div className="flex-none p-4 bg-card/90 backdrop-blur-sm border-t border-border">
               <div className="w-full max-w-none">
                 <ChatInput
                   input={input}
@@ -553,10 +631,10 @@ const CreatePromptClient = () => {
 
         {/* Clear Confirmation Dialog */}
         <Dialog open={clearModalVisible} onOpenChange={setClearModalVisible}>
-          <DialogContent>
+          <DialogContent className="bg-card border-border">
             <DialogHeader>
-              <DialogTitle>Xoá hội thoại</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-card-foreground">Xoá hội thoại</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
                 Bạn có chắc chắn muốn xoá toàn bộ hội thoại không?
               </DialogDescription>
             </DialogHeader>
@@ -567,6 +645,7 @@ const CreatePromptClient = () => {
               <Button
                 variant="outline"
                 onClick={() => setClearModalVisible(false)}
+                className="border-border"
               >
                 Huỷ
               </Button>

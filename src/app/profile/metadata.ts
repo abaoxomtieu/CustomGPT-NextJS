@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import ProfileClient from "./profile-client";
 
 export const metadata: Metadata = {
   title: "Hồ sơ người dùng - AI FTES",
@@ -31,13 +30,4 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/profile',
   },
-};
-
-export default function ProfilePage() {
-  return (
-    <main>
-      <h1 className="sr-only">Hồ sơ người dùng - AI FTES</h1>
-      <ProfileClient />
-    </main>
-  );
-}
+}; 

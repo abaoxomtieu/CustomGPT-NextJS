@@ -118,18 +118,18 @@ const ChatbotListClient: React.FC = () => {
       .map((_, index) => (
         <Card
           key={index}
-          className="h-full transform hover:scale-105 transition-all duration-300 bg-background"
+          className="h-full transform hover:scale-105 transition-all duration-300 bg-card/50"
         >
           <div className="flex items-start gap-4 p-4">
             <div className="flex-shrink-0">
-              <Skeleton className="size-10 rounded-full" />
+              <Skeleton className="size-10 rounded-full bg-muted/50" />
             </div>
             <div className="flex-1">
-              <Skeleton className="h-4 w-3/4 mb-2" />
-              <Skeleton className="h-4 w-1/2 mb-4" />
+              <Skeleton className="h-4 w-3/4 mb-2 bg-muted/50" />
+              <Skeleton className="h-4 w-1/2 mb-4 bg-muted/50" />
               <div className="flex items-center gap-4">
-                <Skeleton className="h-8 w-24" />
-                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-24 bg-muted/50" />
+                <Skeleton className="h-8 w-24 bg-muted/50" />
               </div>
             </div>
           </div>
@@ -139,22 +139,22 @@ const ChatbotListClient: React.FC = () => {
 
   const renderEmptyState = () => {
     return (
-      <div className="text-center py-16 bg-background rounded-xl shadow-sm border border-gray-100">
+      <div className="text-center py-16 bg-card/50 rounded-xl shadow-sm border border-border/50">
         <div className="flex flex-col items-center justify-center">
-          <Bot className="text-6xl text-foreground mb-4" />
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+          <Bot className="text-6xl text-primary mb-4" />
+          <h3 className="text-xl font-semibold text-card-foreground mb-2">
             Chưa có chatbot nào
           </h3>
         </div>
-        <div className="text-gray-600 mb-6 max-w-md mx-auto">
+        <div className="text-muted-foreground mb-6 max-w-md mx-auto">
           Tạo chatbot đầu tiên của bạn ngay bây giờ
         </div>
         <Button
           variant="outline"
           onClick={handleCreateChatbot}
-          className="bg-foreground text-background border-none flex justify-center w-2/3 mx-auto"
+          className="bg-primary text-primary-foreground border-none hover:bg-primary/90 flex justify-center w-2/3 mx-auto"
         >
-          <Plus />
+          <Plus className="mr-2" />
           Tạo chatbot mới
         </Button>
       </div>
@@ -163,16 +163,17 @@ const ChatbotListClient: React.FC = () => {
 
   const renderChatbotCard = (bot: Chatbot, isPublic: boolean = false) => (
     <Card
-      className="bg-background hover:scale-105 transition-all duration-300"
+      className="hover:scale-101 transition-all duration-300 border-border/50 bg-card"
       key={bot.id}
     >
       <CardHeader>
         <CardTitle>
-          <div className="text-lg font-semibold flex items-center justify-between">
+          <div className="text-lg font-semibold flex items-center justify-between text-card-foreground">
             {bot.name}
             <div className="flex items-center gap-2">
               <Button
-                className="bg-ground text-foreground border-1 hover:bg-foreground/10"
+                variant="ghost"
+                className="hover:bg-destructive/20 border-none"
                 onClick={(e) => {
                   if (
                     window.confirm("Bạn có chắc chắn muốn xóa chatbot này?")
@@ -195,17 +196,21 @@ const ChatbotListClient: React.FC = () => {
           {bot.public ? "Công khai" : "Riêng tư"}
         </CardDescription>
         {bot.tools && bot.tools.length > 0 && (
-          <CardDescription>
+          <CardDescription className="text-muted-foreground">
             Được tích hợp {bot.tools.length} tool calling.
           </CardDescription>
         )}
       </CardHeader>
       <CardContent className="overflow-hidden">
-        <p className="line-clamp-3">{bot.prompt}</p>
+        <p className="line-clamp-3 text-muted-foreground">{bot.prompt}</p>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" onClick={() => handleChatbotClick(bot)}>
-          <MessageCircle />
+        <Button
+          variant="ghost"
+          onClick={() => handleChatbotClick(bot)}
+          className="bg-foreground/20 text-foreground hover:bg-foreground/80 hover:text-background border-none"
+        >
+          <MessageCircle className="mr-2" />
           Chat với chatbot
         </Button>
       </CardFooter>
@@ -213,13 +218,13 @@ const ChatbotListClient: React.FC = () => {
   );
 
   return (
-    <div className="mx-auto w-full">
+    <div className="mx-auto w-full bg-background/50">
       {/* Back Button */}
       <div className="mb-8">
         <Button
           variant="link"
           onClick={() => router.back()}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-muted-foreground hover:text-foreground"
         >
           Quay lại
         </Button>
@@ -229,24 +234,35 @@ const ChatbotListClient: React.FC = () => {
         <Input
           placeholder="Tìm kiếm chatbot..."
           onChange={(e) => handleSearch(e.target.value)}
-          className="w-full sm:w-96"
+          className="w-full sm:w-96 bg-card/50 border-border/50"
         />
         {isLogin && (
           <Button
             variant="outline"
             onClick={handleCreateChatbot}
-            className="bg-foreground text-background border-none flex"
+            className="bg-background text-foreground border-none hover:bg-primary/90 flex"
+            disabled={!isLogin}
           >
-            <Plus />
+            <Plus className="mr-2" />
             Tạo mới
           </Button>
         )}
       </div>
       {/* Chatbot List */}
-      <Tabs defaultValue="my-chatbots" className="bg-background">
-        <TabsList>
-          <TabsTrigger value="my-chatbots">Chatbot của tôi</TabsTrigger>
-          <TabsTrigger value="public-chatbots">Chatbot công khai</TabsTrigger>
+      <Tabs defaultValue="my-chatbots" className="bg-background/80">
+        <TabsList className="bg-background/80 border-border/50">
+          <TabsTrigger
+            value="my-chatbots"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            Chatbot của tôi
+          </TabsTrigger>
+          <TabsTrigger
+            value="public-chatbots"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            Chatbot công khai
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="my-chatbots">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -267,12 +283,12 @@ const ChatbotListClient: React.FC = () => {
               filteredPublicChatbots.map((bot) => renderChatbotCard(bot, true))
             ) : (
               <div className="col-span-full">
-                <div className="text-center rounded-xl shadow-sm border border-gray-100">
-                  <Globe className="text-6xl text-foreground mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                <div className="text-center py-16 rounded-xl shadow-sm border border-border/50 bg-card/50">
+                  <Globe className="text-6xl text-primary mb-4" />
+                  <h3 className="text-xl font-semibold text-card-foreground mb-2">
                     Không có chatbot công khai
                   </h3>
-                  <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                     Chưa có chatbot công khai nào được tạo
                   </p>
                 </div>

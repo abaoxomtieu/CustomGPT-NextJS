@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable}`} suppressHydrationWarning>
         <GoogleOAuthProvider clientId="486285301849-fjcp1e941fdrhkpj0ufjom8mqu8r0chv.apps.googleusercontent.com">
-          <SidebarProvider>
+          <SidebarProvider defaultOpen={true}>
             <Toaster />
             <ThemeProvider
               attribute="class"

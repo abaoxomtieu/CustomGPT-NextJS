@@ -187,7 +187,7 @@ export default function RagAgentClient({
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, streamingMessage]);
+  }, [messages, streamingMessage, thinkingText]);
 
   // Auth loading (replace Spin with a simple loader)
   if (isAuthLoading) {
@@ -286,9 +286,14 @@ export default function RagAgentClient({
         setAllowFirstRequest(false);
       } else {
         toast.warning(
-          "Bạn chưa thiết lập Gemini API key. Vui lòng vào trang Profile để thiết lập."
+          "Bạn chưa thiết lập gemini apikey, đến trang Profile để thiết lập gemini apikey",
+          {
+            action: {
+              label: "Thiết lập ngay",
+              onClick: () => router.push("/profile"),
+            },
+          }
         );
-        router.push("/profile");
         return;
       }
     }
@@ -427,14 +432,14 @@ export default function RagAgentClient({
   return (
     <div className="flex h-screen relative w-full">
       {loadingChatbot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <Loader2 className="w-10 h-10 animate-spin text-primary" />
-          <span className="ml-4 text-lg">Đang tải...</span>
+          <span className="ml-4 text-lg text-foreground">Đang tải...</span>
         </div>
       )}
       {/* Sidebar */}
       <div
-        className={`flex-none bg-white/90 backdrop-blur-sm border-r border-gray-100 transition-all duration-300 ${
+        className={`flex-none bg-card/90 backdrop-blur-sm border-r border-border transition-all duration-300 ${
           isSidebarCollapsed ? "w-16" : "w-64"
         }`}
       >
@@ -451,34 +456,34 @@ export default function RagAgentClient({
       {/* Main Content */}
       <div className="flex flex-col w-full">
         {/* Header */}
-        <div className="flex-none bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-100 py-4">
+        <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-4">
           <div className="flex justify-between items-center px-6">
             <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => router.push("/assistants")}
+                className="text-muted-foreground hover:text-foreground"
               >
                 <ArrowLeft />
               </Button>
-              <Avatar>
-                <AvatarFallback>
+              <Avatar className="bg-primary/10">
+                <AvatarFallback className="text-primary">
                   <Bot />
                 </AvatarFallback>
-                {/* <AvatarImage src={chatbotDetails?.avatarUrl} /> nếu có */}
               </Avatar>
               <div>
                 {loadingChatbot ? (
                   <div className="flex items-center gap-2">
-                    <Loader2 className="animate-spin w-5 h-5" />
-                    <span className="text-gray-500">Đang tải</span>
+                    <Loader2 className="animate-spin w-5 h-5 text-muted-foreground" />
+                    <span className="text-muted-foreground">Đang tải</span>
                   </div>
                 ) : (
                   <>
-                    <h1 className="text-xl font-semibold text-gray-800">
+                    <h1 className="text-xl font-semibold text-card-foreground">
                       {chatbotDetails?.name || "Trợ lý AI"}
                     </h1>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {chatbotDetails?.description}
                     </p>
                   </>
@@ -492,13 +497,13 @@ export default function RagAgentClient({
                     <TooltipTrigger asChild>
                       <Badge
                         variant="secondary"
-                        className="cursor-pointer"
+                        className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80"
                         onClick={() => router.push("/login")}
                       >
                         Chưa đăng nhập
                       </Badge>
                     </TooltipTrigger>
-                    <TooltipContent>
+                    <TooltipContent className="bg-popover text-popover-foreground">
                       Đăng nhập để sử dụng đầy đủ tính năng
                     </TooltipContent>
                   </Tooltip>
@@ -509,8 +514,8 @@ export default function RagAgentClient({
                   <Badge
                     className={`ml-2 ${
                       geminiApiKey
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
+                        ? "bg-green-500/10 text-green-500"
+                        : "bg-yellow-500/10 text-yellow-500"
                     } cursor-pointer`}
                   >
                     <KeyRound className="w-4 h-4 mr-1" />
@@ -518,7 +523,7 @@ export default function RagAgentClient({
                     {geminiApiKey ? "Đã thiết lập" : "Chưa thiết lập"}
                   </Badge>
                 </PopoverTrigger>
-                <PopoverContent>
+                <PopoverContent className="bg-popover text-popover-foreground border-border">
                   {geminiApiKey ? (
                     "Bạn đã thiết lập Gemini API Key, có thể sử dụng đầy đủ tính năng AI Gemini."
                   ) : (
@@ -528,6 +533,7 @@ export default function RagAgentClient({
                       <Button
                         size="sm"
                         variant="link"
+                        className="text-primary hover:text-primary/80"
                         onClick={() => router.push("/profile")}
                       >
                         Thiết lập ngay
@@ -538,10 +544,10 @@ export default function RagAgentClient({
               </Popover>
               {headerDropdown}
               <Select value={modelName} onValueChange={setModelName}>
-                <SelectTrigger className="w-44">
+                <SelectTrigger className="w-44 bg-background border-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-popover text-popover-foreground border-border">
                   {modelOptions.map((opt) => (
                     <SelectItem value={opt.value} key={opt.value}>
                       {opt.label}

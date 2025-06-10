@@ -1,17 +1,20 @@
+import { Metadata } from "next";
 import RagAgentClient from "./rag-agent-client";
-export const metadata = {
-  title: "Chatbot AI | Rag Agent",
+
+export const metadata: Metadata = {
+  title: "Rag Agent Chat",
   description:
     "Trò chuyện thông minh với chatbot AI Rag Agent, tích hợp Gemini API.",
 };
-export default function RagAgentPage({
-  params,
-}: {
-  params: { slug?: string[] };
-}) {
-  const slugArray = Array.isArray(params.slug)
-    ? params.slug
-    : [params.slug || ""];
+
+interface PageProps {
+  params: { slug: string[] };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default async function RagAgentPage({ params }: PageProps) {
+  const { slug } = await params;
+  const slugArray = Array.isArray(slug) ? slug : [slug || ""];
 
   return <RagAgentClient params={{ slug: slugArray }} />;
 }

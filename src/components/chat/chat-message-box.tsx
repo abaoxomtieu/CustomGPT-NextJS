@@ -155,8 +155,8 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
             className={`rounded-2xl px-5 py-4 shadow-md transition-all duration-200 group
               ${
                 isAI
-                  ? "bg-foreground/10 hover:bg-foreground/20"
-                  : "bg-background hover:bg-foreground/10"
+                  ? "bg-background hover:bg-foreground/20"
+                  : "bg-foreground/10 hover:foreground/20"
               }
               text-foreground text-[15px] leading-relaxed
             `}

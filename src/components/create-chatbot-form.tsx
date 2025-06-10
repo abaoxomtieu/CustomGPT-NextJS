@@ -122,22 +122,22 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white rounded-xl shadow-lg p-8 h-full transition-all duration-300 flex flex-col gap-2"
+      className="bg-card rounded-xl shadow-lg p-8 h-full transition-all duration-300 flex flex-col gap-2 border border-border"
       autoComplete="off"
     >
       <div className="flex items-center gap-3 mb-2">
-        <div className="bg-blue-50 p-2 rounded-lg">
-          <PenTool className="w-4 h-4 text-foreground" />
+        <div className="bg-primary/10 p-2 rounded-lg">
+          <PenTool className="w-4 h-4 text-primary" />
         </div>
         <div>
-          <h2 className="text-md font-bold text-gray-800">Tạo Chatbot Mới</h2>
+          <h2 className="text-md font-bold text-card-foreground">Tạo Chatbot Mới</h2>
         </div>
       </div>
 
       {/* Tên chatbot */}
       <div className="space-y-2">
         <label
-          className="font-medium block text-foreground text-sm"
+          className="font-medium block text-card-foreground text-sm"
           htmlFor="name"
         >
           Tên Chatbot
@@ -148,14 +148,14 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
           onChange={(e) => setName(e.target.value)}
           placeholder="Nhập tên chatbot"
           disabled={loading}
-          className="h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+          className="h-12 text-base bg-background border-border focus:border-primary focus:ring-primary"
         />
       </div>
 
       {/* Prompt */}
       <div className="space-y-2">
         <label
-          className="font-medium block text-foreground text-sm"
+          className="font-medium block text-card-foreground text-sm"
           htmlFor="prompt"
         >
           Lời nhắc (prompt) cho Chatbot
@@ -167,27 +167,27 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
           placeholder="Ví dụ: Bạn là một trợ lý thân thiện giúp đỡ khách hàng về sản phẩm."
           rows={4}
           disabled={loading}
-          className="resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+          className="resize-none bg-background border-border focus:border-primary focus:ring-primary"
         />
       </div>
 
       {/* Công khai */}
-      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-100">
+      <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-lg border border-border">
         <Checkbox
           id="public"
           checked={isPublic}
           onCheckedChange={(v) => setIsPublic(!!v)}
           disabled={loading}
-          className="border-gray-300 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+          className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
         />
         <div className="flex-1">
           <label
             htmlFor="public"
-            className="font-medium text-foreground text-sm cursor-pointer"
+            className="font-medium text-card-foreground text-sm cursor-pointer"
           >
             Công khai chatbot này
           </label>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Cho phép người dùng khác tìm thấy và sử dụng chatbot của bạn
           </p>
         </div>
@@ -199,13 +199,13 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
             <button
               type="button"
               tabIndex={-1}
-              className="text-gray-400 hover:text-blue-500 transition-colors"
+              className="text-muted-foreground hover:text-primary transition-colors"
             >
               <MailQuestion className="w-5 h-5" />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="max-w-xs p-4">
-            <p className="text-sm text-gray-600">
+          <PopoverContent className="max-w-xs p-4 bg-card border-border">
+            <p className="text-sm text-muted-foreground">
               Nếu bật, chatbot này sẽ hiển thị công khai trên danh sách cho mọi
               người dùng khác.
             </p>
@@ -216,10 +216,10 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
       {/* Chức năng hỗ trợ */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <div className="bg-purple-50 p-2 rounded-lg">
-            <Sparkles className="w-5 h-5 text-purple-600" />
+          <div className="bg-primary/10 p-2 rounded-lg">
+            <Sparkles className="w-5 h-5 text-primary" />
           </div>
-          <span className="text-sm font-semibold text-foreground">
+          <span className="text-sm font-semibold text-card-foreground">
             Chức năng hỗ trợ
           </span>
           <Popover
@@ -230,13 +230,13 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
               <button
                 type="button"
                 tabIndex={-1}
-                className="text-gray-400 hover:text-blue-500 transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="max-w-xs p-4">
-              <p className="text-sm text-gray-600">
+            <PopoverContent className="max-w-xs p-4 bg-card border-border">
+              <p className="text-sm text-muted-foreground">
                 Chọn các chức năng bạn muốn tích hợp cho chatbot.
               </p>
             </PopoverContent>
@@ -248,8 +248,8 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
               key={tool.value}
               className={`flex items-center gap-2 p-2 rounded-lg border transition-all duration-200 ${
                 selectedTools.includes(tool.value)
-                  ? "bg-blue-50 border-blue-200"
-                  : "bg-white border-gray-100 hover:border-blue-200"
+                  ? "bg-primary/10 border-primary/20"
+                  : "bg-background border-border hover:border-primary/20"
               }`}
             >
               <Checkbox
@@ -257,20 +257,20 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
                 checked={selectedTools.includes(tool.value)}
                 onCheckedChange={() => handleCheckbox(tool.value)}
                 disabled={loading}
-                className=" border-gray-300 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
               />
               <div className="flex-1">
                 <div className="flex items-center gap-1">
                   <tool.icon
                     className={`w-4 h-4 ${
                       selectedTools.includes(tool.value)
-                        ? "text-blue-600"
-                        : "text-gray-400"
+                        ? "text-primary"
+                        : "text-muted-foreground"
                     }`}
                   />
                   <label
                     htmlFor={tool.value}
-                    className="font-medium text-foreground text-sm cursor-pointer"
+                    className="font-medium text-card-foreground text-sm cursor-pointer"
                   >
                     {tool.label}
                   </label>
@@ -286,15 +286,18 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-12 text-base font-medium bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg shadow-blue-500/20"
+          className="w-full h-12 text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {loading ? (
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Đang tạo...
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+              <span className="animate-pulse">Đang tạo chatbot...</span>
             </div>
           ) : (
-            "Tạo chatbot"
+            <div className="flex items-center justify-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              Tạo chatbot
+            </div>
           )}
         </Button>
       </div>
