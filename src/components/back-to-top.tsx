@@ -21,7 +21,7 @@ export default function BackToTopButton() {
 
   return (
     <div
-      className={`fixed bottom-6 right-6 z-50 transition-opacity ${
+      className={`fixed bottom-30 right-6 z-50 transition-opacity ${
         visible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >

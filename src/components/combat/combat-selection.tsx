@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -12,9 +12,11 @@ import {
   Flame,
   Bomb,
   Scale,
+  Home,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import CombatSelect from "./combat-select";
+import { useRouter } from "next/navigation";
 
 export const modelOptions = [
   { label: "Gemini 2.5 Flash", value: "gemini-2.5-flash-preview-05-20" },
@@ -50,52 +52,62 @@ const CombatSelection: React.FC<CombatSelectionProps> = ({
   setAgentAsk,
   onStartConversation,
 }) => {
+  const router = useRouter();
+  // Memoize background style
+  const backgroundStyle = useMemo(() => ({
+    background: "linear-gradient(120deg, #141e30 0%, #243b55 100%)",
+  }), []);
+
   return (
     <div
-      className="min-h-screen p-8 relative overflow-hidden"
-      style={{
-        background: "linear-gradient(120deg, #141e30 0%, #243b55 100%)", // combatBackgrounds.main
-      }}
+      className="min-h-screen p-4 md:p-8 relative overflow-hidden"
+      style={backgroundStyle}
     >
-      {/* Floating combat elements */}
-      <div className="absolute inset-0 pointer-events-none opacity-5 z-0">
-        <Sword className="absolute top-10 left-10 w-16 h-16 animate-spin-slow" />
-        <Shield className="absolute top-20 right-20 w-12 h-12 animate-pulse" />
-        <Zap className="absolute bottom-20 left-20 w-14 h-14 animate-bounce" />
-        <Trophy className="absolute bottom-10 right-10 w-16 h-16 animate-spin-slow" />
-        <Flame className="absolute top-1/2 left-5 w-10 h-10 animate-pulse" />
-        <Bomb className="absolute top-1/3 right-5 w-10 h-10 animate-pulse" />
+      {/* Reduced floating elements */}
+      <div className="absolute inset-0 pointer-events-none opacity-3 z-0">
+        <Sword className="absolute top-10 left-10 w-12 h-12" />
+        <Shield className="absolute bottom-20 right-20 w-10 h-10" />
+        <Trophy className="absolute top-1/2 right-10 w-12 h-12" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 mb-4 animate-glow">
-            <span className="inline-block mr-4"><Sword className="inline w-12 h-12 text-yellow-400 animate-float" /></span>
+        {/* Title with Home button */}
+        <div className="text-center mb-8 md:mb-12 relative">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/")}
+            className="absolute left-0 top-1/2 -translate-y-1/2 text-yellow-400 hover:text-red-400 border border-yellow-400/30 hover:border-red-400/50 bg-black/50 font-bold text-xs md:text-sm"
+          >
+            <Home className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+            Home
+          </Button>
+          <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 mb-4">
+            <span className="inline-block mr-2 md:mr-4"><Sword className="inline w-8 h-8 md:w-12 md:h-12 text-yellow-400" /></span>
             AI COMBAT ARENA
-            <span className="inline-block ml-4"><Sword className="inline w-12 h-12 text-yellow-400 animate-float" /></span>
+            <span className="inline-block ml-2 md:ml-4"><Sword className="inline w-8 h-8 md:w-12 md:h-12 text-yellow-400" /></span>
           </h1>
-          <p className="text-xl text-yellow-300 font-semibold shadow-lg">
+          <p className="text-lg md:text-xl text-yellow-300 font-semibold">
             Watch two AI agents engage in an intelligent conversation
           </p>
           <div className="mt-4 flex justify-center">
-            <Scale className="w-16 h-16 animate-float text-purple-400" />
+            <Scale className="w-12 h-12 md:w-16 md:h-16 text-purple-400" />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-6 md:mb-8">
           {/* Left Side */}
-          <div className="space-y-4 transform hover:scale-105 transition-transform duration-200 relative">
-            <div className="absolute inset-0 bg-blue-500/10 rounded-lg blur-xl animate-pulse combat-glow"></div>
-            <Card className="shadow-2xl hover:shadow-cyan-500/50 transition-shadow duration-200 bg-gradient-to-br from-blue-900/80 to-cyan-800/80 border-2 border-cyan-400/50 backdrop-blur-sm combat-glow relative z-10">
+          <div className="space-y-4 transform hover:scale-102 transition-transform duration-200 relative">
+            <div className="absolute inset-0 bg-blue-500/5 rounded-lg blur-md"></div>
+            <Card className="shadow-lg hover:shadow-cyan-500/30 transition-shadow duration-200 bg-gradient-to-br from-blue-900/80 to-cyan-800/80 border border-cyan-400/30 backdrop-blur-sm relative z-10">
               <CardHeader className="pb-0">
                 <CardTitle>
                   <div className="flex items-center">
-                    <Bot className="text-cyan-300 mr-2 w-8 h-8 animate-float" />
-                    <span className="text-cyan-300 font-bold text-xl">
+                    <Bot className="text-cyan-300 mr-2 w-6 h-6 md:w-8 md:h-8" />
+                    <span className="text-cyan-300 font-bold text-lg md:text-xl">
                       Left Fighter
                     </span>
-                    <Sword className="text-cyan-300 ml-2 w-8 h-8 animate-shake" />
+                    <Sword className="text-cyan-300 ml-2 w-6 h-6 md:w-8 md:h-8" />
                   </div>
                 </CardTitle>
               </CardHeader>
@@ -122,17 +134,17 @@ const CombatSelection: React.FC<CombatSelectionProps> = ({
           </div>
 
           {/* Right Side */}
-          <div className="space-y-4 transform hover:scale-105 transition-transform duration-200 relative">
-            <div className="absolute inset-0 bg-red-500/10 rounded-lg blur-xl animate-pulse delay-500 combat-glow"></div>
-            <Card className="shadow-2xl hover:shadow-red-500/50 transition-shadow duration-200 bg-gradient-to-br from-red-900/80 to-pink-800/80 border-2 border-red-400/50 backdrop-blur-sm combat-glow relative z-10">
+          <div className="space-y-4 transform hover:scale-102 transition-transform duration-200 relative">
+            <div className="absolute inset-0 bg-red-500/5 rounded-lg blur-md"></div>
+            <Card className="shadow-lg hover:shadow-red-500/30 transition-shadow duration-200 bg-gradient-to-br from-red-900/80 to-pink-800/80 border border-red-400/30 backdrop-blur-sm relative z-10">
               <CardHeader className="pb-0">
                 <CardTitle>
                   <div className="flex items-center">
-                    <Bot className="text-red-300 mr-2 w-8 h-8 animate-float delay-300" />
-                    <span className="text-red-300 font-bold text-xl">
+                    <Bot className="text-red-300 mr-2 w-6 h-6 md:w-8 md:h-8" />
+                    <span className="text-red-300 font-bold text-lg md:text-xl">
                       Right Fighter
                     </span>
-                    <Sword className="text-red-300 ml-2 w-8 h-8 animate-shake delay-500" />
+                    <Sword className="text-red-300 ml-2 w-6 h-6 md:w-8 md:h-8" />
                   </div>
                 </CardTitle>
               </CardHeader>
@@ -160,39 +172,39 @@ const CombatSelection: React.FC<CombatSelectionProps> = ({
         </div>
 
         {/* First Ask Switch */}
-        <Card className="mb-8 shadow-2xl hover:shadow-yellow-500/30 transition-shadow duration-200 bg-gradient-to-r from-purple-900/80 to-indigo-900/80 border-2 border-yellow-400/50 backdrop-blur-sm combat-glow">
+        <Card className="mb-6 md:mb-8 shadow-lg hover:shadow-yellow-500/20 transition-shadow duration-200 bg-gradient-to-r from-purple-900/80 to-indigo-900/80 border border-yellow-400/30 backdrop-blur-sm">
           <CardContent>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <span className="text-xl text-yellow-300 font-bold"><Sword className="inline w-8 h-8" /></span>
-              <span className="text-xl text-yellow-300 font-bold">
+            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
+              <span className="text-lg md:text-xl text-yellow-300 font-bold"><Sword className="inline w-6 h-6 md:w-8 md:h-8" /></span>
+              <span className="text-lg md:text-xl text-yellow-300 font-bold">
                 First Asking Agent:
               </span>
-              <div className="flex items-center gap-4 bg-black/50 p-4 rounded-lg border border-yellow-400/30">
+              <div className="flex items-center gap-3 md:gap-4 bg-black/50 p-3 md:p-4 rounded-lg border border-yellow-400/30">
                 <span
                   className={cn(
-                    "text-lg font-bold flex items-center gap-2",
+                    "text-base md:text-lg font-bold flex items-center gap-2",
                     agent_ask === "left" ? "text-cyan-400" : "text-gray-400"
                   )}
                 >
-                  <Bot className="w-5 h-5" /> Left AI
+                  <Bot className="w-4 h-4 md:w-5 md:h-5" /> Left AI
                 </span>
                 <Switch
                   checked={agent_ask === "right"}
                   onCheckedChange={(checked) =>
                     setAgentAsk(checked ? "right" : "left")
                   }
-                  className="scale-125 bg-yellow-600"
+                  className="scale-110 md:scale-125 bg-yellow-600"
                 />
                 <span
                   className={cn(
-                    "text-lg font-bold flex items-center gap-2",
+                    "text-base md:text-lg font-bold flex items-center gap-2",
                     agent_ask === "right" ? "text-red-400" : "text-gray-400"
                   )}
                 >
-                  Right AI <Bot className="w-5 h-5" />
+                  Right AI <Bot className="w-4 h-4 md:w-5 md:h-5" />
                 </span>
               </div>
-              <span className="text-xl text-yellow-300 font-bold"><Sword className="inline w-8 h-8" /></span>
+              <span className="text-lg md:text-xl text-yellow-300 font-bold"><Sword className="inline w-6 h-6 md:w-8 md:h-8" /></span>
             </div>
           </CardContent>
         </Card>
@@ -201,10 +213,10 @@ const CombatSelection: React.FC<CombatSelectionProps> = ({
           <Button
             size="lg"
             disabled={!leftChatbot || !rightChatbot}
-            className="bg-gradient-to-r from-yellow-500 via-red-500 to-purple-600 hover:from-yellow-600 hover:via-red-600 hover:to-purple-700 text-white text-xl font-bold px-12 py-6 h-auto shadow-2xl hover:shadow-yellow-500/50 transition-all duration-200 border-2 border-yellow-400 animate-glow combat-glow"
+            className="bg-gradient-to-r from-yellow-500 via-red-500 to-purple-600 hover:from-yellow-600 hover:via-red-600 hover:to-purple-700 text-white text-lg md:text-xl font-bold px-6 md:px-12 py-4 md:py-6 h-auto shadow-lg hover:shadow-yellow-500/30 transition-all duration-200 border border-yellow-400"
             onClick={onStartConversation}
           >
-            <Sword className="inline w-6 h-6 mr-2" /> Start Conversation <Scale className="inline w-6 h-6 ml-2" />
+            <Sword className="inline w-5 h-5 md:w-6 md:h-6 mr-2" /> Start Conversation <Scale className="inline w-5 h-5 md:w-6 md:h-6 ml-2" />
           </Button>
         </div>
       </div>

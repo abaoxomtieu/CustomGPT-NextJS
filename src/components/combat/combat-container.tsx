@@ -47,6 +47,7 @@ const CombatContainer: React.FC = () => {
         isConversationActive={isConversationActive}
         onBackToSelection={() => setIsConversationStarted(false)}
         onStopConversation={handleStopConversation}
+        onContinueConversation={handleStartConversation}
       />
     );
   }

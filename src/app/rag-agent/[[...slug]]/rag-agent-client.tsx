@@ -12,6 +12,7 @@ import {
   Trash2,
   Loader2,
   KeyRound,
+  Menu,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -109,6 +110,7 @@ export default function RagAgentClient({
   const [localConversationId, setLocalConversationId] = useState<
     string | undefined
   >(urlConversationId as string);
+  const [isMobileConversationOpen, setIsMobileConversationOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -437,53 +439,77 @@ export default function RagAgentClient({
           <span className="ml-4 text-lg text-foreground">Đang tải...</span>
         </div>
       )}
-      {/* Sidebar */}
+      {/* Sidebar - Hidden on mobile by default */}
       <div
-        className={`flex-none bg-card/90 backdrop-blur-sm border-r border-border transition-all duration-300 ${
+        className={`fixed md:relative z-30 h-full bg-card/90 backdrop-blur-sm border-r border-border transition-all duration-300 ${
           isSidebarCollapsed ? "w-16" : "w-64"
+        } ${
+          isMobileConversationOpen
+            ? "translate-x-0"
+            : "-translate-x-full md:translate-x-0"
         }`}
       >
         <ConversationList
           conversations={conversations}
           currentConversationId={conversationId}
           isSidebarCollapsed={isSidebarCollapsed}
-          onSelectConversation={selectConversation}
+          onSelectConversation={(id) => {
+            selectConversation(id);
+            setIsMobileConversationOpen(false);
+          }}
           onDeleteConversation={deleteConversation}
           onCreateConversation={createConversation}
           onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
       </div>
+
+      {/* Mobile Conversation Toggle Button */}
+      <button
+        onClick={() => setIsMobileConversationOpen(!isMobileConversationOpen)}
+        className="md:hidden fixed bottom-20 right-4 z-40 bg-primary text-primary-foreground p-3 rounded-full shadow-lg"
+      >
+        <Menu className="w-6 h-6" />
+      </button>
+
+      {/* Overlay for mobile */}
+      {isMobileConversationOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          onClick={() => setIsMobileConversationOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
       <div className="flex flex-col w-full">
         {/* Header */}
-        <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-4">
-          <div className="flex justify-between items-center px-6">
-            <div className="flex items-center gap-3">
+        <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-3 md:py-4">
+          <div className="flex justify-between items-center px-4 md:px-6">
+            <div className="flex items-center gap-2 md:gap-3">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => router.push("/assistants")}
                 className="text-muted-foreground hover:text-foreground"
               >
-                <ArrowLeft />
+                <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
-              <Avatar className="bg-primary/10">
+              <Avatar className="bg-primary/10 w-8 h-8 md:w-10 md:h-10">
                 <AvatarFallback className="text-primary">
-                  <Bot />
+                  <Bot className="w-4 h-4 md:w-5 md:h-5" />
                 </AvatarFallback>
               </Avatar>
               <div>
                 {loadingChatbot ? (
                   <div className="flex items-center gap-2">
-                    <Loader2 className="animate-spin w-5 h-5 text-muted-foreground" />
-                    <span className="text-muted-foreground">Đang tải</span>
+                    <Loader2 className="animate-spin w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
+                    <span className="text-sm md:text-base text-muted-foreground">Đang tải</span>
                   </div>
                 ) : (
                   <>
-                    <h1 className="text-xl font-semibold text-card-foreground">
+                    <h1 className="text-base md:text-xl font-semibold text-card-foreground">
                       {chatbotDetails?.name || "Trợ lý AI"}
                     </h1>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">
                       {chatbotDetails?.description}
                     </p>
                   </>
@@ -497,7 +523,7 @@ export default function RagAgentClient({
                     <TooltipTrigger asChild>
                       <Badge
                         variant="secondary"
-                        className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs"
                         onClick={() => router.push("/login")}
                       >
                         Chưa đăng nhập
@@ -512,14 +538,13 @@ export default function RagAgentClient({
               <Popover>
                 <PopoverTrigger asChild>
                   <Badge
-                    className={`ml-2 ${
+                    className={`ml-2 text-xs ${
                       geminiApiKey
                         ? "bg-green-500/10 text-green-500"
                         : "bg-yellow-500/10 text-yellow-500"
                     } cursor-pointer`}
                   >
-                    <KeyRound className="w-4 h-4 mr-1" />
-                    Gemini API Key:{" "}
+                    <KeyRound className="w-3 h-3 md:w-4 md:h-4 mr-1" />
                     {geminiApiKey ? "Đã thiết lập" : "Chưa thiết lập"}
                   </Badge>
                 </PopoverTrigger>
@@ -544,7 +569,7 @@ export default function RagAgentClient({
               </Popover>
               {headerDropdown}
               <Select value={modelName} onValueChange={setModelName}>
-                <SelectTrigger className="w-44 bg-background border-border">
+                <SelectTrigger className="w-32 md:w-44 bg-background border-border">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-popover text-popover-foreground border-border">

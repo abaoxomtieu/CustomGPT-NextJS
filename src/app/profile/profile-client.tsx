@@ -178,7 +178,7 @@ export default function ProfileClient() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-background">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="animate-spin h-16 w-16 text-primary" />
           <span className="text-foreground">
@@ -190,8 +190,8 @@ export default function ProfileClient() {
   }
 
   return (
-    <div className="min-h-screen bg-background/50 flex flex-col items-center justify-center py-12 px-2 sm:px-4">
-      <div className=" w-2/3">
+    <div className="min-h-screen bg-background/50 flex flex-col items-center justify-center p-4 md:p-12">
+      <div className="w-full max-w-2xl">
         {/* Back Button */}
         <Button
           variant="ghost"
@@ -199,19 +199,19 @@ export default function ProfileClient() {
           className="mb-4 flex items-center gap-2 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft size={18} />
-          Quay lại
+          <span className="hidden sm:inline">Quay lại</span>
         </Button>
 
         <Card className="shadow-2xl border-border/50 backdrop-blur-sm bg-card text-background/80">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center mb-2 text-card-foreground">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-xl md:text-2xl text-center text-card-foreground">
               Chào mừng đến với AI FTES
             </CardTitle>
-            <p className="text-center text-muted-foreground">
+            <p className="text-sm md:text-base text-center text-muted-foreground">
               Vui lòng hoàn thiện hồ sơ để bắt đầu sử dụng.
             </p>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -311,8 +311,8 @@ export default function ProfileClient() {
               </form>
             </Form>
 
-            <div className="mt-8 space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <Label className="text-card-foreground">Gemini API Key</Label>
                 {isApiKeyValid ? (
                   <div className="flex items-center text-green-500">
@@ -376,7 +376,7 @@ export default function ProfileClient() {
                     )}
                   />
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <Button
                       type="button"
                       variant="outline"

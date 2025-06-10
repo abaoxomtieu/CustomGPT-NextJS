@@ -54,12 +54,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="flex-none p-4 bg-background backdrop-blur-sm">
+    <div className="flex-none p-2 md:p-4 bg-background backdrop-blur-sm">
       <div className="max-w-4xl mx-auto">
-        <div className="relative rounded-2xl border-2 border-gray-200">
+        <div className="relative rounded-xl md:rounded-2xl border border-gray-200">
           {error && (
             <div className="p-2 bg-red-50 border-b border-red-200">
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="text-xs md:text-sm text-red-600">{error}</p>
             </div>
           )}
 
@@ -70,7 +70,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 {selectedFiles.map((file, index) => (
                   <div
                     key={index}
-                    className="relative w-32 h-32 rounded overflow-hidden"
+                    className="relative w-24 h-24 md:w-32 md:h-32 rounded overflow-hidden"
                   >
                     {file.type.startsWith("image/") ? (
                       <img
@@ -80,7 +80,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                        <span className="text-xs truncate px-1">
+                        <span className="text-[10px] md:text-xs truncate px-1">
                           {file.name}
                         </span>
                       </div>
@@ -103,7 +103,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
           {/* Input Area */}
           <div className="flex items-end gap-2 p-2">
-            <div className="flex-1 min-h-[60px]">
+            <div className="flex-1 min-h-[50px] md:min-h-[60px]">
               <textarea
                 ref={inputRef}
                 value={input}
@@ -111,13 +111,13 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 onKeyDown={onKeyPress}
                 placeholder="Type a message..."
                 disabled={loading || disabled}
-                className="w-full h-full min-h-[60px] px-4 py-3 text-lg bg-transparent border-none focus:outline-none resize-none"
+                className="w-full h-full min-h-[50px] md:min-h-[60px] px-3 md:px-4 py-2 md:py-3 text-base md:text-lg bg-transparent border-none focus:outline-none resize-none"
                 style={{ lineHeight: "1.5" }}
               />
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-2 pr-2">
+            <div className="flex items-center gap-1 md:gap-2 pr-2">
               <input
                 type="file"
                 ref={fileInputRef}
@@ -130,14 +130,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={disabled}
-                className={`p-2 transition-colors rounded-full ${
+                className={`p-1.5 md:p-2 transition-colors rounded-full ${
                   disabled
                     ? "text-gray-300 cursor-not-allowed"
                     : "text-gray-500 hover:text-blue-500 hover:bg-gray-100"
                 }`}
                 title="Upload file"
               >
-                <Paperclip className="w-4 h-4" />
+                <Paperclip className="w-4 h-4 md:w-5 md:h-5" />
               </button>
 
               <button
@@ -145,14 +145,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 disabled={
                   loading || disabled || (!input.trim() && selectedFiles.length === 0)
                 }
-                className={`p-3 rounded-full transition-all duration-200 ${
+                className={`p-2 md:p-3 rounded-full transition-all duration-200 ${
                   loading || disabled || (!input.trim() && selectedFiles.length === 0)
                     ? "bg-foreground text-background cursor-not-allowed"
                     : "bg-foreground text-background shadow-sm hover:bg-foreground/80 hover:shadow-md"
                 }`}
                 title="Send"
               >
-                <Send size={20} />
+                <Send size={18} className="md:w-5 md:h-5" />
               </button>
             </div>
           </div>

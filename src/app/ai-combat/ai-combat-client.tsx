@@ -91,6 +91,7 @@ export default function AICombatClient() {
         agent_ask={agent_ask}
         onBackToSelection={handleBackToSelection}
         onStopConversation={handleStopConversation}
+        onContinueConversation={startConversation}
       />
     );
   }

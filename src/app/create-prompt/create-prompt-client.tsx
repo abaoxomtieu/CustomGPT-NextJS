@@ -346,36 +346,37 @@ const CreatePromptClient = () => {
 
   return (
     <>
-      <div className="flex flex-col h-screen bg-background">
+      <div className="flex flex-col h-[100dvh] bg-background">
         {/* Header */}
-        <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center px-4">
-            <div className="flex items-center gap-3">
+        <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-2 md:py-4">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center px-4 gap-2 md:gap-0">
+            <div className="flex items-center gap-2 md:gap-3">
               <Button
                 variant="ghost"
                 onClick={() => router.push("/")}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground p-1 md:p-2"
               >
-                <ChevronLeft className="mr-1 w-4 h-4" /> Quay lại
+                <ChevronLeft className="mr-1 w-4 h-4" /> 
+                <span className="hidden md:inline">Quay lại</span>
               </Button>
-              <Bot className="w-6 h-6 text-primary" />
+              <Bot className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               <div>
-                <h1 className="text-xl font-semibold text-card-foreground">
+                <h1 className="text-lg md:text-xl font-semibold text-card-foreground">
                   Trợ Lý Tạo Chatbot AI
                 </h1>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground">
                   Trợ lý AI giúp bạn tạo chatbot nhanh chóng và thông minh.
                 </p>
               </div>
               {!isLogin && (
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Badge className="ml-2 cursor-pointer" variant="default">
-                      <LogIn className="w-4 h-4 mr-1" /> Chưa đăng nhập
+                    <Badge className="ml-2 cursor-pointer text-xs md:text-sm" variant="default">
+                      <LogIn className="w-3 h-3 md:w-4 md:h-4 mr-1" /> Chưa đăng nhập
                     </Badge>
                   </PopoverTrigger>
                   <PopoverContent className="bg-card border-border">
-                    <p className="text-card-foreground">Bạn chưa đăng nhập. </p>
+                    <p className="text-card-foreground text-sm">Bạn chưa đăng nhập. </p>
                     <Button
                       onClick={() => router.push("/login")}
                       size="sm"
@@ -390,19 +391,19 @@ const CreatePromptClient = () => {
               <Popover>
                 <PopoverTrigger asChild>
                   <Badge
-                    className={`ml-2 ${
+                    className={`ml-2 text-xs md:text-sm ${
                       geminiApiKey
                         ? "bg-green-500/10 text-green-500"
                         : "bg-yellow-500/10 text-yellow-500"
                     } cursor-pointer`}
                   >
-                    <KeyRound className="w-4 h-4 mr-1" />
-                    Gemini API Key:{" "}
+                    <KeyRound className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                    <span className="hidden md:inline">Gemini API Key:</span>{" "}
                     {geminiApiKey ? "Đã thiết lập" : "Chưa thiết lập"}
                   </Badge>
                 </PopoverTrigger>
                 <PopoverContent className="bg-card border-border">
-                  <p className="text-card-foreground">
+                  <p className="text-card-foreground text-sm">
                     {geminiApiKey ? (
                       "Bạn đã thiết lập Gemini API Key, có thể sử dụng đầy đủ tính năng AI Gemini."
                     ) : (
@@ -423,9 +424,9 @@ const CreatePromptClient = () => {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full md:w-auto">
               <Select value={modelName} onValueChange={setModelName}>
-                <SelectTrigger className="w-[180px] bg-background border-border">
+                <SelectTrigger className="w-full md:w-[180px] bg-background border-border text-sm">
                   <SelectValue placeholder="Chọn mô hình AI" />
                 </SelectTrigger>
                 <SelectContent className="bg-background border-border">
@@ -433,7 +434,7 @@ const CreatePromptClient = () => {
                     <SelectItem
                       key={opt.value}
                       value={opt.value}
-                      className="text-foreground"
+                      className="text-foreground text-sm"
                     >
                       {opt.label}
                     </SelectItem>
@@ -443,6 +444,7 @@ const CreatePromptClient = () => {
               <Button
                 variant="destructive"
                 onClick={() => setClearModalVisible(true)}
+                className="text-sm whitespace-nowrap"
               >
                 <Trash2 className="mr-2 w-4 h-4" /> Xoá hội thoại
               </Button>
@@ -451,11 +453,11 @@ const CreatePromptClient = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
           {/* Left Side - Create Chatbot Form */}
           {!isFormCollapsed && (
             <div
-              className={`w-1/3 transition-all duration-300 ease-in-out overflow-hidden`}
+              className={`w-full md:w-1/3 transition-all duration-300 ease-in-out overflow-hidden`}
             >
               <div className="overflow-y-auto h-full">
                 <CreateChatbotForm
@@ -468,7 +470,7 @@ const CreatePromptClient = () => {
           )}
 
           {/* Right Side - Chat Messages */}
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col min-w-0 h-full">
             {/* Collapse Button */}
             <div className="flex-none p-2 border-b border-border">
               <Button
@@ -486,48 +488,48 @@ const CreatePromptClient = () => {
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto py-4 px-4">
-              <div className="w-full max-w-none space-y-6">
+            <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4 min-h-0">
+              <div className="w-full max-w-none space-y-4 md:space-y-6">
                 {messages.length === 0 ? (
-                  <div className="text-center py-10">
-                    <div className="bg-card rounded-xl p-8 shadow-sm border border-border">
-                      <div className="flex flex-col items-center mb-8">
-                        <div className="bg-primary/10 p-4 rounded-full mb-4">
-                          <Bot className="text-4xl text-primary" />
+                  <div className="text-center py-6 md:py-10">
+                    <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border">
+                      <div className="flex flex-col items-center mb-6 md:mb-8">
+                        <div className="bg-primary/10 p-3 md:p-4 rounded-full mb-3 md:mb-4">
+                          <Bot className="text-3xl md:text-4xl text-primary" />
                         </div>
-                        <h2 className="text-2xl font-bold text-card-foreground mb-3">
+                        <h2 className="text-xl md:text-2xl font-bold text-card-foreground mb-2 md:mb-3">
                           🤖 Trợ Lý Tạo Chatbot AI
                         </h2>
-                        <p className="text-muted-foreground max-w-2xl">
+                        <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
                           Trợ lý AI thông minh sẽ giúp bạn tạo ra một chatbot
                           hoàn chỉnh theo yêu cầu của bạn.
                         </p>
                       </div>
 
-                      <div className="bg-primary/5 rounded-xl p-6 mb-8 border border-primary/10">
-                        <p className="text-card-foreground text-lg leading-relaxed mb-4">
+                      <div className="bg-primary/5 rounded-xl p-4 md:p-6 mb-6 md:mb-8 border border-primary/10">
+                        <p className="text-card-foreground text-base md:text-lg leading-relaxed mb-3 md:mb-4">
                           <strong className="text-primary">
                             Tương tác với trợ lý AI
                           </strong>
                         </p>
-                        <p className="text-muted-foreground">
+                        <p className="text-sm md:text-base text-muted-foreground">
                           Hãy trao đổi thông tin với trợ lý thông qua chat để
                           thu thập đủ dữ liệu tạo chatbot mới. Trợ lý sẽ hướng
                           dẫn bạn từng bước để có được một chatbot hoàn chỉnh.
                         </p>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div className="bg-secondary/50 p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
-                          <div className="flex items-center mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+                        <div className="bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
+                          <div className="flex items-center mb-3 md:mb-4">
                             <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                              <span className="text-xl">💡</span>
+                              <span className="text-lg md:text-xl">💡</span>
                             </div>
-                            <h3 className="font-semibold text-card-foreground text-lg">
+                            <h3 className="font-semibold text-card-foreground text-base md:text-lg">
                               Hướng dẫn sử dụng
                             </h3>
                           </div>
-                          <ul className="text-muted-foreground space-y-3">
+                          <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
                             <li className="flex items-center">
                               <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
                               Mô tả mục đích chatbot của bạn
@@ -543,16 +545,16 @@ const CreatePromptClient = () => {
                           </ul>
                         </div>
 
-                        <div className="bg-secondary/50 p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
-                          <div className="flex items-center mb-4">
+                        <div className="bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
+                          <div className="flex items-center mb-3 md:mb-4">
                             <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                              <span className="text-xl">🎯</span>
+                              <span className="text-lg md:text-xl">🎯</span>
                             </div>
-                            <h3 className="font-semibold text-card-foreground text-lg">
+                            <h3 className="font-semibold text-card-foreground text-base md:text-lg">
                               Ví dụ tạo chatbot
                             </h3>
                           </div>
-                          <ul className="text-muted-foreground space-y-3">
+                          <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
                             <li className="flex items-center">
                               <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
                               Chatbot hỗ trợ khách hàng
@@ -569,16 +571,16 @@ const CreatePromptClient = () => {
                         </div>
                       </div>
 
-                      <div className="bg-secondary/50 rounded-xl p-6 border border-border">
+                      <div className="bg-secondary/50 rounded-xl p-4 md:p-6 border border-border">
                         <div className="flex items-center">
                           <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                            <span className="text-xl">💬</span>
+                            <span className="text-lg md:text-xl">💬</span>
                           </div>
                           <div>
-                            <p className="text-card-foreground font-medium">
+                            <p className="text-card-foreground font-medium text-base md:text-lg">
                               Bắt đầu ngay
                             </p>
-                            <p className="text-muted-foreground text-sm mt-1">
+                            <p className="text-xs md:text-sm text-muted-foreground mt-1">
                               Hãy nhập câu hỏi hoặc mô tả chatbot bạn muốn tạo
                               vào ô chat bên dưới!
                             </p>
@@ -601,9 +603,9 @@ const CreatePromptClient = () => {
                 {/* Thinking Text with Animation */}
                 {thinkingText && (
                   <div className="fixed bottom-24 right-4 z-50">
-                    <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                      <span className="animate-fade-in-out text-sm">
+                    <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 rounded-lg shadow-lg border border-border">
+                      <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-b-2 border-primary"></div>
+                      <span className="animate-fade-in-out text-xs md:text-sm">
                         {thinkingText}
                       </span>
                     </div>
@@ -618,8 +620,9 @@ const CreatePromptClient = () => {
                 <div ref={messagesEndRef} />
               </div>
             </div>
-            {/* Input Area */}
-            <div className="flex-none p-4">
+
+            {/* Input Area - Fixed at bottom */}
+            <div className="flex-none p-2 md:p-4 border-t border-border bg-background/80 backdrop-blur-sm">
               <div className="w-full max-w-none">
                 <ChatInput
                   input={input}
@@ -642,21 +645,21 @@ const CreatePromptClient = () => {
         <Dialog open={clearModalVisible} onOpenChange={setClearModalVisible}>
           <DialogContent className="bg-card border-border">
             <DialogHeader>
-              <DialogTitle className="text-card-foreground">
+              <DialogTitle className="text-card-foreground text-base md:text-lg">
                 Xoá hội thoại
               </DialogTitle>
-              <DialogDescription className="text-muted-foreground">
+              <DialogDescription className="text-muted-foreground text-sm">
                 Bạn có chắc chắn muốn xoá toàn bộ hội thoại không?
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="destructive" onClick={handleClearConfirm}>
+              <Button variant="destructive" onClick={handleClearConfirm} className="text-sm">
                 Xoá
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setClearModalVisible(false)}
-                className="border-border"
+                className="border-border text-sm"
               >
                 Huỷ
               </Button>

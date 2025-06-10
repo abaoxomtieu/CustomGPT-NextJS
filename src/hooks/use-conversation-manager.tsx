@@ -103,7 +103,6 @@ export const useConversationManager = ({
   );
 
   const createConversation = useCallback(() => {
-    console.log('Creating new conversation...');
     const newId = uuidv4();
     const newMeta: ConversationMeta = {
       conversation_id: newId,
@@ -114,7 +113,6 @@ export const useConversationManager = ({
     setConversations((prev) => {
       const updatedConversations = [newMeta, ...prev];
       saveConversations(updatedConversations);
-      console.log('Updated conversations:', updatedConversations);
       return updatedConversations;
     });
     setConversationId(newId);
@@ -122,7 +120,6 @@ export const useConversationManager = ({
 
     // Sử dụng window.history thay vì navigate để tránh reload
     const newUrl = `/rag-agent/${botId}/${newId}`;
-    console.log('Updating URL to:', newUrl);
     window.history.pushState(null, '', newUrl);
     
     // Dispatch popstate event để Next.js router biết về sự thay đổi
@@ -292,8 +289,6 @@ export const useConversationManager = ({
 
   useEffect(() => {
     if (!botId || isInitialized) return;
-
-    console.log('Initializing conversation manager for botId:', botId);
     
     const savedConversations = loadConversations();
     setConversations(savedConversations);
@@ -332,7 +327,6 @@ export const useConversationManager = ({
     }
 
     setIsInitialized(true);
-    console.log('Conversation manager initialized');
   }, [botId, urlConversationId]); // Loại bỏ isInitialized khỏi dependency array
 
   // Add this function before the return statement

@@ -87,26 +87,26 @@ while (true) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl md:max-w-3xl w-full p-0">
-        <DialogHeader className="p-6 border-b">
+      <DialogContent className="max-w-[95vw] md:max-w-2xl lg:max-w-3xl w-full p-0">
+        <DialogHeader className="p-4 md:p-6 border-b">
           <div className="flex items-center gap-2">
-            <Code2 className="w-6 h-6 text-primary" />
-            <DialogTitle>Hướng Dẫn Tích Hợp API</DialogTitle>
+            <Code2 className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+            <DialogTitle className="text-lg md:text-xl">Hướng Dẫn Tích Hợp API</DialogTitle>
           </div>
-          <DialogDescription>
+          <DialogDescription className="text-sm md:text-base">
             Tham khảo hướng dẫn chi tiết để tích hợp chatbot vào website/app của
             bạn.
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[70vh]">
-          <div className="space-y-6">
+        <ScrollArea className="max-h-[60vh] md:max-h-[70vh]">
+          <div className="space-y-4 md:space-y-6">
             {/* Alert Info */}
-            <div className="px-4">
-              <Alert variant="default">
-                <Info className="h-5 w-5" />
-                <AlertTitle>Tích Hợp API</AlertTitle>
-                <AlertDescription>
+            <div className="px-3 md:px-4">
+              <Alert variant="default" className="text-sm md:text-base">
+                <Info className="h-4 w-4 md:h-5 md:w-5" />
+                <AlertTitle className="text-sm md:text-base">Tích Hợp API</AlertTitle>
+                <AlertDescription className="text-xs md:text-sm">
                   Sử dụng API này để tích hợp chatbot vào website hoặc ứng dụng
                   của bạn.
                 </AlertDescription>
@@ -114,28 +114,28 @@ while (true) {
             </div>
 
             {/* Endpoint */}
-            <section className="mb-4 px-4">
-              <div className="font-semibold text-base mb-1">Điểm cuối API</div>
-              <div className="bg-muted px-4 py-2 rounded-lg font-mono text-sm w-full break-all">
+            <section className="mb-3 md:mb-4 px-3 md:px-4">
+              <div className="font-semibold text-sm md:text-base mb-1">Điểm cuối API</div>
+              <div className="bg-muted px-3 md:px-4 py-2 rounded-lg font-mono text-xs md:text-sm w-full break-all">
                 {apiUrl}
               </div>
             </section>
 
             {/* Method */}
-            <section className="mb-4 px-4">
-              <div className="font-semibold text-base mb-1">Phương thức</div>
+            <section className="mb-3 md:mb-4 px-3 md:px-4">
+              <div className="font-semibold text-sm md:text-base mb-1">Phương thức</div>
               <Badge
                 variant="outline"
-                className="border-foreground"
+                className="border-foreground text-xs md:text-sm"
               >
                 POST
               </Badge>
             </section>
 
             {/* Headers */}
-            <section className="mb-4 px-4">
-              <div className="font-semibold text-base mb-1">Headers</div>
-              <div className="bg-muted px-4 py-2 rounded-lg font-mono text-sm w-full break-all max-w-full">
+            <section className="mb-3 md:mb-4 px-3 md:px-4">
+              <div className="font-semibold text-sm md:text-base mb-1">Headers</div>
+              <div className="bg-muted px-3 md:px-4 py-2 rounded-lg font-mono text-xs md:text-sm w-full break-all max-w-full">
                 Authorization: Bearer{" "}
                 <span className="italic break-all block max-w-full overflow-x-auto whitespace-pre-wrap">
                   {token}
@@ -144,8 +144,8 @@ while (true) {
             </section>
 
             {/* FormData */}
-            <section className="mb-4 px-4">
-              <div className="font-semibold text-base mb-1 flex items-center justify-between">
+            <section className="mb-3 md:mb-4 px-3 md:px-4">
+              <div className="font-semibold text-sm md:text-base mb-1 flex items-center justify-between">
                 <span>Dữ liệu gửi đi (FormData)</span>
                 <button
                   className="ml-2 p-1 rounded hover:bg-gray-100 text-xs flex items-center gap-1"
@@ -168,11 +168,11 @@ while (true) {
                   }
                   title="Copy"
                 >
-                  <Copy className="w-4 h-4" />
+                  <Copy className="w-3 h-3 md:w-4 md:h-4" />
                   {copied === "formdata" ? "Đã copy!" : "Copy"}
                 </button>
               </div>
-              <pre className="bg-muted px-4 py-2 rounded-lg text-xs w-full overflow-x-auto break-words whitespace-pre-wrap ">
+              <pre className="bg-muted px-3 md:px-4 py-2 rounded-lg text-[10px] md:text-xs w-full overflow-x-auto break-words whitespace-pre-wrap">
                 {JSON.stringify(
                   {
                     query: "Tin nhắn của bạn ở đây",
@@ -189,45 +189,45 @@ while (true) {
             </section>
 
             {/* Params */}
-            <section className="mb-4 px-4">
-              <div className="font-semibold text-base mb-1">Tham số</div>
+            <section className="mb-3 md:mb-4 px-3 md:px-4">
+              <div className="font-semibold text-sm md:text-base mb-1">Tham số</div>
               <div className="space-y-2">
-                <div>
-                  <Badge variant="outline">query</Badge>{" "}
+                <div className="text-xs md:text-sm">
+                  <Badge variant="outline" className="text-xs md:text-sm">query</Badge>{" "}
                   <span> Tin nhắn của người dùng (chuỗi)</span>
                 </div>
-                <div>
-                  <Badge variant="outline">bot_id</Badge>{" "}
+                <div className="text-xs md:text-sm">
+                  <Badge variant="outline" className="text-xs md:text-sm">bot_id</Badge>{" "}
                   <span> ID duy nhất của chatbot</span>
                 </div>
-                <div>
-                  <Badge variant="outline">conversation_id</Badge>{" "}
+                <div className="text-xs md:text-sm">
+                  <Badge variant="outline" className="text-xs md:text-sm">conversation_id</Badge>{" "}
                   <span> (Tùy chọn) Để duy trì ngữ cảnh hội thoại</span>
                 </div>
-                <div>
-                  <Badge variant="outline">model_name</Badge>{" "}
+                <div className="text-xs md:text-sm">
+                  <Badge variant="outline" className="text-xs md:text-sm">model_name</Badge>{" "}
                   <span>
                     {" "}
                     gemini-2.5-flash-preview-05-20 hoặc gemini-2.0-flash
                   </span>
                 </div>
-                <div>
-                  <Badge variant="outline">api_key</Badge>{" "}
+                <div className="text-xs md:text-sm">
+                  <Badge variant="outline" className="text-xs md:text-sm">api_key</Badge>{" "}
                   <span> API key của bạn (hiện tại: {currentApiKey})</span>
                 </div>
-                <div>
-                  <Badge variant="outline">attachs</Badge>{" "}
+                <div className="text-xs md:text-sm">
+                  <Badge variant="outline" className="text-xs md:text-sm">attachs</Badge>{" "}
                   <span> Mảng file đính kèm (nếu có)</span>
                 </div>
               </div>
             </section>
 
             {/* Divider */}
-            <div className="border-t my-2 px-4" />
+            <div className="border-t my-2 px-3 md:px-4" />
 
             {/* Response Format */}
-            <section className="mb-4 px-4">
-              <div className="font-semibold text-base mb-1 flex items-center justify-between">
+            <section className="mb-3 md:mb-4 px-3 md:px-4">
+              <div className="font-semibold text-sm md:text-base mb-1 flex items-center justify-between">
                 <span>Định dạng phản hồi</span>
                 <button
                   className="ml-2 p-1 rounded hover:bg-gray-100 text-xs flex items-center gap-1"
@@ -246,15 +246,15 @@ while (true) {
                   }
                   title="Copy"
                 >
-                  <Copy className="w-4 h-4" />
+                  <Copy className="w-3 h-3 md:w-4 md:h-4" />
                   {copied === "response-message" ? "Đã copy!" : "Copy"}
                 </button>
               </div>
-              <div className="text-sm mb-2">
+              <div className="text-xs md:text-sm mb-2">
                 API trả về streaming dạng Server-Sent Events (SSE). Mỗi phản hồi
                 là một JSON:
               </div>
-              <pre className="bg-muted px-4 py-2 rounded-lg text-xs w-full overflow-x-auto break-words whitespace-pre">
+              <pre className="bg-muted px-3 md:px-4 py-2 rounded-lg text-[10px] md:text-xs w-full overflow-x-auto break-words whitespace-pre">
                 {JSON.stringify(
                   {
                     type: "message",
@@ -264,7 +264,7 @@ while (true) {
                   2
                 )}
               </pre>
-              <div className="text-sm mt-2 mb-2 flex items-center justify-between">
+              <div className="text-xs md:text-sm mt-2 mb-2 flex items-center justify-between">
                 <span>Phản hồi cuối cùng:</span>
                 <button
                   className="ml-2 p-1 rounded hover:bg-gray-100 text-xs flex items-center gap-1"
@@ -287,11 +287,11 @@ while (true) {
                   }
                   title="Copy"
                 >
-                  <Copy className="w-4 h-4" />
+                  <Copy className="w-3 h-3 md:w-4 md:h-4" />
                   {copied === "response-final" ? "Đã copy!" : "Copy"}
                 </button>
               </div>
-              <pre className="bg-muted px-4 py-2 rounded-lg text-xs w-full overflow-x-auto break-words whitespace-pre">
+              <pre className="bg-muted px-3 md:px-4 py-2 rounded-lg text-[10px] md:text-xs w-full overflow-x-auto break-words whitespace-pre">
                 {JSON.stringify(
                   {
                     type: "final",
@@ -308,30 +308,30 @@ while (true) {
             </section>
 
             {/* Divider */}
-            <div className="border-t my-2 px-4" />
+            <div className="border-t my-2 px-3 md:px-4" />
 
             {/* Example with Tabs */}
-            <section className="mb-4 px-4">
-              <div className="font-semibold text-base mb-1 flex items-center gap-2">
+            <section className="mb-3 md:mb-4 px-3 md:px-4">
+              <div className="font-semibold text-sm md:text-base mb-1 flex items-center gap-2">
                 <Code className="w-4 h-4" />
                 Ví dụ triển khai
               </div>
               <Tabs defaultValue="fetch" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="fetch">Fetch API</TabsTrigger>
-                  <TabsTrigger value="curl">cURL</TabsTrigger>
+                  <TabsTrigger value="fetch" className="text-xs md:text-sm">Fetch API</TabsTrigger>
+                  <TabsTrigger value="curl" className="text-xs md:text-sm">cURL</TabsTrigger>
                 </TabsList>
                 <TabsContent value="fetch">
                   <div className="relative">
                     <button
-                      className="absolute top-2 right-2 z-10 p-1 bg-background rounded hover:bg-gray-100 text-sm flex items-center gap-1"
+                      className="absolute top-2 right-2 z-10 p-1 bg-background rounded hover:bg-gray-100 text-xs flex items-center gap-1"
                       onClick={() => handleCopy("fetch", exampleCode)}
                       title="Copy"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-3 h-3 md:w-4 md:h-4" />
                       {copied === "fetch" ? "Đã copy!" : "Copy"}
                     </button>
-                    <span className="break-all block max-w-full overflow-x-auto whitespace-pre-wrap text-pretty text-sm bg-muted p-2 rounded-lg">
+                    <span className="break-all block max-w-full overflow-x-auto whitespace-pre-wrap text-pretty text-[10px] md:text-xs bg-muted p-2 rounded-lg">
                       {exampleCode}
                     </span>
                   </div>
@@ -339,14 +339,14 @@ while (true) {
                 <TabsContent value="curl">
                   <div className="relative">
                     <button
-                      className="absolute top-2 right-2 z-10 p-1 bg-background rounded hover:bg-gray-100 text-sm flex items-center gap-1"
+                      className="absolute top-2 right-2 z-10 p-1 bg-background rounded hover:bg-gray-100 text-xs flex items-center gap-1"
                       onClick={() => handleCopy("curl", curlExample)}
                       title="Copy"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-3 h-3 md:w-4 md:h-4" />
                       {copied === "curl" ? "Đã copy!" : "Copy"}
                     </button>
-                    <span className="break-all block max-w-full overflow-x-auto whitespace-pre-wrap text-pretty text-sm bg-muted p-2 rounded-lg">
+                    <span className="break-all block max-w-full overflow-x-auto whitespace-pre-wrap text-pretty text-[10px] md:text-xs bg-muted p-2 rounded-lg">
                       {curlExample}
                     </span>
                   </div>
@@ -355,11 +355,11 @@ while (true) {
             </section>
 
             {/* Alert Warning */}
-            <div className="px-4">
-              <Alert variant="destructive">
-                <AlertTriangle className="h-5 w-5" />
-                <AlertTitle>Lưu ý</AlertTitle>
-                <AlertDescription>
+            <div className="px-3 md:px-4">
+              <Alert variant="destructive" className="text-sm md:text-base">
+                <AlertTriangle className="h-4 w-4 md:h-5 md:w-5" />
+                <AlertTitle className="text-sm md:text-base">Lưu ý</AlertTitle>
+                <AlertDescription className="text-xs md:text-sm">
                   Đảm bảo xử lý lỗi phù hợp khi tích hợp API vào hệ thống của
                   bạn.
                 </AlertDescription>
@@ -370,7 +370,7 @@ while (true) {
         <DialogClose>
           <Button
             variant="outline"
-            className="w-full bg-foreground text-background"
+            className="w-full bg-foreground text-background text-sm md:text-base"
           >
             Đóng
           </Button>

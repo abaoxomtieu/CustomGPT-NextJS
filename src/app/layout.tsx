@@ -35,7 +35,8 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <AppSidebar />
-              <SidebarInset className="w-full">{children}</SidebarInset>
+              
+              <div className="w-full">{children}</div>
             </ThemeProvider>
           </SidebarProvider>
         </GoogleOAuthProvider>
