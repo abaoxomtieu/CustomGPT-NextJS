@@ -94,7 +94,8 @@ while (true) {
             <DialogTitle>Hướng Dẫn Tích Hợp API</DialogTitle>
           </div>
           <DialogDescription>
-            Tham khảo hướng dẫn chi tiết để tích hợp chatbot vào website/app của bạn.
+            Tham khảo hướng dẫn chi tiết để tích hợp chatbot vào website/app của
+            bạn.
           </DialogDescription>
         </DialogHeader>
 
@@ -106,7 +107,8 @@ while (true) {
                 <Info className="h-5 w-5" />
                 <AlertTitle>Tích Hợp API</AlertTitle>
                 <AlertDescription>
-                  Sử dụng API này để tích hợp chatbot vào website hoặc ứng dụng của bạn.
+                  Sử dụng API này để tích hợp chatbot vào website hoặc ứng dụng
+                  của bạn.
                 </AlertDescription>
               </Alert>
             </div>
@@ -124,7 +126,7 @@ while (true) {
               <div className="font-semibold text-base mb-1">Phương thức</div>
               <Badge
                 variant="outline"
-                className="bg-blue-100 text-blue-600 border-blue-200"
+                className="border-foreground"
               >
                 POST
               </Badge>
@@ -135,9 +137,7 @@ while (true) {
               <div className="font-semibold text-base mb-1">Headers</div>
               <div className="bg-muted px-4 py-2 rounded-lg font-mono text-sm w-full break-all max-w-full">
                 Authorization: Bearer{" "}
-                <span
-                  className="italic break-all block max-w-full overflow-x-auto whitespace-pre-wrap"
-                >
+                <span className="italic break-all block max-w-full overflow-x-auto whitespace-pre-wrap">
                   {token}
                 </span>
               </div>
@@ -149,18 +149,27 @@ while (true) {
                 <span>Dữ liệu gửi đi (FormData)</span>
                 <button
                   className="ml-2 p-1 rounded hover:bg-gray-100 text-xs flex items-center gap-1"
-                  onClick={() => handleCopy('formdata', JSON.stringify({
-                    query: "Tin nhắn của bạn ở đây",
-                    bot_id: botId,
-                    conversation_id: "id_cuộc_hội_thoại_tùy_chọn",
-                    model_name: "gemini-2.5-flash-preview-05-20",
-                    api_key: currentApiKey,
-                    attachs: [],
-                  }, null, 2))}
+                  onClick={() =>
+                    handleCopy(
+                      "formdata",
+                      JSON.stringify(
+                        {
+                          query: "Tin nhắn của bạn ở đây",
+                          bot_id: botId,
+                          conversation_id: "id_cuộc_hội_thoại_tùy_chọn",
+                          model_name: "gemini-2.5-flash-preview-05-20",
+                          api_key: currentApiKey,
+                          attachs: [],
+                        },
+                        null,
+                        2
+                      )
+                    )
+                  }
                   title="Copy"
                 >
                   <Copy className="w-4 h-4" />
-                  {copied === 'formdata' ? 'Đã copy!' : 'Copy'}
+                  {copied === "formdata" ? "Đã copy!" : "Copy"}
                 </button>
               </div>
               <pre className="bg-muted px-4 py-2 rounded-lg text-xs w-full overflow-x-auto break-words whitespace-pre-wrap ">
@@ -222,18 +231,28 @@ while (true) {
                 <span>Định dạng phản hồi</span>
                 <button
                   className="ml-2 p-1 rounded hover:bg-gray-100 text-xs flex items-center gap-1"
-                  onClick={() => handleCopy('response-message', JSON.stringify({
-                    type: "message",
-                    content: "Nội dung tin nhắn streaming...",
-                  }, null, 2))}
+                  onClick={() =>
+                    handleCopy(
+                      "response-message",
+                      JSON.stringify(
+                        {
+                          type: "message",
+                          content: "Nội dung tin nhắn streaming...",
+                        },
+                        null,
+                        2
+                      )
+                    )
+                  }
                   title="Copy"
                 >
                   <Copy className="w-4 h-4" />
-                  {copied === 'response-message' ? 'Đã copy!' : 'Copy'}
+                  {copied === "response-message" ? "Đã copy!" : "Copy"}
                 </button>
               </div>
               <div className="text-sm mb-2">
-                API trả về streaming dạng Server-Sent Events (SSE). Mỗi phản hồi là một JSON:
+                API trả về streaming dạng Server-Sent Events (SSE). Mỗi phản hồi
+                là một JSON:
               </div>
               <pre className="bg-muted px-4 py-2 rounded-lg text-xs w-full overflow-x-auto break-words whitespace-pre">
                 {JSON.stringify(
@@ -249,18 +268,27 @@ while (true) {
                 <span>Phản hồi cuối cùng:</span>
                 <button
                   className="ml-2 p-1 rounded hover:bg-gray-100 text-xs flex items-center gap-1"
-                  onClick={() => handleCopy('response-final', JSON.stringify({
-                    type: "final",
-                    content: {
-                      final_response: "Tin nhắn phản hồi hoàn chỉnh",
-                      selected_ids: [],
-                      selected_documents: [],
-                    },
-                  }, null, 2))}
+                  onClick={() =>
+                    handleCopy(
+                      "response-final",
+                      JSON.stringify(
+                        {
+                          type: "final",
+                          content: {
+                            final_response: "Tin nhắn phản hồi hoàn chỉnh",
+                            selected_ids: [],
+                            selected_documents: [],
+                          },
+                        },
+                        null,
+                        2
+                      )
+                    )
+                  }
                   title="Copy"
                 >
                   <Copy className="w-4 h-4" />
-                  {copied === 'response-final' ? 'Đã copy!' : 'Copy'}
+                  {copied === "response-final" ? "Đã copy!" : "Copy"}
                 </button>
               </div>
               <pre className="bg-muted px-4 py-2 rounded-lg text-xs w-full overflow-x-auto break-words whitespace-pre">
@@ -297,11 +325,11 @@ while (true) {
                   <div className="relative">
                     <button
                       className="absolute top-2 right-2 z-10 p-1 bg-background rounded hover:bg-gray-100 text-sm flex items-center gap-1"
-                      onClick={() => handleCopy('fetch', exampleCode)}
+                      onClick={() => handleCopy("fetch", exampleCode)}
                       title="Copy"
                     >
                       <Copy className="w-4 h-4" />
-                      {copied === 'fetch' ? 'Đã copy!' : 'Copy'}
+                      {copied === "fetch" ? "Đã copy!" : "Copy"}
                     </button>
                     <span className="break-all block max-w-full overflow-x-auto whitespace-pre-wrap text-pretty text-sm bg-muted p-2 rounded-lg">
                       {exampleCode}
@@ -312,11 +340,11 @@ while (true) {
                   <div className="relative">
                     <button
                       className="absolute top-2 right-2 z-10 p-1 bg-background rounded hover:bg-gray-100 text-sm flex items-center gap-1"
-                      onClick={() => handleCopy('curl', curlExample)}
+                      onClick={() => handleCopy("curl", curlExample)}
                       title="Copy"
                     >
                       <Copy className="w-4 h-4" />
-                      {copied === 'curl' ? 'Đã copy!' : 'Copy'}
+                      {copied === "curl" ? "Đã copy!" : "Copy"}
                     </button>
                     <span className="break-all block max-w-full overflow-x-auto whitespace-pre-wrap text-pretty text-sm bg-muted p-2 rounded-lg">
                       {curlExample}
@@ -332,14 +360,18 @@ while (true) {
                 <AlertTriangle className="h-5 w-5" />
                 <AlertTitle>Lưu ý</AlertTitle>
                 <AlertDescription>
-                  Đảm bảo xử lý lỗi phù hợp khi tích hợp API vào hệ thống của bạn.
+                  Đảm bảo xử lý lỗi phù hợp khi tích hợp API vào hệ thống của
+                  bạn.
                 </AlertDescription>
               </Alert>
             </div>
           </div>
         </ScrollArea>
         <DialogClose>
-          <Button variant="outline" className="w-full bg-foreground text-background">
+          <Button
+            variant="outline"
+            className="w-full bg-foreground text-background"
+          >
             Đóng
           </Button>
         </DialogClose>

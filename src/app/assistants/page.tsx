@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import ChatbotListClient from "./ChatbotListClient";
+import ChatbotListClient from "./chatbot-list-client";
 
 export const metadata: Metadata = {
   title: "Danh sách Chatbot | Abao Team",

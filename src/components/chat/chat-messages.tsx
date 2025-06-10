@@ -1,7 +1,11 @@
 import React from "react";
 import { Bot } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 // import RecommendationContainer, {
 //   travelGuideRecommendations,
@@ -25,7 +29,6 @@ interface StructuredMessage {
 interface ChatMessagesProps {
   messages: StructuredMessage[];
   streamingMessage: string;
-  thinkingText: string;
   selectedDocuments: any[];
   loadingChatbot: boolean;
   chatbotDetails: any;
@@ -36,7 +39,6 @@ interface ChatMessagesProps {
 const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   streamingMessage,
-  thinkingText,
   selectedDocuments,
   loadingChatbot,
   chatbotDetails,
@@ -88,18 +90,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
           })
         )}
 
-        {/* Thinking Text */}
-        {thinkingText && (
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-            <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-              <span className="animate-fade-in-out">
-                {thinkingText}
-              </span>
-            </div>
-          </div>
-        )}
-
         {/* Streaming Message */}
         {streamingMessage && (
           <ChatMessageAgent
@@ -110,24 +100,27 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
         {/* Source Documents */}
         {selectedDocuments.length > 0 && (
           <div className="mt-4">
-            <Collapsible open={isDocumentsOpen} onOpenChange={setIsDocumentsOpen}>
+            <Collapsible
+              open={isDocumentsOpen}
+              onOpenChange={setIsDocumentsOpen}
+            >
               <div className="bg-card/80 border border-border rounded-xl overflow-hidden">
                 <CollapsibleTrigger className="flex w-full items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors">
                   <span className="text-card-foreground font-medium">
                     Source Documents ({selectedDocuments.length})
                   </span>
-                  <ChevronDown 
+                  <ChevronDown
                     className={`h-4 w-4 transition-transform text-muted-foreground ${
-                      isDocumentsOpen ? 'rotate-180' : ''
-                    }`} 
+                      isDocumentsOpen ? "rotate-180" : ""
+                    }`}
                   />
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <div className="px-4 pb-4">
                     <div className="space-y-3">
                       {selectedDocuments.map((doc, index) => (
-                        <div 
-                          key={index} 
+                        <div
+                          key={index}
                           className="border-b border-border pb-3 last:border-b-0"
                         >
                           <div className="w-full">

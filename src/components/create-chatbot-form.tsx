@@ -122,7 +122,7 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-card rounded-xl shadow-lg p-8 h-full transition-all duration-300 flex flex-col gap-2 border border-border"
+      className="bg-card shadow-lg p-8 h-full transition-all duration-300 flex flex-col gap-2 border-r border-border"
       autoComplete="off"
     >
       <div className="flex items-center gap-3 mb-2">
@@ -130,7 +130,9 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
           <PenTool className="w-4 h-4 text-primary" />
         </div>
         <div>
-          <h2 className="text-md font-bold text-card-foreground">Tạo Chatbot Mới</h2>
+          <h2 className="text-md font-bold text-card-foreground">
+            Tạo Chatbot Mới
+          </h2>
         </div>
       </div>
 

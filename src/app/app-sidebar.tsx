@@ -91,10 +91,12 @@ export function AppSidebar() {
 
   return (
     <div className="relative">
-      <Sidebar className="min-w-[250px] bg-background border-r">
+      <Sidebar className="min-w-[250px] bg-background border-r ">
         <SidebarContent>
-          <SidebarHeader className="py-6 flex justify-center">
-            <Image src="/logo.svg" alt="logo" width={250} height={250} />
+          <SidebarHeader className="py-6 flex justify-center items-center">
+            <div className="flex items-center gap-2 justify-center">
+              <Image src="/logo.svg" alt="logo" width={150} height={150} />
+            </div>
             {userInfo && (
               <div className="flex items-center gap-2 mt-4">
                 <Image
@@ -193,22 +195,22 @@ export function AppSidebar() {
             </Button>
           )}
         </SidebarFooter>
-      </Sidebar>
 
-      {/* Custom Sidebar Trigger positioned at center right border */}
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={toggleSidebar}
-        className="absolute top-1/2 -translate-y-1/2 -right-4 z-20 h-8 w-8 rounded-full bg-background border shadow-md hover:shadow-lg transition-all duration-200"
-      >
-        {state === "expanded" ? (
-          <ChevronLeft className="h-4 w-4" />
-        ) : (
-          <ChevronRight className="h-4 w-4" />
-        )}
-        <span className="sr-only">Toggle Sidebar</span>
-      </Button>
+        {/* Custom Sidebar Trigger positioned at center right border */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={toggleSidebar}
+          className="absolute top-1/2 -translate-y-1/2 -right-4 z-20 h-8 w-8 rounded-full bg-background border shadow-md hover:shadow-lg transition-all duration-200"
+        >
+          {state === "expanded" ? (
+            <ChevronLeft className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="ml-4 h-4 w-4" />
+          )}
+          <span className="sr-only">Toggle Sidebar</span>
+        </Button>
+      </Sidebar>
     </div>
   );
 }

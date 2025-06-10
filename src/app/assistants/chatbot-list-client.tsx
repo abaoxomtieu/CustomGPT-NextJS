@@ -240,7 +240,7 @@ const ChatbotListClient: React.FC = () => {
           <Button
             variant="outline"
             onClick={handleCreateChatbot}
-            className="bg-background text-foreground border-none hover:bg-primary/90 flex"
+            className="bg-foreground text-background border-none hover:bg-foreground/80 hover:text-background flex"
             disabled={!isLogin}
           >
             <Plus className="mr-2" />

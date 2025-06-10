@@ -19,7 +19,7 @@ import {
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Upload, Pencil, Trash2, RotateCcw, X } from "lucide-react";
+import { Plus, Upload, Pencil, Trash2, RotateCcw, X, Loader2 } from "lucide-react";
 import DocumentUpload from "./document-upload";
 import { DocumentVectorStore } from "../../../types/document";
 import { documentService } from "@/services/documentService";
@@ -157,22 +157,29 @@ export default function DocumentManagementDialog({
               setEditingDocument(null);
               setContent("");
             }}
+            disabled={loading}
           >
             <Plus className="w-4 h-4 mr-2" /> Thêm tài liệu
           </Button>
           <Button
             variant="secondary"
             onClick={() => setIsFileUploadDialogVisible(true)}
+            disabled={loading}
           >
             <Upload className="w-4 h-4 mr-2" /> Upload file
           </Button>
           <Button variant="outline" onClick={fetchDocuments} disabled={loading}>
-            <RotateCcw className="w-4 h-4 mr-2" /> Tải lại
+            {loading ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <RotateCcw className="w-4 h-4 mr-2" />
+            )}
+            {loading ? "Đang tải..." : "Tải lại"}
           </Button>
           {selectedIds.length > 0 && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="destructive">
+                <Button variant="destructive" disabled={loading}>
                   <Trash2 className="w-4 h-4 mr-2" /> Xóa đã chọn
                 </Button>
               </PopoverTrigger>
@@ -187,7 +194,11 @@ export default function DocumentManagementDialog({
                       size="sm"
                       variant="secondary"
                       onClick={() => handleDelete(selectedIds)}
+                      disabled={loading}
                     >
+                      {loading ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : null}
                       Xác nhận
                     </Button>
                   </div>
@@ -201,14 +212,17 @@ export default function DocumentManagementDialog({
         <div className="flex-1 overflow-hidden flex flex-col">
           {loading ? (
             <div className="flex items-center justify-center h-32">
-              <div className="text-center">Đang tải...</div>
+              <div className="flex flex-col items-center gap-2">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <p className="text-muted-foreground">Đang tải dữ liệu...</p>
+              </div>
             </div>
           ) : (
             <>
               {/* Table */}
               <div className="flex-1 overflow-auto border rounded-md">
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-50 sticky top-0">
+                  <thead className="bg-secondary/50 sticky top-0">
                     <tr>
                       <th className="w-12 p-2 text-left">
                         <input
@@ -225,11 +239,18 @@ export default function DocumentManagementDialog({
                             }
                           }}
                           className="rounded"
+                          disabled={loading}
                         />
                       </th>
-                      <th className="p-2 text-left font-medium">ID</th>
-                      <th className="p-2 text-left font-medium">Nội dung</th>
-                      <th className="p-2 text-left font-medium">Hành động</th>
+                      <th className="p-2 text-left font-medium text-foreground">
+                        ID
+                      </th>
+                      <th className="p-2 text-left font-medium text-foreground">
+                        Nội dung
+                      </th>
+                      <th className="p-2 text-left font-medium text-foreground">
+                        Hành động
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -237,7 +258,7 @@ export default function DocumentManagementDialog({
                       <tr>
                         <td
                           colSpan={4}
-                          className="p-8 text-center text-gray-500"
+                          className="p-8 text-center text-muted-foreground"
                         >
                           Không có tài liệu nào
                         </td>
@@ -251,7 +272,7 @@ export default function DocumentManagementDialog({
                         .map((doc) => (
                           <tr
                             key={doc.id}
-                            className="border-b hover:bg-gray-50"
+                            className="border-b hover:bg-secondary/50"
                           >
                             <td className="p-2">
                               <input
@@ -267,11 +288,12 @@ export default function DocumentManagementDialog({
                                   }
                                 }}
                                 className="rounded"
+                                disabled={loading}
                               />
                             </td>
                             <td className="p-2">
                               <div
-                                className="truncate max-w-[120px] text-xs font-mono"
+                                className="truncate max-w-[120px] text-xs font-mono text-muted-foreground"
                                 title={doc.id}
                               >
                                 {doc.id.substring(0, 8)}...
@@ -280,12 +302,12 @@ export default function DocumentManagementDialog({
                             <td className="p-2">
                               <div className="max-w-[300px]">
                                 <div
-                                  className="truncate text-sm"
+                                  className="truncate text-sm text-foreground h-10"
                                   title={doc.page_content}
                                 >
                                   {doc.page_content}
                                 </div>
-                                <div className="text-xs text-gray-500 mt-1">
+                                <div className="text-xs text-muted-foreground mt-1">
                                   {doc.page_content.length} ký tự
                                 </div>
                               </div>
@@ -297,6 +319,7 @@ export default function DocumentManagementDialog({
                                   size="sm"
                                   onClick={() => showEditDialog(doc)}
                                   title="Chỉnh sửa"
+                                  disabled={loading}
                                 >
                                   <Pencil className="w-4 h-4" />
                                 </Button>
@@ -306,8 +329,9 @@ export default function DocumentManagementDialog({
                                       variant="ghost"
                                       size="sm"
                                       title="Xóa"
+                                      disabled={loading}
                                     >
-                                      <Trash2 className="w-4 h-4 text-red-500" />
+                                      <Trash2 className="w-4 h-4 text-destructive" />
                                     </Button>
                                   </PopoverTrigger>
                                   <PopoverContent
@@ -331,7 +355,11 @@ export default function DocumentManagementDialog({
                                           size="sm"
                                           variant="secondary"
                                           onClick={() => handleDelete([doc.id])}
+                                          disabled={loading}
                                         >
+                                          {loading ? (
+                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                          ) : null}
                                           Xác nhận
                                         </Button>
                                       </div>
@@ -350,7 +378,7 @@ export default function DocumentManagementDialog({
               {/* Pagination */}
               {documents.length > 0 && (
                 <div className="flex items-center justify-between mt-4 px-2">
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-muted-foreground">
                     Hiển thị{" "}
                     {Math.min(
                       (currentPage - 1) * pageSize + 1,
@@ -364,11 +392,11 @@ export default function DocumentManagementDialog({
                       variant="outline"
                       size="sm"
                       onClick={() => setCurrentPage(currentPage - 1)}
-                      disabled={currentPage === 1}
+                      disabled={currentPage === 1 || loading}
                     >
                       Trước
                     </Button>
-                    <span className="text-sm">
+                    <span className="text-sm text-foreground">
                       Trang {currentPage} /{" "}
                       {Math.ceil(documents.length / pageSize)}
                     </span>
@@ -377,7 +405,7 @@ export default function DocumentManagementDialog({
                       size="sm"
                       onClick={() => setCurrentPage(currentPage + 1)}
                       disabled={
-                        currentPage >= Math.ceil(documents.length / pageSize)
+                        currentPage >= Math.ceil(documents.length / pageSize) || loading
                       }
                     >
                       Sau
@@ -407,7 +435,7 @@ export default function DocumentManagementDialog({
                 <Textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  rows={12}
+                  className="h-2/3 p-2 overflow-x-hidden"
                   required
                 />
               </div>

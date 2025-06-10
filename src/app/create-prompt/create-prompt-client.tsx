@@ -282,7 +282,7 @@ const CreatePromptClient = () => {
         setAllowFirstRequest(false);
       } else {
         toast.warning(
-          "Bạn chưa thiết lập gemini apikey, đến trang Profile để thiết lập gemini apikey", 
+          "Bạn chưa thiết lập gemini apikey, đến trang Profile để thiết lập gemini apikey",
           {
             action: {
               label: "Thiết lập ngay",
@@ -336,7 +336,9 @@ const CreatePromptClient = () => {
       <div className="flex items-center justify-center h-screen bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Đang kiểm tra thông tin đăng nhập...</p>
+          <p className="text-muted-foreground">
+            Đang kiểm tra thông tin đăng nhập...
+          </p>
         </div>
       </div>
     );
@@ -373,7 +375,7 @@ const CreatePromptClient = () => {
                     </Badge>
                   </PopoverTrigger>
                   <PopoverContent className="bg-card border-border">
-                    <p className="text-card-foreground">Bạn chưa đăng nhập.{" "}</p>
+                    <p className="text-card-foreground">Bạn chưa đăng nhập. </p>
                     <Button
                       onClick={() => router.push("/login")}
                       size="sm"
@@ -428,7 +430,11 @@ const CreatePromptClient = () => {
                 </SelectTrigger>
                 <SelectContent className="bg-background border-border">
                   {modelOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value} className="text-foreground">
+                    <SelectItem
+                      key={opt.value}
+                      value={opt.value}
+                      className="text-foreground"
+                    >
                       {opt.label}
                     </SelectItem>
                   ))}
@@ -451,7 +457,7 @@ const CreatePromptClient = () => {
             <div
               className={`w-1/3 transition-all duration-300 ease-in-out overflow-hidden`}
             >
-              <div className="overflow-y-auto h-full border-r border-border">
+              <div className="overflow-y-auto h-full">
                 <CreateChatbotForm
                   onSuccess={() => {
                     toast.success("Tạo chatbot thành công!");
@@ -493,7 +499,8 @@ const CreatePromptClient = () => {
                           🤖 Trợ Lý Tạo Chatbot AI
                         </h2>
                         <p className="text-muted-foreground max-w-2xl">
-                          Trợ lý AI thông minh sẽ giúp bạn tạo ra một chatbot hoàn chỉnh theo yêu cầu của bạn.
+                          Trợ lý AI thông minh sẽ giúp bạn tạo ra một chatbot
+                          hoàn chỉnh theo yêu cầu của bạn.
                         </p>
                       </div>
 
@@ -504,8 +511,9 @@ const CreatePromptClient = () => {
                           </strong>
                         </p>
                         <p className="text-muted-foreground">
-                          Hãy trao đổi thông tin với trợ lý thông qua chat để thu thập đủ dữ liệu tạo chatbot mới.
-                          Trợ lý sẽ hướng dẫn bạn từng bước để có được một chatbot hoàn chỉnh.
+                          Hãy trao đổi thông tin với trợ lý thông qua chat để
+                          thu thập đủ dữ liệu tạo chatbot mới. Trợ lý sẽ hướng
+                          dẫn bạn từng bước để có được một chatbot hoàn chỉnh.
                         </p>
                       </div>
 
@@ -571,7 +579,8 @@ const CreatePromptClient = () => {
                               Bắt đầu ngay
                             </p>
                             <p className="text-muted-foreground text-sm mt-1">
-                              Hãy nhập câu hỏi hoặc mô tả chatbot bạn muốn tạo vào ô chat bên dưới!
+                              Hãy nhập câu hỏi hoặc mô tả chatbot bạn muốn tạo
+                              vào ô chat bên dưới!
                             </p>
                           </div>
                         </div>
@@ -591,10 +600,10 @@ const CreatePromptClient = () => {
                 )}
                 {/* Thinking Text with Animation */}
                 {thinkingText && (
-                  <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-                    <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
+                  <div className="fixed bottom-24 right-4 z-50">
+                    <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                      <span className="animate-fade-in-out">
+                      <span className="animate-fade-in-out text-sm">
                         {thinkingText}
                       </span>
                     </div>
@@ -610,7 +619,7 @@ const CreatePromptClient = () => {
               </div>
             </div>
             {/* Input Area */}
-            <div className="flex-none p-4 bg-card/90 backdrop-blur-sm border-t border-border">
+            <div className="flex-none p-4">
               <div className="w-full max-w-none">
                 <ChatInput
                   input={input}
@@ -633,7 +642,9 @@ const CreatePromptClient = () => {
         <Dialog open={clearModalVisible} onOpenChange={setClearModalVisible}>
           <DialogContent className="bg-card border-border">
             <DialogHeader>
-              <DialogTitle className="text-card-foreground">Xoá hội thoại</DialogTitle>
+              <DialogTitle className="text-card-foreground">
+                Xoá hội thoại
+              </DialogTitle>
               <DialogDescription className="text-muted-foreground">
                 Bạn có chắc chắn muốn xoá toàn bộ hội thoại không?
               </DialogDescription>
