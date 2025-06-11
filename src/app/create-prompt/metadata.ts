@@ -41,6 +41,6 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "/create-prompt",
+    canonical: "https://ai.ftes.vn/create-prompt",
   },
 };

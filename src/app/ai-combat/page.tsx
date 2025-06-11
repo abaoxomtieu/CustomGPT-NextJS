@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "/ai-combat",
+    canonical: "https://ai.ftes.vn/ai-combat",
   },
 };
 

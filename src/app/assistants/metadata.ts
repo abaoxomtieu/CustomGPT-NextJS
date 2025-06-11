@@ -41,6 +41,6 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "/assistants",
+    canonical: "https://ai.ftes.vn/assistants",
   },
 };

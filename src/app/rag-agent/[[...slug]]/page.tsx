@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "/rag-agent",
+    canonical: "https://ai.ftes.vn/rag-agent",
   },
 };
 

@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "/",
+    canonical: "https://ai.ftes.vn",
   },
   verification: {
     google: "your-google-site-verification",

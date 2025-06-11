@@ -37,6 +37,6 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: '/profile',
+    canonical: 'https://ai.ftes.vn/profile',
   },
 }; 
