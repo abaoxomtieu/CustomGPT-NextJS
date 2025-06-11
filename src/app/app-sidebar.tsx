@@ -121,59 +121,62 @@ export function AppSidebar() {
             <SidebarGroup>
               <SidebarGroupLabel>Ứng dụng</SidebarGroupLabel>
               <SidebarMenu>
-                {data.map((item) =>
-                  item.items ? (
-                    <Collapsible
-                      key={item.title}
-                      className="w-full"
-                      open={openItems[item.title]}
-                      onOpenChange={() => toggleItem(item.title)}
-                    >
-                      <CollapsibleTrigger asChild>
-                        <SidebarMenuButton className="flex items-center w-full px-3 py-2 gap-2 group hover:bg-sidebar-accent/60 transition rounded-2xl">
-                          <item.icon className="w-5 h-5 text-muted-foreground group-data-[state=open]:text-primary transition" />
-                          <span className="font-medium">{item.title}</span>
-                          {openItems[item.title] ? (
-                            <ChevronDown className="ml-auto w-4 h-4 transition-transform" />
-                          ) : (
-                            <ChevronRight className="ml-auto w-4 h-4 transition-transform" />
-                          )}
+                <ul className="flex w-full min-w-0 flex-col gap-1">
+                  {data.map((item) =>
+                    item.items ? (
+                      <SidebarMenuItem key={item.title}>
+                        <Collapsible
+                          className="w-full"
+                          open={openItems[item.title]}
+                          onOpenChange={() => toggleItem(item.title)}
+                        >
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuButton className="flex items-center w-full px-3 py-2 gap-2 group hover:bg-sidebar-accent/60 transition rounded-2xl">
+                              <item.icon className="w-5 h-5 text-muted-foreground group-data-[state=open]:text-primary transition" />
+                              <span className="font-medium">{item.title}</span>
+                              {openItems[item.title] ? (
+                                <ChevronDown className="ml-auto w-4 h-4 transition-transform" />
+                              ) : (
+                                <ChevronRight className="ml-auto w-4 h-4 transition-transform" />
+                              )}
+                            </SidebarMenuButton>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <ul className="ml-6 flex flex-col gap-1 mt-1">
+                              {item.items.map((subItem) => (
+                                <SidebarMenuItem key={subItem.title}>
+                                  <SidebarMenuButton
+                                    asChild
+                                    className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-accent transition"
+                                  >
+                                    <Link href={subItem.url}>
+                                      <subItem.icon className="w-4 h-4 text-muted-foreground" />
+                                      <span className="text-sm">
+                                        {subItem.title}
+                                      </span>
+                                    </Link>
+                                  </SidebarMenuButton>
+                                </SidebarMenuItem>
+                              ))}
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </SidebarMenuItem>
+                    ) : (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton
+                          asChild
+                          className="flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-sidebar-accent/60 transition"
+                        >
+                          <Link href={item.url}>
+                            <item.icon className="w-5 h-5 text-muted-foreground" />
+                            <span className="font-medium">{item.title}</span>
+                          </Link>
                         </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <div className="ml-6 flex flex-col gap-1 mt-1">
-                          {item.items.map((subItem) => (
-                            <SidebarMenuItem key={subItem.title}>
-                              <SidebarMenuButton
-                                asChild
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-accent transition"
-                              >
-                                <Link href={subItem.url}>
-                                  <subItem.icon className="w-4 h-4 text-muted-foreground" />
-                                  <span className="text-sm">
-                                    {subItem.title}
-                                  </span>
-                                </Link>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ) : (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton
-                        asChild
-                        className="flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-sidebar-accent/60 transition"
-                      >
-                        <Link href={item.url}>
-                          <item.icon className="w-5 h-5 text-muted-foreground" />
-                          <span className="font-medium">{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  )
-                )}
+                      </SidebarMenuItem>
+                    )
+                  )}
+                </ul>
               </SidebarMenu>
             </SidebarGroup>
             <SidebarGroup>
