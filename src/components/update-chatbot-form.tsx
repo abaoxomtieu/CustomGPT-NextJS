@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/popover";
 import {
   PenTool,
-  PenToolIcon,
   MailQuestion,
   MessageCircle,
   Sparkles,
@@ -23,8 +22,11 @@ import { ApiDomain } from "@/constant";
 import { getCookie } from "@/helpers/Cookies";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { fetchChatbotDetail } from "@/services/chatbotService";
 
-interface CreateChatbotFormProps {
+interface UpdateChatbotFormProps {
+  botId: string;
+  initialData?: any;
   onSuccess: () => void;
 }
 
@@ -49,7 +51,11 @@ const TOOL_LIST = [
   },
 ];
 
-const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
+const UpdateChatbotForm: React.FC<UpdateChatbotFormProps> = ({
+  botId,
+  initialData,
+  onSuccess,
+}) => {
   const [name, setName] = useState("");
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -58,12 +64,14 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
   const [popoverOpen, setPopoverOpen] = useState<string | null>(null);
   const router = useRouter();
 
-  const resetForm = () => {
-    setName("");
-    setPrompt("");
-    setSelectedTools([]);
-    setIsPublic(false);
-  };
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name || "");
+      setPrompt(initialData.prompt || "");
+      setSelectedTools(initialData.tools || []);
+      setIsPublic(initialData.public || false);
+    }
+  }, [initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,8 +85,8 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
     }
     try {
       setLoading(true);
-      const { data, status } = await axios.post(
-        `${ApiDomain}/ai/chatbots/create`,
+      const { data, status } = await axios.put(
+        `${ApiDomain}/ai/chatbots/${botId}`,
         {
           name,
           prompt,
@@ -92,9 +100,8 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
           },
         }
       );
-      if (status === 201) {
-        toast.success("Tạo chatbot thành công!");
-        resetForm();
+      if (status === 200) {
+        toast.success("Cập nhật chatbot thành công!");
         onSuccess();
         // setTimeout(() => {
         //   router.push("/assistants");
@@ -103,10 +110,12 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
         toast.error(data.error || "Lỗi không xác định.");
       }
     } catch (error: any) {
-      console.error("Lỗi tạo chatbot:", error);
+      console.error("Lỗi cập nhật chatbot:", error);
       toast.error(
         error?.response?.data?.error ||
-          (error instanceof Error ? error.message : "Tạo chatbot thất bại.")
+          (error instanceof Error
+            ? error.message
+            : "Cập nhật chatbot thất bại.")
       );
     } finally {
       setLoading(false);
@@ -131,7 +140,7 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
         </div>
         <div>
           <h2 className="text-md font-bold text-card-foreground">
-            Tạo Chatbot Mới
+            Cập Nhật Chatbot
           </h2>
         </div>
       </div>
@@ -167,9 +176,8 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Ví dụ: Bạn là một trợ lý thân thiện giúp đỡ khách hàng về sản phẩm."
-          rows={4}
           disabled={loading}
-          className="resize-none bg-background border-border focus:border-primary focus:ring-primary"
+          className="resize-none bg-background border-border focus:border-primary focus:ring-primary h-20 md:h-40 text-sm md:text-sm"
         />
       </div>
 
@@ -293,12 +301,12 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
           {loading ? (
             <div className="flex items-center justify-center gap-2">
               <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-              <span className="animate-pulse">Đang tạo chatbot...</span>
+              <span className="animate-pulse">Đang cập nhật chatbot...</span>
             </div>
           ) : (
             <div className="flex items-center justify-center gap-2">
               <Sparkles className="w-4 h-4" />
-              Tạo chatbot
+              Cập nhật chatbot
             </div>
           )}
         </Button>
@@ -307,4 +315,4 @@ const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({ onSuccess }) => {
   );
 };
 
-export default CreateChatbotForm;
+export default UpdateChatbotForm;

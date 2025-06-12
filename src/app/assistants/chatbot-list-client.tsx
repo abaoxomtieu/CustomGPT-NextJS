@@ -20,7 +20,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Bot, Globe, MessageCircle, Plus, Trash, Home } from "lucide-react";
+import { Bot, Globe, MessageCircle, Plus, Trash, Home, Edit } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BackToTopButton from "@/components/back-to-top";
@@ -171,6 +171,19 @@ const ChatbotListClient: React.FC = () => {
           <div className="text-base md:text-lg font-semibold flex items-center justify-between text-card-foreground">
             <span className="line-clamp-1">{bot.name}</span>
             <div className="flex items-center gap-1 md:gap-2">
+              {!isPublic && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-primary/20 border-none size-7 md:size-8"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(`/assistants/update/${bot.id}`);
+                  }}
+                >
+                  <Edit className="size-3.5 md:size-4" />
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="icon"

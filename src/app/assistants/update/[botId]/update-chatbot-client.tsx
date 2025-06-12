@@ -39,11 +39,12 @@ import ChatInput from "@/components/chat/chat-input";
 import { getCookie } from "@/helpers/Cookies";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiDomain } from "@/constant";
-import CreateChatbotForm from "@/components/create-chatbot-form";
 import ChatMessageAgent from "@/components/chat/chat-message-box";
 import { useParams, useRouter } from "next/navigation";
+import { fetchChatbotDetail } from "@/services/chatbotService";
+import UpdateChatbotForm from "@/components/update-chatbot-form";
 
-const CHAT_HISTORY_KEY = "custom_chatbot_chat_history";
+const CHAT_HISTORY_KEY = "update_chatbot_chat_history";
 
 interface StructuredMessage {
   role: string;
@@ -74,7 +75,11 @@ const thinkingMessages = [
   "Đang chuẩn bị phản hồi...",
 ];
 
-const CreatePromptClient = () => {
+interface UpdateChatbotClientProps {
+  botId: string;
+}
+
+const UpdateChatbotClient: React.FC<UpdateChatbotClientProps> = ({ botId }) => {
   // State
   const [messages, setMessages] = useState<StructuredMessage[]>([]);
   const [input, setInput] = useState("");
@@ -82,15 +87,7 @@ const CreatePromptClient = () => {
   const [streamingMessage, setStreamingMessage] = useState("");
   const [thinkingText, setThinkingText] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const params = useParams();
-  const slugArray = Array.isArray(params.slug)
-    ? params.slug
-    : [params.slug].filter(Boolean);
-  const conversationIdParams = slugArray[0] || "";
   const router = useRouter();
-  const [conversationId, setConversationId] = useState<string>(
-    (conversationIdParams as string) || ""
-  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [modelName, setModelName] = useState<string>(
@@ -110,21 +107,25 @@ const CreatePromptClient = () => {
   ];
   const [currentThinkingIndex, setCurrentThinkingIndex] = useState(0);
   const thinkingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [chatbotData, setChatbotData] = useState<any>(null);
 
   useEffect(() => {
-    const existingId = conversationIdParams;
-    if (existingId) {
-      setConversationId(existingId as string);
-    } else {
-      const newId = `conv_${Date.now()}`;
-      setConversationId(newId);
-    }
-  }, [conversationIdParams, router]);
+    const loadChatbotData = async () => {
+      try {
+        const data = await fetchChatbotDetail(botId);
+        setChatbotData(data);
+      } catch (error) {
+        console.error("Error loading chatbot data:", error);
+        toast.error("Không thể tải thông tin chatbot");
+      }
+    };
+    loadChatbotData();
+  }, [botId]);
 
   useEffect(() => {
-    const storageKey = `${CHAT_HISTORY_KEY}_${conversationId}`;
+    const storageKey = `${CHAT_HISTORY_KEY}_${botId}`;
     localStorage.setItem(storageKey, JSON.stringify(messages));
-  }, [messages, conversationId]);
+  }, [messages, botId]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -135,7 +136,7 @@ const CreatePromptClient = () => {
   }, [messages, streamingMessage, thinkingText]);
 
   useEffect(() => {
-    const storageKey = `${CHAT_HISTORY_KEY}_${conversationId}`;
+    const storageKey = `${CHAT_HISTORY_KEY}_${botId}`;
     const savedMessages = localStorage.getItem(storageKey);
     if (savedMessages) {
       try {
@@ -147,7 +148,7 @@ const CreatePromptClient = () => {
     } else {
       setMessages([]);
     }
-  }, [conversationId]);
+  }, [botId]);
 
   // Thinking text rotation effect
   useEffect(() => {
@@ -180,15 +181,15 @@ const CreatePromptClient = () => {
       setCurrentThinkingIndex(0);
       const formData = new FormData();
       formData.append("query", query);
+      formData.append("bot_id", botId);
       formData.append("model_name", modelName);
-      formData.append("bot_id", conversationId);
       if (getCookie("gemini_api_key"))
         formData.append("api_key", getCookie("gemini_api_key") || "");
       files.forEach((file) => {
         formData.append("attachs", file);
       });
 
-      const response = await fetch(ApiDomain + "/ai/custom_chatbot/stream", {
+      const response = await fetch(ApiDomain + "/ai/custom_chatbot/update/stream", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${getCookie("token")}`,
@@ -236,7 +237,7 @@ const CreatePromptClient = () => {
 
               if (data.content.done) {
                 setIsCompleted(true);
-                toast.success("Tạo chatbot thành công!");
+                toast.success("Cập nhật chatbot thành công!");
 
                 // setTimeout(() => {
                 //   router.push("/assistants");
@@ -353,7 +354,7 @@ const CreatePromptClient = () => {
             <div className="flex items-center gap-2 md:gap-3">
               <Button
                 variant="ghost"
-                onClick={() => router.push("/")}
+                onClick={() => router.push("/assistants")}
                 className="text-muted-foreground hover:text-foreground p-1 md:p-2"
               >
                 <ChevronLeft className="mr-1 w-4 h-4" /> 
@@ -362,10 +363,10 @@ const CreatePromptClient = () => {
               <Bot className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               <div>
                 <h1 className="text-lg md:text-xl font-semibold text-card-foreground">
-                  Trợ Lý Tạo Chatbot AI
+                  Cập Nhật Chatbot AI
                 </h1>
                 <p className="text-xs md:text-sm text-muted-foreground">
-                  Trợ lý AI giúp bạn tạo chatbot nhanh chóng và thông minh.
+                  Chỉnh sửa và cập nhật chatbot của bạn.
                 </p>
               </div>
               {!isLogin && (
@@ -454,15 +455,17 @@ const CreatePromptClient = () => {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-          {/* Left Side - Create Chatbot Form */}
+          {/* Left Side - Update Chatbot Form */}
           {!isFormCollapsed && (
             <div
               className={`w-full md:w-1/3 transition-all duration-300 ease-in-out overflow-hidden`}
             >
               <div className="overflow-y-auto h-full">
-                <CreateChatbotForm
+                <UpdateChatbotForm
+                  botId={botId}
+                  initialData={chatbotData}
                   onSuccess={() => {
-                    toast.success("Tạo chatbot thành công!");
+                    toast.success("Cập nhật chatbot thành công!");
                   }}
                 />
               </div>
@@ -498,11 +501,10 @@ const CreatePromptClient = () => {
                           <Bot className="text-3xl md:text-4xl text-primary" />
                         </div>
                         <h2 className="text-xl md:text-2xl font-bold text-card-foreground mb-2 md:mb-3">
-                          🤖 Trợ Lý Tạo Chatbot AI
+                          🤖 Cập Nhật Chatbot AI
                         </h2>
                         <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
-                          Trợ lý AI thông minh sẽ giúp bạn tạo ra một chatbot
-                          hoàn chỉnh theo yêu cầu của bạn.
+                          Trợ lý AI thông minh sẽ giúp bạn cập nhật và chỉnh sửa chatbot của bạn.
                         </p>
                       </div>
 
@@ -514,7 +516,7 @@ const CreatePromptClient = () => {
                         </p>
                         <p className="text-sm md:text-base text-muted-foreground">
                           Hãy trao đổi thông tin với trợ lý thông qua chat để
-                          thu thập đủ dữ liệu tạo chatbot mới. Trợ lý sẽ hướng
+                          cập nhật và chỉnh sửa chatbot của bạn. Trợ lý sẽ hướng
                           dẫn bạn từng bước để có được một chatbot hoàn chỉnh.
                         </p>
                       </div>
@@ -532,15 +534,15 @@ const CreatePromptClient = () => {
                           <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
                             <li className="flex items-center">
                               <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              Mô tả mục đích chatbot của bạn
+                              Mô tả các thay đổi bạn muốn thực hiện
                             </li>
                             <li className="flex items-center">
                               <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              Cung cấp thông tin về người dùng mục tiêu
+                              Cập nhật thông tin về người dùng mục tiêu
                             </li>
                             <li className="flex items-center">
                               <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              Chia sẻ yêu cầu tính năng cụ thể
+                              Thêm hoặc chỉnh sửa các tính năng
                             </li>
                           </ul>
                         </div>
@@ -551,21 +553,21 @@ const CreatePromptClient = () => {
                               <span className="text-lg md:text-xl">🎯</span>
                             </div>
                             <h3 className="font-semibold text-card-foreground text-base md:text-lg">
-                              Ví dụ tạo chatbot
+                              Ví dụ cập nhật
                             </h3>
                           </div>
                           <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
                             <li className="flex items-center">
                               <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              Chatbot hỗ trợ khách hàng
+                              Cập nhật prompt cho chatbot
                             </li>
                             <li className="flex items-center">
                               <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              Chatbot tư vấn sản phẩm
+                              Thêm tính năng mới
                             </li>
                             <li className="flex items-center">
                               <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              Chatbot giáo dục
+                              Chỉnh sửa cài đặt hiện có
                             </li>
                           </ul>
                         </div>
@@ -581,8 +583,7 @@ const CreatePromptClient = () => {
                               Bắt đầu ngay
                             </p>
                             <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                              Hãy nhập câu hỏi hoặc mô tả chatbot bạn muốn tạo
-                              vào ô chat bên dưới!
+                              Hãy nhập câu hỏi hoặc mô tả các thay đổi bạn muốn thực hiện vào ô chat bên dưới!
                             </p>
                           </div>
                         </div>
@@ -627,7 +628,7 @@ const CreatePromptClient = () => {
                 <ChatInput
                   input={input}
                   loading={loading || isCompleted}
-                  botId=""
+                  botId={botId}
                   onInputChange={setInput}
                   onSend={handleSend}
                   onKeyPress={handleKeyPress}
@@ -671,4 +672,4 @@ const CreatePromptClient = () => {
   );
 };
 
-export default CreatePromptClient;
+export default UpdateChatbotClient; 

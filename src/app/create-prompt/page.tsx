@@ -4,18 +4,22 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Tạo Chatbot AI với Trợ Lý AI | Tích Hợp Gemini API",
-  description: "Tạo chatbot AI thông minh với trợ lý AI, tích hợp Gemini API. Hỗ trợ tạo chatbot cho hỗ trợ khách hàng, tư vấn sản phẩm và giáo dục.",
-  keywords: "chatbot AI, trợ lý AI, Gemini API, tạo chatbot, AI assistant, chatbot hỗ trợ khách hàng",
+  description:
+    "Tạo chatbot AI thông minh với trợ lý AI, tích hợp Gemini API. Hỗ trợ tạo chatbot cho hỗ trợ khách hàng, tư vấn sản phẩm và giáo dục.",
+  keywords:
+    "chatbot AI, trợ lý AI, Gemini API, tạo chatbot, AI assistant, chatbot hỗ trợ khách hàng",
   openGraph: {
     title: "Tạo Chatbot AI với Trợ Lý AI | Tích Hợp Gemini API",
-    description: "Tạo chatbot AI thông minh với trợ lý AI, tích hợp Gemini API. Hỗ trợ tạo chatbot cho hỗ trợ khách hàng, tư vấn sản phẩm và giáo dục.",
+    description:
+      "Tạo chatbot AI thông minh với trợ lý AI, tích hợp Gemini API. Hỗ trợ tạo chatbot cho hỗ trợ khách hàng, tư vấn sản phẩm và giáo dục.",
     type: "website",
     locale: "vi_VN",
   },
   twitter: {
     card: "summary_large_image",
     title: "Tạo Chatbot AI với Trợ Lý AI | Tích Hợp Gemini API",
-    description: "Tạo chatbot AI thông minh với trợ lý AI, tích hợp Gemini API. Hỗ trợ tạo chatbot cho hỗ trợ khách hàng, tư vấn sản phẩm và giáo dục.",
+    description:
+      "Tạo chatbot AI thông minh với trợ lý AI, tích hợp Gemini API. Hỗ trợ tạo chatbot cho hỗ trợ khách hàng, tư vấn sản phẩm và giáo dục.",
   },
   robots: {
     index: true,
@@ -26,21 +30,22 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Trợ Lý Tạo Chatbot AI",
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": "Web",
-  "offers": {
+  name: "Trợ Lý Tạo Chatbot AI",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  offers: {
     "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "VND"
+    price: "0",
+    priceCurrency: "VND",
   },
-  "description": "Công cụ tạo chatbot AI thông minh với trợ lý AI, tích hợp Gemini API. Hỗ trợ tạo chatbot cho hỗ trợ khách hàng, tư vấn sản phẩm và giáo dục.",
-  "featureList": [
+  description:
+    "Công cụ tạo chatbot AI thông minh với trợ lý AI, tích hợp Gemini API. Hỗ trợ tạo chatbot cho hỗ trợ khách hàng, tư vấn sản phẩm và giáo dục.",
+  featureList: [
     "Tích hợp Gemini API",
     "Hỗ trợ tạo chatbot đa dạng",
     "Giao diện thân thiện",
-    "Tư vấn AI thông minh"
-  ]
+    "Tư vấn AI thông minh",
+  ],
 };
 
 export default function CreatePromptPage() {
