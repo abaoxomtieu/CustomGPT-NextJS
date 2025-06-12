@@ -163,10 +163,10 @@ const ChatbotListClient: React.FC = () => {
 
   const renderChatbotCard = (bot: Chatbot, isPublic: boolean = false) => (
     <Card
-      className="hover:scale-101 transition-all duration-300 border-border/50 bg-card"
+      className="hover:scale-101 transition-all duration-300 border-border/50 bg-card flex flex-col h-full"
       key={bot.id}
     >
-      <CardHeader className="p-4 md:p-6">
+      <CardHeader className="p-3 md:p-4">
         <CardTitle>
           <div className="text-base md:text-lg font-semibold flex items-center justify-between text-card-foreground">
             <span className="line-clamp-1">{bot.name}</span>
@@ -174,7 +174,7 @@ const ChatbotListClient: React.FC = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:bg-destructive/20 border-none size-8 md:size-9"
+                className="hover:bg-destructive/20 border-none size-7 md:size-8"
                 onClick={(e) => {
                   if (
                     window.confirm("Bạn có chắc chắn muốn xóa chatbot này?")
@@ -183,7 +183,7 @@ const ChatbotListClient: React.FC = () => {
                   }
                 }}
               >
-                <Trash className="size-4 md:size-5" />
+                <Trash className="size-3.5 md:size-4" />
               </Button>
             </div>
           </div>
@@ -202,16 +202,16 @@ const ChatbotListClient: React.FC = () => {
           </CardDescription>
         )}
       </CardHeader>
-      <CardContent className="p-4 md:p-6 pt-0 overflow-hidden">
+      <CardContent className="p-3 md:p-4 pt-0 flex-grow">
         <p className="line-clamp-3 text-xs md:text-sm text-muted-foreground">{bot.prompt}</p>
       </CardContent>
-      <CardFooter className="p-4 md:p-6 pt-0">
+      <CardFooter className="p-3 md:p-4 pt-0 mt-auto">
         <Button
           variant="ghost"
           onClick={() => handleChatbotClick(bot)}
-          className="w-full bg-foreground/20 text-foreground hover:bg-foreground/80 hover:text-background border-none text-sm md:text-base"
+          className="w-full bg-foreground/20 text-foreground hover:bg-foreground/80 hover:text-background border-none text-xs md:text-sm h-8 md:h-9"
         >
-          <MessageCircle className="mr-2 size-4 md:size-5" />
+          <MessageCircle className="mr-2 size-3.5 md:size-4" />
           Chat với chatbot
         </Button>
       </CardFooter>

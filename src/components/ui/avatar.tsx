@@ -47,7 +47,7 @@ function AvatarImage({
         height={96}
         onError={() => setError(true)}
         className="object-cover"
-      />
+    />
     </AvatarPrimitive.Image>
   )
 }

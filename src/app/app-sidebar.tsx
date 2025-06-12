@@ -98,130 +98,130 @@ export function AppSidebar() {
       {/* Desktop Sidebar */}
       <div className="hidden md:block relative">
         <Sidebar className="min-w-[250px] bg-background border-r h-screen">
-          <SidebarContent>
-            <SidebarHeader className="py-6 flex justify-center items-center">
-              <div className="flex items-center gap-2 justify-center">
-                <Image src="/logo.svg" alt="logo" width={150} height={150} />
+        <SidebarContent>
+          <SidebarHeader className="py-6 flex justify-center items-center">
+            <div className="flex items-center gap-2 justify-center">
+              <Image src="/logo.svg" alt="logo" width={150} height={150} />
+            </div>
+            {userInfo && (
+              <div className="flex items-center gap-2 mt-4">
+                <Image
+                  src={userInfo.picture}
+                  alt="avatar"
+                  width={32}
+                  height={32}
+                  className="rounded-full w-10 h-10"
+                />
+                <p className="text-sm text-muted-foreground font-bold">
+                  {userInfo.name}
+                </p>
               </div>
-              {userInfo && (
-                <div className="flex items-center gap-2 mt-4">
-                  <Image
-                    src={userInfo.picture}
-                    alt="avatar"
-                    width={32}
-                    height={32}
-                    className="rounded-full w-10 h-10"
-                  />
-                  <p className="text-sm text-muted-foreground font-bold">
-                    {userInfo.name}
-                  </p>
-                </div>
-              )}
-            </SidebarHeader>
-            <SidebarGroup>
-              <SidebarGroupLabel>Ứng dụng</SidebarGroupLabel>
-              <SidebarMenu>
+            )}
+          </SidebarHeader>
+          <SidebarGroup>
+            <SidebarGroupLabel>Ứng dụng</SidebarGroupLabel>
+            <SidebarMenu>
                 <ul className="flex w-full min-w-0 flex-col gap-1">
-                  {data.map((item) =>
-                    item.items ? (
+              {data.map((item) =>
+                item.items ? (
                       <SidebarMenuItem key={item.title}>
-                        <Collapsible
-                          className="w-full"
-                          open={openItems[item.title]}
-                          onOpenChange={() => toggleItem(item.title)}
-                        >
-                          <CollapsibleTrigger asChild>
-                            <SidebarMenuButton className="flex items-center w-full px-3 py-2 gap-2 group hover:bg-sidebar-accent/60 transition rounded-2xl">
-                              <item.icon className="w-5 h-5 text-muted-foreground group-data-[state=open]:text-primary transition" />
-                              <span className="font-medium">{item.title}</span>
-                              {openItems[item.title] ? (
-                                <ChevronDown className="ml-auto w-4 h-4 transition-transform" />
-                              ) : (
-                                <ChevronRight className="ml-auto w-4 h-4 transition-transform" />
-                              )}
-                            </SidebarMenuButton>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
+                  <Collapsible
+                    className="w-full"
+                    open={openItems[item.title]}
+                    onOpenChange={() => toggleItem(item.title)}
+                  >
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton className="flex items-center w-full px-3 py-2 gap-2 group hover:bg-sidebar-accent/60 transition rounded-2xl">
+                        <item.icon className="w-5 h-5 text-muted-foreground group-data-[state=open]:text-primary transition" />
+                        <span className="font-medium">{item.title}</span>
+                        {openItems[item.title] ? (
+                          <ChevronDown className="ml-auto w-4 h-4 transition-transform" />
+                        ) : (
+                          <ChevronRight className="ml-auto w-4 h-4 transition-transform" />
+                        )}
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
                             <ul className="ml-6 flex flex-col gap-1 mt-1">
-                              {item.items.map((subItem) => (
-                                <SidebarMenuItem key={subItem.title}>
-                                  <SidebarMenuButton
-                                    asChild
-                                    className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-accent transition"
-                                  >
-                                    <Link href={subItem.url}>
-                                      <subItem.icon className="w-4 h-4 text-muted-foreground" />
+                        {item.items.map((subItem) => (
+                          <SidebarMenuItem key={subItem.title}>
+                            <SidebarMenuButton
+                              asChild
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-accent transition"
+                            >
+                                    <Link href={subItem.url} className="flex items-center gap-2 w-full">
+                                <subItem.icon className="w-4 h-4 text-muted-foreground" />
                                       <span className="text-sm">
                                         {subItem.title}
                                       </span>
-                                    </Link>
-                                  </SidebarMenuButton>
-                                </SidebarMenuItem>
-                              ))}
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))}
                             </ul>
-                          </CollapsibleContent>
-                        </Collapsible>
+                    </CollapsibleContent>
+                  </Collapsible>
                       </SidebarMenuItem>
-                    ) : (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton
-                          asChild
-                          className="flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-sidebar-accent/60 transition"
-                        >
-                          <Link href={item.url}>
-                            <item.icon className="w-5 h-5 text-muted-foreground" />
-                            <span className="font-medium">{item.title}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    )
-                  )}
-                </ul>
-              </SidebarMenu>
-            </SidebarGroup>
-            <SidebarGroup>
-              {!isLogin && (
-                <SidebarGroupLabel>
-                  <LoginButton />
-                </SidebarGroupLabel>
+                ) : (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      className="flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-sidebar-accent/60 transition"
+                    >
+                          <Link href={item.url} className="flex items-center gap-2 w-full">
+                        <item.icon className="w-5 h-5 text-muted-foreground" />
+                        <span className="font-medium">{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
               )}
-            </SidebarGroup>
-          </SidebarContent>
-          <SidebarFooter className="flex flex-col items-center gap-3 p-4">
-            <ModeToggle />
-            {isLogin && (
-              <Button
-                variant="outline"
-                className="w-full flex justify-between items-center gap-2"
-                onClick={() => {
-                  deleteCookie("token");
-                  router.push("/");
-                  setUserInfo(null);
-                  setIslogin(false);
-                }}
-              >
-                Đăng xuất
-                <LogOut className="w-4 h-4 ml-1" />
-              </Button>
+                </ul>
+            </SidebarMenu>
+          </SidebarGroup>
+          <SidebarGroup>
+            {!isLogin && (
+              <SidebarGroupLabel>
+                <LoginButton />
+              </SidebarGroupLabel>
             )}
-          </SidebarFooter>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter className="flex flex-col items-center gap-3 p-4">
+          <ModeToggle />
+          {isLogin && (
+            <Button
+              variant="outline"
+              className="w-full flex justify-between items-center gap-2"
+              onClick={() => {
+                deleteCookie("token");
+                router.push("/");
+                setUserInfo(null);
+                setIslogin(false);
+              }}
+            >
+              Đăng xuất
+              <LogOut className="w-4 h-4 ml-1" />
+            </Button>
+          )}
+        </SidebarFooter>
 
-          {/* Custom Sidebar Trigger positioned at center right border */}
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={toggleSidebar}
-            className="absolute top-1/2 -translate-y-1/2 -right-4 z-20 h-8 w-8 rounded-full bg-background border shadow-md hover:shadow-lg transition-all duration-200"
-          >
-            {state === "expanded" ? (
-              <ChevronLeft className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="ml-4 h-4 w-4" />
-            )}
-            <span className="sr-only">Toggle Sidebar</span>
-          </Button>
-        </Sidebar>
-      </div>
+        {/* Custom Sidebar Trigger positioned at center right border */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={toggleSidebar}
+          className="absolute top-1/2 -translate-y-1/2 -right-4 z-20 h-8 w-8 rounded-full bg-background border shadow-md hover:shadow-lg transition-all duration-200"
+        >
+          {state === "expanded" ? (
+            <ChevronLeft className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="ml-4 h-4 w-4" />
+          )}
+          <span className="sr-only">Toggle Sidebar</span>
+        </Button>
+      </Sidebar>
+    </div>
 
       {/* Mobile Bottom Navigation - Only show on home and profile pages */}
       {shouldShowMobileNav && (

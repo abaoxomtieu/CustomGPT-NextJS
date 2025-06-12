@@ -1,14 +1,18 @@
 "use client";
 import React, { useRef, useMemo } from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Bot, Sword, Flame, Zap, StopCircle, Home, PlayCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Bot,
+  Sword,
+  Flame,
+  Zap,
+  StopCircle,
+  Home,
+  PlayCircle,
+} from "lucide-react";
 import CombatSelect from "./combat-select";
 import { modelOptions } from "./combat-selection";
 import { cn } from "@/lib/utils";
@@ -53,19 +57,29 @@ const CombatArena: React.FC<CombatArenaProps> = ({
   const router = useRouter();
 
   // Memoize background styles to prevent unnecessary re-renders
-  const backgroundStyles = useMemo(() => ({
-    background: "linear-gradient(120deg, #18112b 0%, #2a183b 100%)",
-  }), []);
+  const backgroundStyles = useMemo(
+    () => ({
+      background: "linear-gradient(120deg, #18112b 0%, #2a183b 100%)",
+    }),
+    []
+  );
 
-  const borderStyles = useMemo(() => ({
-    border: "4px solid",
-    borderImage: "linear-gradient(90deg,#fde047 0%,#f43f5e 50%,#a21caf 100%) 1",
-    opacity: 0.3,
-  }), []);
+  const borderStyles = useMemo(
+    () => ({
+      border: "4px solid",
+      borderImage:
+        "linear-gradient(90deg,#fde047 0%,#f43f5e 50%,#a21caf 100%) 1",
+      opacity: 0.3,
+    }),
+    []
+  );
 
-  const headerBorderStyles = useMemo(() => ({
-    borderImage: "linear-gradient(90deg,#f43f5e 0%,#fde047 100%) 1",
-  }), []);
+  const headerBorderStyles = useMemo(
+    () => ({
+      borderImage: "linear-gradient(90deg,#f43f5e 0%,#fde047 100%) 1",
+    }),
+    []
+  );
 
   // Calculate current conversation count
   const currentConversationCount = messages.length / 2; // Each conversation has 2 messages (one from each bot)
@@ -79,10 +93,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
   };
 
   return (
-    <div
-      className="h-screen flex flex-col relative"
-      style={backgroundStyles}
-    >
+    <div className="h-screen flex flex-col relative" style={backgroundStyles}>
       {/* Arena Background Effects - Reduced number of effects */}
       <div className="absolute inset-0 opacity-5 pointer-events-none z-0">
         {/* Reduced number of effects and simplified animations */}
@@ -98,7 +109,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
       />
 
       {/* Header */}
-      <div 
+      <div
         className="bg-black/80 backdrop-blur-lg shadow-xl border-b-4"
         style={headerBorderStyles}
       >
@@ -135,7 +146,9 @@ const CombatArena: React.FC<CombatArenaProps> = ({
                 <div className="absolute inset-0 bg-blue-500/10 rounded-lg blur-md pointer-events-none"></div>
                 <div className="flex items-center justify-center mb-1 md:mb-2 z-10 relative">
                   <Bot className="text-cyan-300 w-5 h-5 md:w-7 md:h-7 mr-1 md:mr-2" />
-                  <span className="text-cyan-300 font-bold text-sm md:text-base">{leftBot?.name}</span>
+                  <span className="text-cyan-300 font-bold text-sm md:text-base">
+                    {leftBot?.name}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2 z-10 relative">
                   <Badge className="px-2 md:px-4 py-0.5 md:py-1 text-xs md:text-sm font-bold border border-cyan-400 bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
@@ -164,7 +177,9 @@ const CombatArena: React.FC<CombatArenaProps> = ({
                 <div className="absolute inset-0 bg-red-500/10 rounded-lg blur-md pointer-events-none"></div>
                 <div className="flex items-center justify-center mb-1 md:mb-2 z-10 relative">
                   <Bot className="text-red-300 w-5 h-5 md:w-7 md:h-7 mr-1 md:mr-2" />
-                  <span className="text-red-300 font-bold text-sm md:text-base">{rightBot?.name}</span>
+                  <span className="text-red-300 font-bold text-sm md:text-base">
+                    {rightBot?.name}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2 z-10 relative">
                   <Badge className="px-2 md:px-4 py-0.5 md:py-1 text-xs md:text-sm font-bold border border-red-400 bg-gradient-to-r from-red-600 to-pink-500 text-white">
@@ -220,7 +235,8 @@ const CombatArena: React.FC<CombatArenaProps> = ({
         {/* Conversation Limit Warning */}
         {canContinue && !isConversationActive && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-yellow-400/30 text-yellow-400 text-sm md:text-base">
-            Reached maximum {MAX_CONVERSATIONS} conversations. Click Continue to start a new round.
+            Reached maximum {MAX_CONVERSATIONS} conversations. Click Continue to
+            start a new round.
           </div>
         )}
       </div>
