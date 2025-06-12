@@ -121,7 +121,7 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
   };
 
   // Sender name
-  const senderName = isAI ? "AI trả lời" : userInfo?.name;
+  const senderName = isAI ? "" : userInfo?.name;
 
   return (
     <div className="flex justify-start py-2">

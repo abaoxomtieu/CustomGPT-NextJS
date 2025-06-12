@@ -16,13 +16,19 @@ import {
   Globe,
   FileText,
   Code,
+  Maximize2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ApiDomain } from "@/constant";
 import { getCookie } from "@/helpers/Cookies";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { fetchChatbotDetail } from "@/services/chatbotService";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface UpdateChatbotFormProps {
   botId: string;
@@ -62,6 +68,7 @@ const UpdateChatbotForm: React.FC<UpdateChatbotFormProps> = ({
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const [isPublic, setIsPublic] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState<string | null>(null);
+  const [isPromptDialogOpen, setIsPromptDialogOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -165,12 +172,24 @@ const UpdateChatbotForm: React.FC<UpdateChatbotFormProps> = ({
 
       {/* Prompt */}
       <div className="space-y-2">
-        <label
-          className="font-medium block text-card-foreground text-sm"
-          htmlFor="prompt"
-        >
-          Lời nhắc (prompt) cho Chatbot
-        </label>
+        <div className="flex items-center justify-between">
+          <label
+            className="font-medium block text-card-foreground text-sm"
+            htmlFor="prompt"
+          >
+            Lời nhắc (prompt) cho Chatbot
+          </label>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsPromptDialogOpen(true)}
+            className="text-muted-foreground hover:text-primary"
+          >
+            <Maximize2 className="w-4 h-4 mr-1" />
+            Mở rộng
+          </Button>
+        </div>
         <Textarea
           id="prompt"
           value={prompt}
@@ -180,6 +199,35 @@ const UpdateChatbotForm: React.FC<UpdateChatbotFormProps> = ({
           className="resize-none bg-background border-border focus:border-primary focus:ring-primary h-20 md:h-40 text-sm md:text-sm"
         />
       </div>
+
+      {/* Prompt Dialog */}
+      <Dialog open={isPromptDialogOpen} onOpenChange={setIsPromptDialogOpen}>
+        <DialogContent className="max-w-4xl h-[80vh] bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-card-foreground text-lg font-semibold">
+              Chỉnh sửa lời nhắc (prompt)
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-hidden flex flex-col">
+            <Textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Ví dụ: Bạn là một trợ lý thân thiện giúp đỡ khách hàng về sản phẩm."
+              disabled={loading}
+              className="flex-1 resize-none bg-background border-border focus:border-primary focus:ring-primary text-sm"
+            />
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsPromptDialogOpen(false)}
+                className="border-border"
+              >
+                Đóng
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Công khai */}
       <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-lg border border-border">

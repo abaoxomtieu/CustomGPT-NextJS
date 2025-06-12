@@ -12,6 +12,7 @@ interface ChatInputProps {
   onSelectedFilesChange: (files: File[]) => void;
   inputRef?: React.RefObject<HTMLTextAreaElement>;
   disabled?: boolean;
+  color?: string;
 }
 
 const MAX_TOTAL_SIZE = 50 * 1024 * 1024; // 50MB in bytes
@@ -26,10 +27,11 @@ const ChatInput: React.FC<ChatInputProps> = ({
   onSelectedFilesChange,
   inputRef,
   disabled = false,
+  color = "bg-background",
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string>("");
-
+  console.log("color", color);
   const calculateTotalSize = (files: File[]): number => {
     return files.reduce((total, file) => total + file.size, 0);
   };
@@ -54,7 +56,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="flex-none p-2 md:p-4 bg-background backdrop-blur-sm">
+    <div className={`flex-none p-2 md:p-4 ${color} backdrop-blur-sm`}>
       <div className="max-w-4xl mx-auto">
         <div className="relative rounded-xl md:rounded-2xl border border-gray-200">
           {error && (
