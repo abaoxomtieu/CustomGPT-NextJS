@@ -83,6 +83,14 @@ export function AppSidebar() {
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
   const { state, toggleSidebar } = useSidebar();
 
+  // Check if current page should hide sidebar
+  const shouldHideSidebar = pathname.startsWith("/assistants/editor") || pathname.startsWith("/rag-agent");
+
+  // If we should hide the sidebar, return null
+  if (shouldHideSidebar) {
+    return null;
+  }
+
   const toggleItem = (title: string) => {
     setOpenItems((prev) => ({
       ...prev,

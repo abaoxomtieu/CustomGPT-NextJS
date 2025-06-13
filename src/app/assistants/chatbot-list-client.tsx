@@ -87,7 +87,7 @@ const ChatbotListClient: React.FC = () => {
       toast.error("Vui lòng đăng nhập để tạo chatbot");
       return;
     }
-    router.push("/create-prompt");
+    router.push("/assistants/editor");
   };
 
   const handleChatbotClick = (chatbot: Chatbot) => {
@@ -178,7 +178,7 @@ const ChatbotListClient: React.FC = () => {
                   className="hover:bg-primary/20 border-none size-7 md:size-8"
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/assistants/update/${bot.id}`);
+                    router.push(`/assistants/editor/${bot.id}`);
                   }}
                 >
                   <Edit className="size-3.5 md:size-4" />

@@ -64,19 +64,6 @@ interface StructuredMessage {
   type: "user" | "ai";
 }
 
-const fadeInOut = {
-  animation: "fadeInOut 2s ease-in-out infinite",
-};
-
-const styles = `
-@keyframes fadeInOut {
-  0% { opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
-}
-`;
-
 const thinkingMessages = [
   "Đang phân tích câu hỏi của bạn...",
   "Đang tìm kiếm thông tin phù hợp...",
@@ -88,9 +75,13 @@ const thinkingMessages = [
 
 interface UpdateChatbotClientProps {
   botId: string;
+  notFounded: boolean;
 }
 
-const UpdateChatbotClient: React.FC<UpdateChatbotClientProps> = ({ botId }) => {
+const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
+  botId,
+  notFounded,
+}) => {
   // State
   const [messages, setMessages] = useState<StructuredMessage[]>([]);
   const [input, setInput] = useState("");
@@ -126,18 +117,26 @@ const UpdateChatbotClient: React.FC<UpdateChatbotClientProps> = ({ botId }) => {
   const [ragSelectedDocuments, setRagSelectedDocuments] = useState<any[]>([]);
   const ragMessagesEndRef = useRef<HTMLDivElement>(null!);
   const ragInputRef = useRef<HTMLTextAreaElement>(null!);
+  const [isLoadingChatbot, setIsLoadingChatbot] = useState(true);
 
   useEffect(() => {
     const loadChatbotData = async () => {
       try {
+        setIsLoadingChatbot(true);
         const data = await fetchChatbotDetail(botId);
         setChatbotData(data);
       } catch (error) {
         console.error("Error loading chatbot data:", error);
         toast.error("Không thể tải thông tin chatbot");
+      } finally {
+        setIsLoadingChatbot(false);
       }
     };
-    loadChatbotData();
+    if (!notFounded) {
+      loadChatbotData();
+    } else {
+      setIsLoadingChatbot(false);
+    }
   }, [botId]);
 
   useEffect(() => {
@@ -455,13 +454,15 @@ const UpdateChatbotClient: React.FC<UpdateChatbotClientProps> = ({ botId }) => {
     await handleRagStreamingChat(payload);
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingChatbot) {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">
-            Đang kiểm tra thông tin đăng nhập...
+            {isLoading
+              ? "Đang kiểm tra thông tin đăng nhập..."
+              : "Đang tải thông tin chatbot..."}
           </p>
         </div>
       </div>
@@ -472,7 +473,7 @@ const UpdateChatbotClient: React.FC<UpdateChatbotClientProps> = ({ botId }) => {
     <>
       <div className="flex flex-col h-[100dvh] bg-background">
         {/* Header */}
-        <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-2 md:py-4">
+        <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-0">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center px-4 gap-2 md:gap-0">
             <div className="flex items-center gap-2 md:gap-3">
               <Button
@@ -867,4 +868,4 @@ const UpdateChatbotClient: React.FC<UpdateChatbotClientProps> = ({ botId }) => {
   );
 };
 
-export default UpdateChatbotClient;
+export default EditorChatbotClient;
