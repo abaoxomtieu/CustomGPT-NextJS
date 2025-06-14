@@ -2,10 +2,9 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import EditorChatbotClient from "./editor-chatbot-client";
 import { notFound } from "next/navigation";
+import { generateMongoId } from "@/helpers/Cookies";
 
-export async function generateMetadata({
-  params,
-}: any): Promise<Metadata> {
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   const botId = params.slug?.[0];
   const isNewBot = !botId;
 
@@ -144,17 +143,16 @@ function LoadingFallback() {
 }
 
 export default function EditorPage({ params }: any) {
-  const botId = params.slug?.[0];
+  let botId = params.slug?.[0];
   const notFounded = !botId;
 
-  // Validate botId format if provided
-  if (botId && !/^[a-fA-F0-9]{24}$/.test(botId)) {
-    notFound();
+  if (notFounded) {
+    botId = generateMongoId();
   }
 
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <EditorChatbotClient botId={botId || "new"} notFounded={notFounded} />
+      <EditorChatbotClient botId={botId} notFounded={notFounded} />
     </Suspense>
   );
 }
