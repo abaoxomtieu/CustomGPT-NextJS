@@ -7,6 +7,11 @@ export const metadata: Metadata = {
     "Khám phá thế giới AI với AI FTES - Nền tảng học tập và thực hành AI dành cho sinh viên. Tạo chatbot, tham gia đấu trường AI và phát triển kỹ năng của bạn.",
   keywords:
     "AI FTES, Trí tuệ nhân tạo, Chatbot, Đấu trường AI, Học AI, Thực hành AI, Sinh viên AI",
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
   openGraph: {
     title: "AI FTES - Nền tảng AI cho sinh viên",
     description:

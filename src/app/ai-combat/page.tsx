@@ -1,25 +1,39 @@
-import { Metadata } from "next";
 import AICombatClient from "./ai-combat-client";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AI Combat Arena - Đấu trường AI",
+  title: "Đấu Trường AI - AI FTES",
   description:
-    "Khám phá đấu trường AI nơi các chatbot thông minh tranh tài. Xem các cuộc đối thoại thú vị giữa các AI và tìm hiểu về khả năng của chúng.",
+    "Tham gia Đấu Trường AI của AI FTES - Nơi các mô hình AI tranh tài và tranh luận. Khám phá khả năng của AI trong việc đối thoại và phân tích.",
   keywords:
-    "AI Combat, Chatbot Arena, AI đối thoại, Trí tuệ nhân tạo, Chatbot battle, AI competition",
+    "Đấu Trường AI, AI Combat, Tranh luận AI, AI FTES, Đối thoại AI, Phân tích AI",
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
   openGraph: {
-    title: "AI Combat Arena - Đấu trường AI",
+    title: "Đấu Trường AI - AI FTES",
     description:
-      "Khám phá đấu trường AI nơi các chatbot thông minh tranh tài. Xem các cuộc đối thoại thú vị giữa các AI và tìm hiểu về khả năng của chúng.",
+      "Tham gia Đấu Trường AI của AI FTES - Nơi các mô hình AI tranh tài và tranh luận. Khám phá khả năng của AI trong việc đối thoại và phân tích.",
     type: "website",
     locale: "vi_VN",
-    siteName: "AI Combat Arena",
+    siteName: "AI FTES",
+    images: [
+      {
+        url: "/logo.svg",
+        width: 1200,
+        height: 630,
+        alt: "AI FTES Combat Arena",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Combat Arena - Đấu trường AI",
+    title: "Đấu Trường AI - AI FTES",
     description:
-      "Khám phá đấu trường AI nơi các chatbot thông minh tranh tài. Xem các cuộc đối thoại thú vị giữa các AI và tìm hiểu về khả năng của chúng.",
+      "Tham gia Đấu Trường AI của AI FTES - Nơi các mô hình AI tranh tài và tranh luận. Khám phá khả năng của AI trong việc đối thoại và phân tích.",
+    images: ["/logo.svg"],
   },
   robots: {
     index: true,

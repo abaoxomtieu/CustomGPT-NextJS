@@ -1,11 +1,56 @@
-import { Metadata } from "next";
 import ChatbotListClient from "./chatbot-list-client";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Danh sách Chatbot | Abao Team",
+  title: "Danh sách Chatbot - AI FTES",
   description:
-    "Quản lý và tương tác với các chatbot của bạn tại Abao Team. Tìm kiếm, tạo mới và khám phá chatbot công khai.",
+    "Khám phá bộ sưu tập chatbot AI đa dạng từ AI FTES. Tương tác với các chatbot thông minh được thiết kế cho nhiều mục đích khác nhau.",
+  keywords:
+    "Chatbot AI, Danh sách chatbot, AI FTES, Chatbot thông minh, Tương tác AI, Chatbot đa năng",
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
+  openGraph: {
+    title: "Danh sách Chatbot - AI FTES",
+    description:
+      "Khám phá bộ sưu tập chatbot AI đa dạng từ AI FTES. Tương tác với các chatbot thông minh được thiết kế cho nhiều mục đích khác nhau.",
+    type: "website",
+    locale: "vi_VN",
+    siteName: "AI FTES",
+    images: [
+      {
+        url: "/logo.svg",
+        width: 1200,
+        height: 630,
+        alt: "AI FTES Assistants",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Danh sách Chatbot - AI FTES",
+    description:
+      "Khám phá bộ sưu tập chatbot AI đa dạng từ AI FTES. Tương tác với các chatbot thông minh được thiết kế cho nhiều mục đích khác nhau.",
+    images: ["/logo.svg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://ai.ftes.vn/assistants",
+  },
 };
+
 
 export default function ChatbotListPage() {
   return (

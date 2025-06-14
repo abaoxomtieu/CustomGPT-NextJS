@@ -6,6 +6,11 @@ export const metadata: Metadata = {
     "Khám phá sức mạnh của RAG Agent với AI FTES. Tương tác với AI thông minh được trang bị khả năng truy xuất và tạo lập thông tin nâng cao.",
   keywords:
     "RAG Agent, AI thông minh, Truy xuất thông tin, AI FTES, Chatbot nâng cao, AI tương tác",
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
   openGraph: {
     title: "RAG Agent - AI FTES",
     description:
