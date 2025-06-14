@@ -26,3 +26,13 @@ jobs:
           context: .
           push: true
           tags: hotonbao/ai-ftes-fe:latest
+
+      - name: SSH into server and run deploy script
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: root
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            chmod +x run_ai_ftes_fe.sh
+            ./run_ai_ftes_fe.sh
