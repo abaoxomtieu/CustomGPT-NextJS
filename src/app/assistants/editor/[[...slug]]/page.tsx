@@ -3,15 +3,9 @@ import { Suspense } from "react";
 import EditorChatbotClient from "./editor-chatbot-client";
 import { notFound } from "next/navigation";
 
-interface PageProps {
-  params: {
-    slug?: string[];
-  };
-}
-
 export async function generateMetadata({
   params,
-}: PageProps): Promise<Metadata> {
+}: any): Promise<Metadata> {
   const botId = params.slug?.[0];
   const isNewBot = !botId;
 
