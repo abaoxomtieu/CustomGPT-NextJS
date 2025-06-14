@@ -9,14 +9,17 @@ interface PageProps {
   };
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const botId = params.slug?.[0];
   const isNewBot = !botId;
 
   if (isNewBot) {
     return {
       title: "Tạo Chatbot AI Mới | AI FTES",
-      description: "Tạo chatbot AI thông minh với công nghệ Gemini. Tùy chỉnh prompt, cấu hình tools và triển khai chatbot của bạn một cách dễ dàng.",
+      description:
+        "Tạo chatbot AI thông minh với công nghệ Gemini. Tùy chỉnh prompt, cấu hình tools và triển khai chatbot của bạn một cách dễ dàng.",
       keywords: [
         "tạo chatbot",
         "AI chatbot",
@@ -25,11 +28,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         "AI assistant",
         "custom chatbot",
         "AI FTES",
-        "trí tuệ nhân tạo"
+        "trí tuệ nhân tạo",
       ],
       openGraph: {
         title: "Tạo Chatbot AI Mới | AI FTES",
-        description: "Tạo chatbot AI thông minh với công nghệ Gemini. Tùy chỉnh prompt, cấu hình tools và triển khai chatbot của bạn một cách dễ dàng.",
+        description:
+          "Tạo chatbot AI thông minh với công nghệ Gemini. Tùy chỉnh prompt, cấu hình tools và triển khai chatbot của bạn một cách dễ dàng.",
         type: "website",
         locale: "vi_VN",
         siteName: "AI FTES",
@@ -37,7 +41,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       twitter: {
         card: "summary_large_image",
         title: "Tạo Chatbot AI Mới | AI FTES",
-        description: "Tạo chatbot AI thông minh với công nghệ Gemini. Tùy chỉnh prompt, cấu hình tools và triển khai chatbot của bạn một cách dễ dàng.",
+        description:
+          "Tạo chatbot AI thông minh với công nghệ Gemini. Tùy chỉnh prompt, cấu hình tools và triển khai chatbot của bạn một cách dễ dàng.",
       },
       robots: {
         index: true,
@@ -58,7 +63,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: "Cập Nhật Chatbot AI | AI FTES",
-    description: "Chỉnh sửa và cập nhật chatbot AI của bạn. Tối ưu prompt, cấu hình tools và cải thiện hiệu suất chatbot với công nghệ Gemini.",
+    description:
+      "Chỉnh sửa và cập nhật chatbot AI của bạn. Tối ưu prompt, cấu hình tools và cải thiện hiệu suất chatbot với công nghệ Gemini.",
     keywords: [
       "cập nhật chatbot",
       "chỉnh sửa chatbot",
@@ -67,11 +73,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       "chatbot management",
       "AI assistant",
       "AI FTES",
-      "tối ưu chatbot"
+      "tối ưu chatbot",
     ],
     openGraph: {
       title: "Cập Nhật Chatbot AI | AI FTES",
-      description: "Chỉnh sửa và cập nhật chatbot AI của bạn. Tối ưu prompt, cấu hình tools và cải thiện hiệu suất chatbot với công nghệ Gemini.",
+      description:
+        "Chỉnh sửa và cập nhật chatbot AI của bạn. Tối ưu prompt, cấu hình tools và cải thiện hiệu suất chatbot với công nghệ Gemini.",
       type: "website",
       locale: "vi_VN",
       siteName: "AI FTES",
@@ -79,7 +86,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: "summary_large_image",
       title: "Cập Nhật Chatbot AI | AI FTES",
-      description: "Chỉnh sửa và cập nhật chatbot AI của bạn. Tối ưu prompt, cấu hình tools và cải thiện hiệu suất chatbot với công nghệ Gemini.",
+      description:
+        "Chỉnh sửa và cập nhật chatbot AI của bạn. Tối ưu prompt, cấu hình tools và cải thiện hiệu suất chatbot với công nghệ Gemini.",
     },
     robots: {
       index: true,
@@ -93,7 +101,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     },
     alternates: {
-      canonical: botId ? `https://ai.ftes.vn/assistants/editor/${botId}` : "https://ai.ftes.vn/assistants/editor",
+      canonical: botId
+        ? `https://ai.ftes.vn/assistants/editor/${botId}`
+        : "https://ai.ftes.vn/assistants/editor",
     },
   };
 }
@@ -103,13 +113,15 @@ function LoadingFallback() {
     <div className="flex items-center justify-center h-screen bg-background">
       <div className="text-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-        <p className="text-muted-foreground">Đang tải trình chỉnh sửa chatbot...</p>
+        <p className="text-muted-foreground">
+          Đang tải trình chỉnh sửa chatbot...
+        </p>
       </div>
     </div>
   );
 }
 
-export default function EditorPage({ params }: PageProps) {
+export default function EditorPage({ params }: any) {
   const botId = params.slug?.[0];
   const notFounded = !botId;
 
@@ -120,10 +132,7 @@ export default function EditorPage({ params }: PageProps) {
 
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <EditorChatbotClient 
-        botId={botId || "new"} 
-        notFounded={notFounded} 
-      />
+      <EditorChatbotClient botId={botId || "new"} notFounded={notFounded} />
     </Suspense>
   );
 }
