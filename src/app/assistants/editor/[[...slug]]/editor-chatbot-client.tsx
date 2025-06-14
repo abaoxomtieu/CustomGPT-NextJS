@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,6 +25,7 @@ import {
 import { Trash2, Bot, ChevronLeft, KeyRound, LogIn } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import ChatInput from "@/components/chat/chat-input";
 import ChatMessageAgent from "@/components/chat/chat-message-box";
 import UpdateChatbotForm from "@/components/update-chatbot-form";
@@ -84,6 +85,72 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     handleTabChange,
   } = useEditorChatbot(botId, notFounded);
 
+  // Redirect to home if not logged in after loading
+  useEffect(() => {
+    if (!isLoading && !isLogin) {
+      const timer = setTimeout(() => {
+        router.push("/");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, isLogin, router]);
+
+  // Handle input change for unauthenticated users
+  const handleInputChange = (value: string) => {
+    if (!isLogin) {
+      toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
+        action: {
+          label: "Đăng nhập",
+          onClick: () => router.push("/"),
+        },
+      });
+      return;
+    }
+    setInput(value);
+  };
+
+  // Handle RAG input change for unauthenticated users
+  const handleRagInputChange = (value: string) => {
+    if (!isLogin) {
+      toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
+        action: {
+          label: "Đăng nhập",
+          onClick: () => router.push("/"),
+        },
+      });
+      return;
+    }
+    setRagInput(value);
+  };
+
+  // Handle send for unauthenticated users
+  const handleSendWrapper = async (files: File[]) => {
+    if (!isLogin) {
+      toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
+        action: {
+          label: "Đăng nhập",
+          onClick: () => router.push("/"),
+        },
+      });
+      return;
+    }
+    await handleSend(files);
+  };
+
+  // Handle RAG send for unauthenticated users
+  const handleRagSendWrapper = async (files: File[]) => {
+    if (!isLogin) {
+      toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
+        action: {
+          label: "Đăng nhập",
+          onClick: () => router.push("/"),
+        },
+      });
+      return;
+    }
+    await handleRagSend(files);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
@@ -94,6 +161,48 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
           </p>
         </div>
       </div>
+    );
+  }
+
+  // Show warning for unauthenticated users
+  if (!isLogin) {
+    return (
+      <main className="flex items-center justify-center h-screen bg-background">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+            <div className="flex flex-col items-center mb-6">
+              <div className="bg-yellow-500/10 p-4 rounded-full mb-4">
+                <LogIn className="text-4xl text-yellow-500" />
+              </div>
+              <h2 className="text-xl font-bold text-card-foreground mb-2">
+                Yêu cầu đăng nhập
+              </h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Bạn cần đăng nhập để sử dụng tính năng {notFounded ? "tạo" : "cập nhật"} chatbot AI.
+              </p>
+              <p className="text-xs text-muted-foreground mb-4">
+                Đang chuyển hướng về trang chủ trong 3 giây...
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Button
+                onClick={() => router.push("/")}
+                className="w-full"
+              >
+                <LogIn className="mr-2 w-4 h-4" />
+                Về trang chủ để đăng nhập
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => router.push("/assistants")}
+                className="w-full"
+              >
+                Quay lại danh sách chatbot
+              </Button>
+            </div>
+          </div>
+        </div>
+      </main>
     );
   }
 
@@ -131,34 +240,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                   : "Chỉnh sửa và cập nhật chatbot của bạn."}
               </p>
             </div>
-            {!isLogin && (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Badge
-                    className="ml-2 cursor-pointer text-xs md:text-sm"
-                    variant="default"
-                    role="button"
-                    aria-label="Trạng thái đăng nhập"
-                  >
-                    <LogIn className="w-3 h-3 md:w-4 md:h-4 mr-1" /> Chưa đăng
-                    nhập
-                  </Badge>
-                </PopoverTrigger>
-                <PopoverContent className="bg-card border-border">
-                  <p className="text-card-foreground text-sm">
-                    Bạn chưa đăng nhập.{" "}
-                  </p>
-                  <Button
-                    onClick={() => router.push("/login")}
-                    size="sm"
-                    variant="link"
-                    className="text-primary"
-                  >
-                    Đăng nhập ngay
-                  </Button>
-                </PopoverContent>
-              </Popover>
-            )}
             <Popover>
               <PopoverTrigger asChild>
                 <Badge
@@ -427,8 +508,8 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                     input={input}
                     loading={loading || isCompleted}
                     botId={botId}
-                    onInputChange={setInput}
-                    onSend={handleSend}
+                    onInputChange={handleInputChange}
+                    onSend={handleSendWrapper}
                     onKeyPress={handleKeyPress}
                     inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
                     selectedFiles={selectedFiles}
@@ -478,12 +559,12 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               input={ragInput}
               loading={ragLoading}
               botId={botId}
-              onInputChange={setRagInput}
-              onSend={handleRagSend}
+              onInputChange={handleRagInputChange}
+              onSend={handleRagSendWrapper}
               onKeyPress={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
-                  handleRagSend([]);
+                  handleRagSendWrapper([]);
                 }
               }}
               inputRef={ragInputRef as React.RefObject<HTMLTextAreaElement>}

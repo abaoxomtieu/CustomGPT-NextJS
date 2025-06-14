@@ -62,7 +62,10 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
       <div className={className}>
         <GoogleLogin
           shape="pill"
+          text="signin"
           onSuccess={loginFunction}
+          useOneTap={true}
+          width={100}
           onError={() => {
             toast.error("Login failed", {
               description: "Login failed",

@@ -84,7 +84,9 @@ export function AppSidebar() {
   const { state, toggleSidebar } = useSidebar();
 
   // Check if current page should hide sidebar
-  const shouldHideSidebar = pathname.startsWith("/assistants/editor") || pathname.startsWith("/rag-agent");
+  const shouldHideSidebar =
+    pathname.startsWith("/assistants/editor") ||
+    pathname.startsWith("/rag-agent");
 
   // If we should hide the sidebar, return null
   if (shouldHideSidebar) {
@@ -106,146 +108,172 @@ export function AppSidebar() {
       {/* Desktop Sidebar */}
       <div className="hidden md:block relative">
         <Sidebar className="min-w-[250px] bg-background border-r h-screen">
-        <SidebarContent>
-          <SidebarHeader className="py-6 flex justify-center items-center">
-            <div className="flex items-center gap-2 justify-center">
-              <Image src="/logo.svg" alt="logo" width={150} height={150} />
-            </div>
-            {userInfo && (
-              <div className="flex items-center gap-2 mt-4">
-                <Image
-                  src={userInfo.picture}
-                  alt="avatar"
-                  width={32}
-                  height={32}
-                  className="rounded-full w-10 h-10"
-                />
-                <p className="text-sm text-muted-foreground font-bold">
-                  {userInfo.name}
-                </p>
+          <SidebarContent>
+            <SidebarHeader className="py-6 flex justify-center items-center">
+              <div className="flex items-center gap-2 justify-center">
+                <Image src="/logo.svg" alt="logo" width={150} height={150} />
               </div>
-            )}
-          </SidebarHeader>
-          <SidebarGroup>
-            <SidebarGroupLabel>Ứng dụng</SidebarGroupLabel>
-            <SidebarMenu>
-                <ul className="flex w-full min-w-0 flex-col gap-1">
-              {data.map((item) =>
-                item.items ? (
-                      <SidebarMenuItem key={item.title}>
-                  <Collapsible
-                    className="w-full"
-                    open={openItems[item.title]}
-                    onOpenChange={() => toggleItem(item.title)}
-                  >
-                    <CollapsibleTrigger asChild>
-                      <SidebarMenuButton className="flex items-center w-full px-3 py-2 gap-2 group hover:bg-sidebar-accent/60 transition rounded-2xl">
-                        <item.icon className="w-5 h-5 text-muted-foreground group-data-[state=open]:text-primary transition" />
-                        <span className="font-medium">{item.title}</span>
-                        {openItems[item.title] ? (
-                          <ChevronDown className="ml-auto w-4 h-4 transition-transform" />
-                        ) : (
-                          <ChevronRight className="ml-auto w-4 h-4 transition-transform" />
-                        )}
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                            <ul className="ml-6 flex flex-col gap-1 mt-1">
-                        {item.items.map((subItem) => (
-                          <SidebarMenuItem key={subItem.title}>
-                            <SidebarMenuButton
-                              asChild
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-accent transition"
-                            >
-                                    <Link href={subItem.url} className="flex items-center gap-2 w-full">
-                                <subItem.icon className="w-4 h-4 text-muted-foreground" />
-                                      <span className="text-sm">
-                                        {subItem.title}
-                                      </span>
-                              </Link>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                        ))}
-                            </ul>
-                    </CollapsibleContent>
-                  </Collapsible>
-                      </SidebarMenuItem>
-                ) : (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      className="flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-sidebar-accent/60 transition"
-                    >
-                          <Link href={item.url} className="flex items-center gap-2 w-full">
-                        <item.icon className="w-5 h-5 text-muted-foreground" />
-                        <span className="font-medium">{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )
+              {userInfo && (
+                <div className="flex items-center gap-2 mt-4">
+                  <Image
+                    src={userInfo.picture}
+                    alt="avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-full w-10 h-10"
+                  />
+                  <p className="text-sm text-muted-foreground font-bold">
+                    {userInfo.name}
+                  </p>
+                </div>
               )}
+            </SidebarHeader>
+            <SidebarGroup>
+              <SidebarGroupLabel>Ứng dụng</SidebarGroupLabel>
+              <SidebarMenu>
+                <ul className="flex w-full min-w-0 flex-col gap-1">
+                  {data
+                    .filter((item) => {
+                      if (!isLogin) {
+                        return (
+                          item.title === "Home" || item.title === "Chatbot"
+                        );
+                      }
+                      return true;
+                    })
+                    .map((item) =>
+                      item.items ? (
+                        <SidebarMenuItem key={item.title}>
+                          <Collapsible
+                            className="w-full"
+                            open={openItems[item.title]}
+                            onOpenChange={() => toggleItem(item.title)}
+                          >
+                            <CollapsibleTrigger asChild>
+                              <SidebarMenuButton className="flex items-center w-full px-3 py-2 gap-2 group hover:bg-sidebar-accent/60 transition rounded-2xl">
+                                <item.icon className="w-5 h-5 text-muted-foreground group-data-[state=open]:text-primary transition" />
+                                <span className="font-medium">
+                                  {item.title}
+                                </span>
+                                {openItems[item.title] ? (
+                                  <ChevronDown className="ml-auto w-4 h-4 transition-transform" />
+                                ) : (
+                                  <ChevronRight className="ml-auto w-4 h-4 transition-transform" />
+                                )}
+                              </SidebarMenuButton>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <ul className="ml-6 flex flex-col gap-1 mt-1">
+                                {item.items.map((subItem) => (
+                                  <SidebarMenuItem key={subItem.title}>
+                                    <SidebarMenuButton
+                                      asChild
+                                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-accent transition"
+                                    >
+                                      <Link
+                                        href={subItem.url}
+                                        className="flex items-center gap-2 w-full"
+                                      >
+                                        <subItem.icon className="w-4 h-4 text-muted-foreground" />
+                                        <span className="text-sm">
+                                          {subItem.title}
+                                        </span>
+                                      </Link>
+                                    </SidebarMenuButton>
+                                  </SidebarMenuItem>
+                                ))}
+                              </ul>
+                            </CollapsibleContent>
+                          </Collapsible>
+                        </SidebarMenuItem>
+                      ) : (
+                        <SidebarMenuItem key={item.title}>
+                          <SidebarMenuButton
+                            asChild
+                            className="flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-sidebar-accent/60 transition"
+                          >
+                            <Link
+                              href={item.url}
+                              className="flex items-center gap-2 w-full"
+                            >
+                              <item.icon className="w-5 h-5 text-muted-foreground" />
+                              <span className="font-medium">{item.title}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      )
+                    )}
                 </ul>
-            </SidebarMenu>
-          </SidebarGroup>
-          <SidebarGroup>
-            {!isLogin && (
-              <SidebarGroupLabel>
-                <LoginButton />
-              </SidebarGroupLabel>
+              </SidebarMenu>
+            </SidebarGroup>
+            <SidebarGroup>
+              {!isLogin && (
+                <SidebarGroupLabel>
+                  <LoginButton />
+                </SidebarGroupLabel>
+              )}
+            </SidebarGroup>
+          </SidebarContent>
+          <SidebarFooter className="flex flex-col items-center gap-3 p-4">
+            <ModeToggle />
+            {isLogin && (
+              <Button
+                variant="outline"
+                className="w-full flex justify-between items-center gap-2"
+                onClick={() => {
+                  deleteCookie("token");
+                  router.push("/");
+                  setUserInfo(null);
+                  setIslogin(false);
+                }}
+              >
+                Đăng xuất
+                <LogOut className="w-4 h-4 ml-1" />
+              </Button>
             )}
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarFooter className="flex flex-col items-center gap-3 p-4">
-          <ModeToggle />
-          {isLogin && (
-            <Button
-              variant="outline"
-              className="w-full flex justify-between items-center gap-2"
-              onClick={() => {
-                deleteCookie("token");
-                router.push("/");
-                setUserInfo(null);
-                setIslogin(false);
-              }}
-            >
-              Đăng xuất
-              <LogOut className="w-4 h-4 ml-1" />
-            </Button>
-          )}
-        </SidebarFooter>
+          </SidebarFooter>
 
-        {/* Custom Sidebar Trigger positioned at center right border */}
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={toggleSidebar}
-          className="absolute top-1/2 -translate-y-1/2 -right-4 z-20 h-8 w-8 rounded-full bg-background border shadow-md hover:shadow-lg transition-all duration-200"
-        >
-          {state === "expanded" ? (
-            <ChevronLeft className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="ml-4 h-4 w-4" />
-          )}
-          <span className="sr-only">Toggle Sidebar</span>
-        </Button>
-      </Sidebar>
-    </div>
+          {/* Custom Sidebar Trigger positioned at center right border */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleSidebar}
+            className="absolute top-1/2 -translate-y-1/2 -right-4 z-20 h-8 w-8 rounded-full bg-background border shadow-md hover:shadow-lg transition-all duration-200"
+          >
+            {state === "expanded" ? (
+              <ChevronLeft className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="ml-4 h-4 w-4" />
+            )}
+            <span className="sr-only">Toggle Sidebar</span>
+          </Button>
+        </Sidebar>
+      </div>
 
       {/* Mobile Bottom Navigation - Only show on home and profile pages */}
       {shouldShowMobileNav && (
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t z-10 opacity-100">
           <div className="flex justify-around items-center p-2">
-            {data.map((item) => (
-              <Link
-                key={item.title}
-                href={item.url}
-                className="flex flex-col items-center p-2 text-muted-foreground hover:text-primary transition-colors"
-              >
-                <item.icon className="w-6 h-6" />
-                <span className="text-xs mt-1">{item.title}</span>
-              </Link>
-            ))}
-            {isLogin && (
+            {data
+              .filter((item) => {
+                // Nếu chưa đăng nhập, chỉ hiển thị Home và Chatbot
+                if (!isLogin) {
+                  return item.title === "Home" || item.title === "Chatbot";
+                }
+                // Nếu đã đăng nhập, hiển thị tất cả
+                return true;
+              })
+              .map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.url}
+                  className="flex flex-col items-center p-2 text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <item.icon className="w-6 h-6" />
+                  <span className="text-xs mt-1">{item.title}</span>
+                </Link>
+              ))}
+            {isLogin ? (
               <Button
                 variant="ghost"
                 size="icon"
@@ -260,6 +288,10 @@ export function AppSidebar() {
                 <LogOut className="w-6 h-6" />
                 <span className="text-xs mt-1">Đăng xuất</span>
               </Button>
+            ) : (
+              <div className="flex flex-col items-center p-2">
+                <LoginButton />
+              </div>
             )}
           </div>
         </div>
