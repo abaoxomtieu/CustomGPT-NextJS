@@ -29,44 +29,66 @@ import { cn } from "@/lib/utils";
 const ChatbotListClient: React.FC = () => {
   const [chatbots, setChatbots] = useState<Chatbot[]>([]);
   const [publicChatbots, setPublicChatbots] = useState<Chatbot[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [publicLoading, setPublicLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [publicLoading, setPublicLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [chatbotToDelete, setChatbotToDelete] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("my-chatbots");
+  const [hasLoadedMyChatbots, setHasLoadedMyChatbots] = useState(false);
+  const [hasLoadedPublicChatbots, setHasLoadedPublicChatbots] = useState(false);
 
   const { isLogin } = useAuth();
   const router = useRouter();
 
+  const loadChatbots = async () => {
+    if (!isLogin || hasLoadedMyChatbots) return;
+    
+    try {
+      setLoading(true);
+      const data = await fetchChatbots();
+      setChatbots(data);
+      setHasLoadedMyChatbots(true);
+    } catch (error) {
+      toast.error("Lỗi khi tải chatbot");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadPublicChatbots = async () => {
+    if (hasLoadedPublicChatbots) return;
+    
+    try {
+      setPublicLoading(true);
+      const data = await fetchPublicChatbots();
+      setPublicChatbots(data);
+      setHasLoadedPublicChatbots(true);
+    } catch (error) {
+      toast.error("Lỗi khi tải chatbot công khai");
+    } finally {
+      setPublicLoading(false);
+    }
+  };
+
+  // Load data based on active tab
   useEffect(() => {
-    const loadPublicChatbots = async () => {
-      try {
-        setPublicLoading(true);
-        const data = await fetchPublicChatbots();
-        setPublicChatbots(data);
-      } catch (error) {
-        toast.error("Lỗi khi tải chatbot công khai");
-      } finally {
-        setPublicLoading(false);
-      }
-    };
+    if (activeTab === "my-chatbots" && isLogin) {
+      loadChatbots();
+    } else if (activeTab === "public-chatbots") {
+      loadPublicChatbots();
+    }
+  }, [activeTab, isLogin]);
 
-    const loadChatbots = async () => {
-      if (isLogin) {
-        try {
-          setLoading(true);
-          const data = await fetchChatbots();
-          setChatbots(data);
-        } catch (error) {
-          toast.error("Lỗi khi tải chatbot");
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadPublicChatbots();
-    loadChatbots();
+  // Load my chatbots by default when component mounts and user is logged in
+  useEffect(() => {
+    if (isLogin && activeTab === "my-chatbots") {
+      loadChatbots();
+    }
   }, [isLogin]);
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
 
   const filteredChatbots =
     chatbots?.filter((bot) =>
@@ -272,7 +294,7 @@ const ChatbotListClient: React.FC = () => {
         )}
       </div>
       {/* Chatbot List */}
-      <Tabs defaultValue="my-chatbots" className="bg-background/80">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="bg-background/80">
         <TabsList className="w-full bg-background/80 border-border/50">
           <TabsTrigger
             value="my-chatbots"

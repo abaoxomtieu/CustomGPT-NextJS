@@ -73,6 +73,7 @@ export const sendStreamingRagAgentMessage = async (
     }
 
     let buffer = "";
+    let accumulatedMessage = "";
     while (true) {
       if (abortSignal?.aborted) {
         reader.cancel();
@@ -97,7 +98,8 @@ export const sendStreamingRagAgentMessage = async (
 
             switch (data.type) {
               case "message":
-                onMessage(data.content as string);
+                accumulatedMessage += data.content as string;
+                onMessage(accumulatedMessage);
                 break;
               case "final":
                 onFinal(data.content);

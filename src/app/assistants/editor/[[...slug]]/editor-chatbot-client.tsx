@@ -117,27 +117,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
   const [ragSelectedDocuments, setRagSelectedDocuments] = useState<any[]>([]);
   const ragMessagesEndRef = useRef<HTMLDivElement>(null!);
   const ragInputRef = useRef<HTMLTextAreaElement>(null!);
-  const [isLoadingChatbot, setIsLoadingChatbot] = useState(true);
-
-  useEffect(() => {
-    const loadChatbotData = async () => {
-      try {
-        setIsLoadingChatbot(true);
-        const data = await fetchChatbotDetail(botId);
-        setChatbotData(data);
-      } catch (error) {
-        console.error("Error loading chatbot data:", error);
-        toast.error("Không thể tải thông tin chatbot");
-      } finally {
-        setIsLoadingChatbot(false);
-      }
-    };
-    if (!notFounded) {
-      loadChatbotData();
-    } else {
-      setIsLoadingChatbot(false);
-    }
-  }, [botId]);
 
   useEffect(() => {
     const storageKey = `${CHAT_HISTORY_KEY}_${botId}`;
@@ -226,6 +205,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
         throw new Error("No reader available");
       }
 
+      let accumulatedMessage = "";
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -237,7 +217,8 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
           try {
             const data = JSON.parse(line);
             if (data.type === "message") {
-              setStreamingMessage(data.content);
+              accumulatedMessage += data.content;
+              setStreamingMessage(accumulatedMessage);
               setThinkingText("");
             } else if (data.type === "final") {
               const aiMessage: StructuredMessage = {
@@ -454,7 +435,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     await handleRagStreamingChat(payload);
   };
 
-  if (isLoading || isLoadingChatbot) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
         <div className="text-center">

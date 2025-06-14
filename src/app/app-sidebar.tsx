@@ -53,7 +53,7 @@ const data = [
     items: [
       {
         title: "Tạo chatbot",
-        url: "/create-prompt",
+        url: "/assistants/editor",
         icon: Plus,
       },
       {

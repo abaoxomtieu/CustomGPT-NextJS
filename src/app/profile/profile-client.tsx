@@ -64,6 +64,7 @@ export default function ProfileClient() {
   const [testing, setTesting] = useState(false);
   const [isApiKeyValid, setIsApiKeyValid] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   // Profile form
   const form = useForm({
@@ -85,16 +86,22 @@ export default function ProfileClient() {
   });
 
   useEffect(() => {
-    if (!isLoading && !userInfo?.id) {
-      router.push("/");
-    }
-    if (!isLoading && userInfo?.id) {
-      form.reset({
-        name: userInfo.name || "",
-        contact_number: userInfo.contact_number || "",
-        major: (userInfo.major as "SE" | "AI" | "IB") || "SE",
-      });
-    }
+    const initializeProfile = async () => {
+      if (!isLoading) {
+        if (!userInfo?.id) {
+          router.push("/");
+        } else {
+          form.reset({
+            name: userInfo.name || "",
+            contact_number: userInfo.contact_number || "",
+            major: (userInfo.major as "SE" | "AI" | "IB") || "SE",
+          });
+        }
+        setInitialLoading(false);
+      }
+    };
+    
+    initializeProfile();
     // eslint-disable-next-line
   }, [userInfo, isLoading]);
 
@@ -176,13 +183,13 @@ export default function ProfileClient() {
     setIsSaved(false);
   };
 
-  if (isLoading) {
+  if (isLoading || initialLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="animate-spin h-16 w-16 text-primary" />
           <span className="text-foreground">
-            Đang kiểm tra thông tin đăng nhập...
+            {isLoading ? "Đang kiểm tra thông tin đăng nhập..." : "Đang tải hồ sơ..."}
           </span>
         </div>
       </div>

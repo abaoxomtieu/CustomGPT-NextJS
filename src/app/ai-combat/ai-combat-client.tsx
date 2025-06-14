@@ -30,6 +30,7 @@ export default function AICombatClient() {
   const [rightModelName, setRightModelName] = useState<string>(
     "gemini-2.5-flash-preview-05-20"
   );
+  const [isLoading, setIsLoading] = useState(true);
 
   // Use the AI Combat hook
   const {
@@ -50,10 +51,13 @@ export default function AICombatClient() {
   useEffect(() => {
     const loadChatbots = async () => {
       try {
+        setIsLoading(true);
         const data = await fetchChatbots();
         setChatbots(data);
       } catch (error) {
         console.error("Failed to load chatbots:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     loadChatbots();
@@ -72,6 +76,17 @@ export default function AICombatClient() {
     setIsConversationStarted(false);
     resetConversation();
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Đang tải danh sách chatbot...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isConversationStarted) {
     const leftBot = chatbots.find((bot) => bot.id === leftChatbot);
