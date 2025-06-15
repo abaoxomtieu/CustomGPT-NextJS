@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Paperclip, Send } from "lucide-react";
+import { Paperclip, Send, Loader2 } from "lucide-react";
 
 interface ChatInputProps {
   input: string;
@@ -31,7 +31,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string>("");
-  console.log("color", color);
   const calculateTotalSize = (files: File[]): number => {
     return files.reduce((total, file) => total + file.size, 0);
   };
@@ -152,9 +151,13 @@ const ChatInput: React.FC<ChatInputProps> = ({
                     ? "bg-foreground text-background cursor-not-allowed"
                     : "bg-foreground text-background shadow-sm hover:bg-foreground/80 hover:shadow-md"
                 }`}
-                title="Send"
+                title={loading ? "Processing..." : "Send"}
               >
-                <Send size={18} className="md:w-5 md:h-5" />
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send size={18} className="md:w-5 md:h-5" />
+                )}
               </button>
             </div>
           </div>

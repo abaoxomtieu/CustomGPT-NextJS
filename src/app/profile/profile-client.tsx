@@ -89,14 +89,14 @@ export default function ProfileClient() {
     const initializeProfile = async () => {
       if (!isLoading) {
         if (!userInfo?.id) {
-          router.push("/");
+      router.push("/");
         } else {
-          form.reset({
-            name: userInfo.name || "",
-            contact_number: userInfo.contact_number || "",
-            major: (userInfo.major as "SE" | "AI" | "IB") || "SE",
-          });
-        }
+      form.reset({
+        name: userInfo.name || "",
+        contact_number: userInfo.contact_number || "",
+        major: (userInfo.major as "SE" | "AI" | "IB") || "SE",
+      });
+    }
         setInitialLoading(false);
       }
     };

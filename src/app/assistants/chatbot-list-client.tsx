@@ -32,7 +32,6 @@ const ChatbotListClient: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [publicLoading, setPublicLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [chatbotToDelete, setChatbotToDelete] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("my-chatbots");
   const [hasLoadedMyChatbots, setHasLoadedMyChatbots] = useState(false);
   const [hasLoadedPublicChatbots, setHasLoadedPublicChatbots] = useState(false);
@@ -116,23 +115,17 @@ const ChatbotListClient: React.FC = () => {
     router.push(`/rag-agent/${chatbot.id}`);
   };
 
-  const handleDeleteClick = (e: React.MouseEvent, botId: string) => {
+  const handleDeleteClick = async (e: React.MouseEvent, botId: string) => {
     e.stopPropagation();
-    setChatbotToDelete(botId);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!chatbotToDelete) return;
     try {
-      await deleteChatbot(chatbotToDelete);
+      await deleteChatbot(botId);
       toast.success("Xóa chatbot thành công");
-      setChatbots(chatbots.filter((bot) => bot.id !== chatbotToDelete));
+      setChatbots(chatbots.filter((bot) => bot.id !== botId));
     } catch (error) {
       toast.error("Lỗi khi xóa chatbot");
-    } finally {
-      setChatbotToDelete(null);
     }
   };
+
 
   const renderSkeletonCards = () => {
     return Array(6)

@@ -30,7 +30,9 @@ import ChatInput from "@/components/chat/chat-input";
 import ChatMessageAgent from "@/components/chat/chat-message-box";
 import UpdateChatbotForm from "@/components/update-chatbot-form";
 import ChatMessages from "@/components/chat/chat-messages";
+import ToolMessage from "@/components/chat/tool-message";
 import { useEditorChatbot } from "@/hooks/use-editor-chatbot";
+import { fetchChatbotDetail } from "@/services/chatbotService";
 
 interface UpdateChatbotClientProps {
   botId: string;
@@ -64,6 +66,9 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     ragMessages,
     ragSelectedDocuments,
     chatbotData,
+    setChatbotData,
+    toolsMessage,
+    toolsMetadata,
 
     // Constants
     geminiApiKey,
@@ -84,6 +89,19 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     handleClearConfirm,
     handleTabChange,
   } = useEditorChatbot(botId, notFounded);
+
+  useEffect(() => {
+    if (!notFounded) {
+      fetchChatbotDetail(botId)
+        .then((data) => {
+          console.log(data);
+          setChatbotData(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching chatbot details:", error);
+        });
+    }
+  }, []);
 
   // Redirect to home if not logged in after loading
   useEffect(() => {
@@ -178,17 +196,15 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                 Yêu cầu đăng nhập
               </h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Bạn cần đăng nhập để sử dụng tính năng {notFounded ? "tạo" : "cập nhật"} chatbot AI.
+                Bạn cần đăng nhập để sử dụng tính năng{" "}
+                {notFounded ? "tạo" : "cập nhật"} chatbot AI.
               </p>
               <p className="text-xs text-muted-foreground mb-4">
                 Đang chuyển hướng về trang chủ trong 3 giây...
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <Button
-                onClick={() => router.push("/")}
-                className="w-full"
-              >
+              <Button onClick={() => router.push("/")} className="w-full">
                 <LogIn className="mr-2 w-4 h-4" />
                 Về trang chủ để đăng nhập
               </Button>
@@ -344,161 +360,129 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               className="h-[calc(100%-40px)] overflow-y-auto flex flex-col"
               role="tabpanel"
             >
-              <div className="flex-1 overflow-y-auto p-4">
-                <div className="w-full max-w-none space-y-4 md:space-y-6">
-                  {messages.length === 0 ? (
+              <div className="flex-1 overflow-y-auto">
+                {messages.length === 0 ? (
                     <div className="text-center py-6 md:py-10">
-                      <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border">
-                        <div className="flex flex-col items-center mb-6 md:mb-8">
-                          <div className="bg-primary/10 p-3 md:p-4 rounded-full mb-3 md:mb-4">
-                            <Bot className="text-3xl md:text-4xl text-primary" />
-                          </div>
-                          <h3 className="text-xl md:text-2xl font-bold text-card-foreground mb-2 md:mb-3">
-                            🤖{" "}
-                            {notFounded
-                              ? "Tạo Chatbot AI Mới"
-                              : "Cập Nhật Chatbot AI"}
-                          </h3>
-                          <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
-                            {notFounded
-                              ? "Trợ lý AI thông minh sẽ giúp bạn tạo chatbot mới từ đầu."
-                              : "Trợ lý AI thông minh sẽ giúp bạn cập nhật và chỉnh sửa chatbot của bạn."}
-                          </p>
+                    <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border">
+                      <div className="flex flex-col items-center mb-6 md:mb-8">
+                        <div className="bg-primary/10 p-3 md:p-4 rounded-full mb-3 md:mb-4">
+                          <Bot className="text-3xl md:text-4xl text-primary" />
                         </div>
+                        <h3 className="text-xl md:text-2xl font-bold text-card-foreground mb-2 md:mb-3">
+                          🤖{" "}
+                          {notFounded
+                            ? "Tạo Chatbot AI Mới"
+                            : "Cập Nhật Chatbot AI"}
+                        </h3>
+                        <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
+                          {notFounded
+                            ? "Trợ lý AI thông minh sẽ giúp bạn tạo chatbot mới từ đầu."
+                            : "Trợ lý AI thông minh sẽ giúp bạn cập nhật và chỉnh sửa chatbot của bạn."}
+                        </p>
+                      </div>
 
-                        <div className="bg-primary/5 rounded-xl p-4 md:p-6 mb-6 md:mb-8 border border-primary/10">
-                          <p className="text-card-foreground text-base md:text-lg leading-relaxed mb-3 md:mb-4">
-                            <strong className="text-primary">
-                              Tương tác với trợ lý AI
-                            </strong>
-                          </p>
-                          <p className="text-sm md:text-base text-muted-foreground">
-                            {notFounded
-                              ? "Hãy trao đổi thông tin với trợ lý để tạo chatbot mới. Trợ lý sẽ hướng dẫn bạn từng bước để có được một chatbot hoàn chỉnh."
-                              : "Hãy trao đổi thông tin với trợ lý thông qua chat để cập nhật và chỉnh sửa chatbot của bạn. Trợ lý sẽ hướng dẫn bạn từng bước để có được một chatbot hoàn chỉnh."}
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-                          <div className="bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
-                            <div className="flex items-center mb-3 md:mb-4">
-                              <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                                <span className="text-lg md:text-xl">💡</span>
-                              </div>
-                              <h4 className="font-semibold text-card-foreground text-base md:text-lg">
-                                Hướng dẫn sử dụng
-                              </h4>
-                            </div>
-                            <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
-                              <li className="flex items-center">
-                                <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                                {notFounded
-                                  ? "Mô tả chatbot bạn muốn tạo"
-                                  : "Mô tả các thay đổi bạn muốn thực hiện"}
-                              </li>
-                              <li className="flex items-center">
-                                <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                                {notFounded
-                                  ? "Xác định mục đích và đối tượng sử dụng"
-                                  : "Cập nhật thông tin về người dùng mục tiêu"}
-                              </li>
-                              <li className="flex items-center">
-                                <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                                {notFounded
-                                  ? "Thiết lập tính năng và khả năng"
-                                  : "Thêm hoặc chỉnh sửa các tính năng"}
-                              </li>
-                            </ul>
-                          </div>
-
-                          <div className="bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
-                            <div className="flex items-center mb-3 md:mb-4">
-                              <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                                <span className="text-lg md:text-xl">🎯</span>
-                              </div>
-                              <h4 className="font-semibold text-card-foreground text-base md:text-lg">
-                                {notFounded
-                                  ? "Ví dụ tạo mới"
-                                  : "Ví dụ cập nhật"}
-                              </h4>
-                            </div>
-                            <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
-                              <li className="flex items-center">
-                                <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                                {notFounded
-                                  ? "Tạo chatbot hỗ trợ khách hàng"
-                                  : "Cập nhật prompt cho chatbot"}
-                              </li>
-                              <li className="flex items-center">
-                                <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                                {notFounded
-                                  ? "Thiết lập chatbot giáo dục"
-                                  : "Thêm tính năng mới"}
-                              </li>
-                              <li className="flex items-center">
-                                <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                                {notFounded
-                                  ? "Cấu hình chatbot bán hàng"
-                                  : "Chỉnh sửa cài đặt hiện có"}
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-
-                        <div className="bg-secondary/50 rounded-xl p-4 md:p-6 border border-border">
-                          <div className="flex items-center">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+                        <div className="bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
+                          <div className="flex items-center mb-3 md:mb-4">
                             <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                              <span className="text-lg md:text-xl">💬</span>
+                              <span className="text-lg md:text-xl">💡</span>
                             </div>
-                            <div>
-                              <p className="text-card-foreground font-medium text-base md:text-lg">
-                                Bắt đầu ngay
-                              </p>
-                              <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                                {notFounded
-                                  ? "Hãy nhập mô tả chatbot bạn muốn tạo vào ô chat bên dưới!"
-                                  : "Hãy nhập câu hỏi hoặc mô tả các thay đổi bạn muốn thực hiện vào ô chat bên dưới!"}
-                              </p>
+                            <h4 className="font-semibold text-card-foreground text-base md:text-lg">
+                              Hướng dẫn sử dụng
+                            </h4>
+                          </div>
+                          <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              {notFounded
+                                ? "Mô tả chatbot bạn muốn tạo"
+                                : "Mô tả các thay đổi bạn muốn thực hiện"}
+                            </li>
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              {notFounded
+                                ? "Xác định mục đích và đối tượng sử dụng"
+                                : "Cập nhật thông tin về người dùng mục tiêu"}
+                            </li>
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              {notFounded
+                                ? "Thiết lập tính năng và khả năng"
+                                : "Thêm hoặc chỉnh sửa các tính năng"}
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div className="bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
+                          <div className="flex items-center mb-3 md:mb-4">
+                            <div className="bg-primary/10 p-2 rounded-lg mr-3">
+                              <span className="text-lg md:text-xl">🎯</span>
                             </div>
+                            <h4 className="font-semibold text-card-foreground text-base md:text-lg">
+                              {notFounded
+                                ? "Ví dụ tạo mới"
+                                : "Ví dụ cập nhật"}
+                            </h4>
+                          </div>
+                          <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              {notFounded
+                                ? "Tạo chatbot hỗ trợ khách hàng"
+                                : "Cập nhật prompt cho chatbot"}
+                            </li>
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              {notFounded
+                                ? "Thiết lập chatbot giáo dục"
+                                : "Thêm tính năng mới"}
+                            </li>
+                            <li className="flex items-center">
+                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                              {notFounded
+                                ? "Cấu hình chatbot bán hàng"
+                                : "Chỉnh sửa cài đặt hiện có"}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="bg-secondary/50 rounded-xl p-4 md:p-6 border border-border">
+                        <div className="flex items-center">
+                          <div className="bg-primary/10 p-2 rounded-lg mr-3">
+                            <span className="text-lg md:text-xl">💬</span>
+                          </div>
+                          <div>
+                            <p className="text-card-foreground font-medium text-base md:text-lg">
+                              Bắt đầu ngay
+                            </p>
+                            <p className="text-xs md:text-sm text-muted-foreground mt-1">
+                              {notFounded
+                                ? "Hãy nhập mô tả chatbot bạn muốn tạo vào ô chat bên dưới!"
+                                : "Hãy nhập câu hỏi hoặc mô tả các thay đổi bạn muốn thực hiện vào ô chat bên dưới!"}
+                            </p>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    messages.map((msg, index) => (
-                      <ChatMessageAgent
-                        key={index}
-                        message={{
-                          role: msg.role,
-                          content: msg.content,
-                        }}
-                      />
-                    ))
-                  )}
-
-                  {/* Thinking Text with Animation */}
-                  {thinkingText && (
-                    <div className="fixed bottom-24 right-4 z-50">
-                      <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 rounded-lg shadow-lg border border-border">
-                        <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-b-2 border-primary"></div>
-                        <span className="animate-fade-in-out text-xs md:text-sm">
-                          {thinkingText}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Streaming Message */}
-                  {streamingMessage && (
-                    <ChatMessageAgent
-                      message={{
-                        role: "assistant",
-                        content: streamingMessage,
-                      }}
-                    />
-                  )}
-                  <div ref={messagesEndRef} />
-                </div>
+                  </div>
+                ) : (
+                  <ChatMessages
+                    messages={messages}
+                    streamingMessage={streamingMessage}
+                    selectedDocuments={[]}
+                    loadingChatbot={false}
+                    chatbotDetails={chatbotData}
+                    messagesEndRef={
+                      messagesEndRef as React.RefObject<HTMLDivElement>
+                    }
+                    onRecommendationClick={(recommendation: string) =>
+                      setInput(recommendation)
+                    }
+                    thinkingMessage={toolsMessage}
+                    renderChatbotDetails={false}
+                  />
+                )}
               </div>
 
               {/* Chat Input */}
@@ -552,6 +536,8 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               onRecommendationClick={(recommendation: string) =>
                 setRagInput(recommendation)
               }
+              renderChatbotDetails={true}
+              thinkingMessage=""
             />
           </div>
           <div className="flex-none border-t border-border p-4 bg-muted/50">

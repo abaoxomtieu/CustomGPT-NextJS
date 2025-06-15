@@ -110,7 +110,8 @@ export default function RagAgentClient({
   const [localConversationId, setLocalConversationId] = useState<
     string | undefined
   >(urlConversationId as string);
-  const [isMobileConversationOpen, setIsMobileConversationOpen] = useState(false);
+  const [isMobileConversationOpen, setIsMobileConversationOpen] =
+    useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -502,7 +503,9 @@ export default function RagAgentClient({
                 {loadingChatbot ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="animate-spin w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
-                    <span className="text-sm md:text-base text-muted-foreground">Đang tải</span>
+                    <span className="text-sm md:text-base text-muted-foreground">
+                      Đang tải
+                    </span>
                   </div>
                 ) : (
                   <>
@@ -594,6 +597,8 @@ export default function RagAgentClient({
           onRecommendationClick={(recommendation: string) =>
             setInput(recommendation)
           }
+          thinkingMessage={thinkingText}
+          renderChatbotDetails={true}
         />
         {/* Thinking Text with Animation */}
         {thinkingText && (

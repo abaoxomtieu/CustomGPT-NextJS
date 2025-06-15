@@ -1,3 +1,16 @@
+/**
+ * Custom hook for managing chatbot editor functionality
+ * 
+ * Features:
+ * - Streaming chat messages with character-by-character display
+ * - Tool message display during processing (shows when langgraph_node === "tools")
+ * - RAG agent integration for document-based chat
+ * - File upload support
+ * - Thinking text animations
+ * - Chat history persistence
+ * - Tab-based interface management
+ */
+
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -43,6 +56,10 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
   const [streamingMessage, setStreamingMessage] = useState("");
   const [thinkingText, setThinkingText] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  
+  // Tool message states
+  const [toolsMessage, setToolsMessage] = useState("");
+  const [toolsMetadata, setToolsMetadata] = useState<any>(null);
   
   // UI states
   const [modelName, setModelName] = useState<string>("gemini-2.5-flash-preview-05-20");
@@ -103,7 +120,7 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, streamingMessage, thinkingText]);
+  }, [messages, streamingMessage, thinkingText, toolsMessage]);
 
   // Thinking text rotation
   useEffect(() => {
@@ -141,6 +158,8 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
     setInput("");
     setLoading(true);
     setStreamingMessage("");
+    setToolsMessage("");
+    setToolsMetadata(null);
 
     const payload: CustomChatbotStreamPayload = {
       query,
@@ -153,6 +172,7 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
       payload,
       (message: string) => {
         setStreamingMessage(message);
+        setToolsMessage(""); // Clear tools message when regular message starts
       },
       (finalData: { final_response: string; done: boolean }) => {
         const aiMessage: StructuredMessage = {
@@ -163,6 +183,8 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
         setMessages((prev) => [...prev, aiMessage]);
         setStreamingMessage("");
         setThinkingText("");
+        setToolsMessage("");
+        setToolsMetadata(null);
         setLoading(false);
 
         setTimeout(() => {
@@ -178,6 +200,8 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
         setLoading(false);
         setStreamingMessage("");
         setThinkingText("");
+        setToolsMessage("");
+        setToolsMetadata(null);
         const errorMessage: StructuredMessage = {
           role: "assistant",
           content: `Error: ${error}`,
@@ -187,6 +211,11 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
       },
       (thinking: string) => {
         setThinkingText(thinking);
+      },
+      (toolContent: string, metadata: any) => {
+        setToolsMessage((prev) => prev + toolContent);
+        setToolsMetadata(metadata);
+        setThinkingText(""); // Clear thinking text when tools message appears
       }
     );
 
@@ -379,6 +408,8 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
     ragSelectedDocuments,
     chatbotData,
     setChatbotData,
+    toolsMessage,
+    toolsMetadata,
     
     // Constants
     geminiApiKey,

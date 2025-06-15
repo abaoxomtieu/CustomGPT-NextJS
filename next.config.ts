@@ -17,8 +17,6 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    // Fallback cho compatibility
-    domains: ["lh3.googleusercontent.com", "googleusercontent.com"],
   },
 };
 

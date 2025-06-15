@@ -11,6 +11,7 @@ import { ChevronDown } from "lucide-react";
 //   travelGuideRecommendations,
 // } from "./RecommendationContainer";
 import ChatMessageAgent from "./chat-message-box";
+import ThinkingMessage from "./thinking-message";
 
 interface StructuredMessage {
   role: string;
@@ -29,28 +30,32 @@ interface StructuredMessage {
 interface ChatMessagesProps {
   messages: StructuredMessage[];
   streamingMessage: string;
+  thinkingMessage: string;
   selectedDocuments: any[];
   loadingChatbot: boolean;
   chatbotDetails: any;
   messagesEndRef: React.RefObject<HTMLDivElement>;
   onRecommendationClick: (recommendation: string) => void;
+  renderChatbotDetails: boolean;
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   streamingMessage,
+  thinkingMessage,
   selectedDocuments,
   loadingChatbot,
   chatbotDetails,
   messagesEndRef,
   onRecommendationClick,
+  renderChatbotDetails,
 }) => {
   const [isDocumentsOpen, setIsDocumentsOpen] = React.useState(false);
 
   return (
     <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4">
       <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
-        {messages.length === 0 ? (
+        {messages.length === 0 && renderChatbotDetails ? (
           <div className="text-center py-6 md:py-10">
             <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border">
               {loadingChatbot ? (
@@ -72,11 +77,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                   </p>
                 </>
               )}
-              {/* <RecommendationContainer
-                title="Example Questions"
-                recommendations={travelGuideRecommendations}
-                onRecommendationClick={onRecommendationClick}
-              /> */}
             </div>
           </div>
         ) : (
@@ -96,6 +96,12 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
             message={{ role: "assistant", content: streamingMessage }}
           />
         )}
+
+        {/* Thinking Message */}
+        {thinkingMessage && !streamingMessage && (
+          <ThinkingMessage thinking={thinkingMessage} />
+        )}
+        {/* <ThinkingMessage thinking="Đang xử lý..." /> */}
 
         {/* Source Documents */}
         {selectedDocuments.length > 0 && (

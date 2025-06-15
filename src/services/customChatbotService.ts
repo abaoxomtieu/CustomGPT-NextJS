@@ -9,10 +9,15 @@ export interface CustomChatbotStreamPayload {
 }
 
 export interface CustomChatbotStreamResponse {
-  type: "message" | "final" | "error";
+  type: "message" | "final" | "error" | "tools_message";
   content: string | {
     final_response: string;
     done: boolean;
+  };
+  metadata?: {
+    node: string;
+    step: number;
+    checkpoint_ns: string;
   };
 }
 
@@ -22,6 +27,7 @@ export const sendStreamingCustomChatbotMessage = async (
   onFinal: (data: { final_response: string; done: boolean }) => void,
   onError: (error: string) => void,
   onThinking: (text: string) => void,
+  onToolsMessage?: (content: string, metadata: any) => void,
   abortSignal?: AbortSignal
 ) => {
   try {
@@ -90,6 +96,11 @@ export const sendStreamingCustomChatbotMessage = async (
                 accumulatedMessage += data.content as string;
                 onMessage(accumulatedMessage);
                 onThinking("");
+                break;
+              case "tools_message":
+                if (onToolsMessage) {
+                  onToolsMessage(data.content as string, data.metadata);
+                }
                 break;
               case "final":
                 const finalData = data.content as { final_response: string; done: boolean };

@@ -46,10 +46,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RagAgentPage(props: any) {
-  const slugArray = Array.isArray(props.params?.slug)
-    ? props.params.slug
-    : [props.params?.slug ?? ""];
+export default async function RagAgentPage(props: any) {
+  const params = await props.params;
+  const slugArray = Array.isArray(params?.slug)
+    ? params.slug
+    : [params?.slug ?? ""];
 
   return (
     <main>

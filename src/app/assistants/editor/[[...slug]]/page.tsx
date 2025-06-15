@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import { generateMongoId } from "@/helpers/Cookies";
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-  const botId = params.slug?.[0];
+  const resolvedParams = await params;
+  const botId = resolvedParams.slug?.[0];
   const isNewBot = !botId;
 
   if (isNewBot) {
@@ -142,8 +143,9 @@ function LoadingFallback() {
   );
 }
 
-export default function EditorPage({ params }: any) {
-  let botId = params.slug?.[0];
+export default async function EditorPage({ params }: any) {
+  const resolvedParams = await params;
+  let botId = resolvedParams.slug?.[0];
   const notFounded = !botId;
 
   if (notFounded) {
