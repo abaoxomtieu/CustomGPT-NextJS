@@ -107,31 +107,45 @@ export function AppSidebar() {
     <>
       {/* Desktop Sidebar */}
       <div className="hidden md:block relative">
-        <Sidebar className="min-w-[250px] bg-background border-r h-screen">
+        <Sidebar className="min-w-[250px] bg-gradient-to-b from-background/95 via-background/90 to-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-r h-screen shadow-lg">
           <SidebarContent>
-            <SidebarHeader className="py-6 flex justify-center items-center">
+            <SidebarHeader className="py-6 flex flex-col justify-center items-center bg-gradient-to-b from-primary/5 to-transparent">
               <div className="flex items-center gap-2 justify-center">
-                <Image src="/logo.svg" alt="logo" width={150} height={150} />
+                <Image
+                  src="/logo.svg"
+                  alt="logo"
+                  width={150}
+                  height={150}
+                  className="hover:scale-105 transition-transform duration-300 rounded-4xl"
+                />
               </div>
               {userInfo && (
-                <div className="flex items-center gap-2 mt-4">
-                  <Image
-                    src={userInfo.picture}
-                    alt="avatar"
-                    width={32}
-                    height={32}
-                    className="rounded-full w-10 h-10"
-                  />
-                  <p className="text-sm text-muted-foreground font-bold">
+                <div className="flex items-center gap-3 mt-4 p-2 rounded-lg hover:bg-primary/10 transition-colors duration-200">
+                  <div className="relative w-10 h-10">
+                    <Image
+                      src={userInfo.picture || "/default-avatar.svg"}
+                      alt="avatar"
+                      width={40}
+                      height={40}
+                      className="rounded-full object-cover ring-2 ring-primary/20"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/default-avatar.svg";
+                      }}
+                    />
+                  </div>
+                  <p className="text-sm font-medium text-foreground">
                     {userInfo.name}
                   </p>
                 </div>
               )}
             </SidebarHeader>
             <SidebarGroup>
-              <SidebarGroupLabel>Ứng dụng</SidebarGroupLabel>
+              <SidebarGroupLabel className="text-xs font-semibold text-primary/70 px-3">
+                Ứng dụng
+              </SidebarGroupLabel>
               <SidebarMenu>
-                <ul className="flex w-full min-w-0 flex-col gap-1">
+                <ul className="flex w-full min-w-0 flex-col gap-1.5 p-2">
                   {data
                     .filter((item) => {
                       if (!isLogin) {
@@ -150,15 +164,15 @@ export function AppSidebar() {
                             onOpenChange={() => toggleItem(item.title)}
                           >
                             <CollapsibleTrigger asChild>
-                              <SidebarMenuButton className="flex items-center w-full px-3 py-2 gap-2 group hover:bg-sidebar-accent/60 transition rounded-2xl">
-                                <item.icon className="w-5 h-5 text-muted-foreground group-data-[state=open]:text-primary transition" />
-                                <span className="font-medium">
+                              <SidebarMenuButton className="flex items-center w-full px-3 py-2.5 gap-2 group hover:bg-primary/10 transition-all duration-200 rounded-xl">
+                                <item.icon className="w-5 h-5 text-primary/70 group-data-[state=open]:text-primary transition-colors duration-200" />
+                                <span className="font-medium text-primary/80 group-hover:text-primary transition-colors duration-200">
                                   {item.title}
                                 </span>
                                 {openItems[item.title] ? (
-                                  <ChevronDown className="ml-auto w-4 h-4 transition-transform" />
+                                  <ChevronDown className="ml-auto w-4 h-4 transition-transform duration-200 text-primary/50" />
                                 ) : (
-                                  <ChevronRight className="ml-auto w-4 h-4 transition-transform" />
+                                  <ChevronRight className="ml-auto w-4 h-4 transition-transform duration-200 text-primary/50" />
                                 )}
                               </SidebarMenuButton>
                             </CollapsibleTrigger>
@@ -168,14 +182,14 @@ export function AppSidebar() {
                                   <SidebarMenuItem key={subItem.title}>
                                     <SidebarMenuButton
                                       asChild
-                                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-accent transition"
+                                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary/10 transition-all duration-200"
                                     >
                                       <Link
                                         href={subItem.url}
                                         className="flex items-center gap-2 w-full"
                                       >
-                                        <subItem.icon className="w-4 h-4 text-muted-foreground" />
-                                        <span className="text-sm">
+                                        <subItem.icon className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors duration-200" />
+                                        <span className="text-sm text-primary/70 group-hover:text-primary transition-colors duration-200">
                                           {subItem.title}
                                         </span>
                                       </Link>
@@ -190,14 +204,16 @@ export function AppSidebar() {
                         <SidebarMenuItem key={item.title}>
                           <SidebarMenuButton
                             asChild
-                            className="flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-sidebar-accent/60 transition"
+                            className="flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-primary/10 transition-all duration-200"
                           >
                             <Link
                               href={item.url}
                               className="flex items-center gap-2 w-full"
                             >
-                              <item.icon className="w-5 h-5 text-muted-foreground" />
-                              <span className="font-medium">{item.title}</span>
+                              <item.icon className="w-5 h-5 text-primary/70 group-hover:text-primary transition-colors duration-200" />
+                              <span className="font-medium text-primary/80 group-hover:text-primary transition-colors duration-200">
+                                {item.title}
+                              </span>
                             </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -214,12 +230,12 @@ export function AppSidebar() {
               )}
             </SidebarGroup>
           </SidebarContent>
-          <SidebarFooter className="flex flex-col items-center gap-3 p-4">
+          <SidebarFooter className="flex flex-col items-center gap-3 p-4 border-t border-primary/10 bg-gradient-to-t from-primary/5 to-transparent">
             <ModeToggle />
             {isLogin && (
               <Button
                 variant="outline"
-                className="w-full flex justify-between items-center gap-2"
+                className="w-full flex justify-between items-center gap-2 hover:bg-destructive/10 hover:text-destructive transition-colors duration-200 border-primary/20"
                 onClick={() => {
                   deleteCookie("token");
                   router.push("/");
@@ -238,12 +254,12 @@ export function AppSidebar() {
             variant="outline"
             size="icon"
             onClick={toggleSidebar}
-            className="absolute top-1/2 -translate-y-1/2 -right-4 z-20 h-8 w-8 rounded-full bg-background border shadow-md hover:shadow-lg transition-all duration-200"
+            className="absolute top-1/2 -translate-y-1/2 -right-4 z-20 h-8 w-8 rounded-full bg-background border-primary/20 shadow-md hover:shadow-lg hover:bg-primary/10 transition-all duration-200"
           >
             {state === "expanded" ? (
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4 text-primary/70" />
             ) : (
-              <ChevronRight className="ml-4 h-4 w-4" />
+              <ChevronRight className="ml-4 h-4 w-4 text-primary/70" />
             )}
             <span className="sr-only">Toggle Sidebar</span>
           </Button>
@@ -252,22 +268,20 @@ export function AppSidebar() {
 
       {/* Mobile Bottom Navigation - Only show on home and profile pages */}
       {shouldShowMobileNav && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t z-10 opacity-100">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background/95 via-background/90 to-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-primary/10 z-10 shadow-lg">
           <div className="flex justify-around items-center p-2">
             {data
               .filter((item) => {
-                // Nếu chưa đăng nhập, chỉ hiển thị Home và Chatbot
                 if (!isLogin) {
                   return item.title === "Home" || item.title === "Chatbot";
                 }
-                // Nếu đã đăng nhập, hiển thị tất cả
                 return true;
               })
               .map((item) => (
                 <Link
                   key={item.title}
                   href={item.url}
-                  className="flex flex-col items-center p-2 text-muted-foreground hover:text-primary transition-colors"
+                  className="flex flex-col items-center p-2 text-primary/70 hover:text-primary transition-colors duration-200"
                 >
                   <item.icon className="w-6 h-6" />
                   <span className="text-xs mt-1">{item.title}</span>
@@ -283,7 +297,7 @@ export function AppSidebar() {
                   setUserInfo(null);
                   setIslogin(false);
                 }}
-                className="flex flex-col items-center p-2 text-muted-foreground hover:text-primary transition-colors"
+                className="flex flex-col items-center p-2 text-primary/70 hover:text-destructive transition-colors duration-200"
               >
                 <LogOut className="w-6 h-6" />
                 <span className="text-xs mt-1">Đăng xuất</span>

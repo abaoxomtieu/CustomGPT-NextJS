@@ -1,6 +1,6 @@
 /**
  * Custom hook for managing chatbot editor functionality
- * 
+ *
  * Features:
  * - Streaming chat messages with character-by-character display
  * - Tool message display during processing (shows when langgraph_node === "tools")
@@ -17,8 +17,14 @@ import { toast } from "sonner";
 import { getCookie } from "@/helpers/Cookies";
 import { useAuth } from "@/hooks/use-auth";
 import { fetchChatbotDetail } from "@/services/chatbotService";
-import { sendStreamingCustomChatbotMessage, CustomChatbotStreamPayload } from "@/services/customChatbotService";
-import { sendStreamingRagAgentMessage, RagAgentPayload } from "@/services/ragAgentService";
+import {
+  sendStreamingCustomChatbotMessage,
+  CustomChatbotStreamPayload,
+} from "@/services/customChatbotService";
+import {
+  sendStreamingRagAgentMessage,
+  RagAgentPayload,
+} from "@/services/ragAgentService";
 
 const CHAT_HISTORY_KEY = "update_chatbot_chat_history";
 
@@ -48,7 +54,7 @@ const thinkingMessages = [
 export const useEditorChatbot = (botId: string, notFounded: boolean) => {
   const router = useRouter();
   const { isLogin, isLoading } = useAuth();
-  
+
   // Chat states
   const [messages, setMessages] = useState<StructuredMessage[]>([]);
   const [input, setInput] = useState("");
@@ -56,34 +62,37 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
   const [streamingMessage, setStreamingMessage] = useState("");
   const [thinkingText, setThinkingText] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  
+
   // Tool message states
   const [toolsMessage, setToolsMessage] = useState("");
   const [toolsMetadata, setToolsMetadata] = useState<any>(null);
-  
+
   // UI states
-  const [modelName, setModelName] = useState<string>("gemini-2.5-flash-preview-05-20");
+  const [modelName, setModelName] = useState<string>(
+    "gemini-2.5-flash-preview-05-20"
+  );
   const [clearModalVisible, setClearModalVisible] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [allowFirstRequest, setAllowFirstRequest] = useState(!getCookie("gemini_api_key"));
-  
+  const [allowFirstRequest, setAllowFirstRequest] = useState(
+    !getCookie("gemini_api_key")
+  );
+
   // RAG states
   const [ragInput, setRagInput] = useState("");
   const [ragLoading, setRagLoading] = useState(false);
   const [ragStreamingMessage, setRagStreamingMessage] = useState("");
   const [ragMessages, setRagMessages] = useState<StructuredMessage[]>([]);
   const [ragSelectedDocuments, setRagSelectedDocuments] = useState<any[]>([]);
-  
+
   // Chatbot data
   const [chatbotData, setChatbotData] = useState<any>(null);
-  
+
   // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const ragMessagesEndRef = useRef<HTMLDivElement>(null);
   const ragInputRef = useRef<HTMLTextAreaElement>(null);
   const thinkingIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // Constants
   const geminiApiKey = getCookie("gemini_api_key");
   const modelOptions = [
@@ -174,7 +183,7 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
         setStreamingMessage(message);
         setToolsMessage(""); // Clear tools message when regular message starts
       },
-      (finalData: { final_response: string; done: boolean }) => {
+      async (finalData: { final_response: string; done: boolean }) => {
         const aiMessage: StructuredMessage = {
           role: "assistant",
           content: finalData.final_response,
@@ -192,8 +201,19 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
         }, 100);
 
         if (finalData.done) {
-          setIsCompleted(true);
-          toast.success("Cập nhật chatbot thành công!");
+          try {
+            const data = await fetchChatbotDetail(botId);
+            setChatbotData(data);
+            setLoading(false);
+            toast.success("Cập nhật chatbot thành công!");
+          } catch (error) {
+            console.error("Error fetching chatbot details:", error);
+            toast.error(
+              "Cập nhật chatbot thành công nhưng không thể tải thông tin mới"
+            );
+          } finally {
+            setLoading(false);
+          }
         }
       },
       (error: string) => {
@@ -398,7 +418,6 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
     setModelName,
     clearModalVisible,
     setClearModalVisible,
-    isCompleted,
     allowFirstRequest,
     ragInput,
     setRagInput,
@@ -410,19 +429,19 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
     setChatbotData,
     toolsMessage,
     toolsMetadata,
-    
+
     // Constants
     geminiApiKey,
     modelOptions,
     isLogin,
     isLoading,
-    
+
     // Refs
     messagesEndRef,
     inputRef,
     ragMessagesEndRef,
     ragInputRef,
-    
+
     // Handlers
     handleSend,
     handleRagSend,
@@ -430,4 +449,4 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
     handleClearConfirm,
     handleTabChange,
   };
-}; 
+};

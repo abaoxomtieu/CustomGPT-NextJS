@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import Link from "next/link";
 import {
   FcReading,
@@ -14,39 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Brain } from "lucide-react";
 
-// Animation styles
+// Optimized styles with better performance
 const styles = `
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-  
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-
-  @keyframes slideIn {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  .animate-pulse {
-    animation: pulse 2s ease-in-out infinite;
-  }
-  
-  .animate-slide-in {
-    animation: slideIn 0.5s ease-out forwards;
-  }
-
-  .blue-gradient {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-foreground) 100%);
-  }
-
   .title-gradient {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     -webkit-background-clip: text;
@@ -55,38 +24,33 @@ const styles = `
   }
 
   .glass-effect {
-    background: var(--card);
+    background: rgba(var(--card), 0.8);
     backdrop-filter: blur(10px);
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(var(--border), 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    will-change: transform;
   }
 
   .glass-effect:hover {
-    border-color: var(--primary);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  }
-
-  .hover-lift {
-    transition: transform 0.3s ease;
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-5px);
+    border-color: rgba(var(--primary), 0.5);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
   }
 
   .feature-card {
-    background: var(--card);
+    background: rgba(var(--card), 0.8);
     border-radius: 1rem;
     padding: 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s ease;
-    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(var(--border), 0.1);
+    will-change: transform;
   }
 
   .feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-color: rgba(var(--primary), 0.5);
   }
 
   .icon-wrapper {
@@ -96,67 +60,95 @@ const styles = `
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: var(--primary/10);
+    background: rgba(var(--primary), 0.1);
     margin-bottom: 1.5rem;
+    transition: transform 0.2s ease;
+  }
+
+  .icon-wrapper:hover {
+    transform: scale(1.05);
   }
 
   .icon-wrapper svg {
     width: 40px;
     height: 40px;
-    color: var(--primary);
+    color: rgb(var(--primary));
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .feature-card,
+    .glass-effect,
+    .icon-wrapper,
+    .fade-in {
+      transition: none;
+      transform: none;
+    }
   }
 `;
 
+// Intersection Observer hook for fade-in animations
+const useIntersectionObserver = () => {
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll(".fade-in").forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+};
+
 const HomeClient: React.FC = () => {
+  useIntersectionObserver();
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
       <style>{styles}</style>
+      
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="text-center max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 title-gradient animate-slide-in">
+          <h2 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 title-gradient fade-in">
             FTES
             <span className="block text-xl md:text-3xl text-foreground mt-2 md:mt-4">
               First Technology Education Services
             </span>
           </h2>
-          <div className="mb-6 md:mb-8 text-sm md:text-base text-muted-foreground leading-relaxed text-justify">
+          <div className="mb-6 md:mb-8 text-sm md:text-base text-muted-foreground leading-relaxed text-justify fade-in">
             <p>
               <b>FTES</b> (First Technology Education Services) là hệ thống học
               tập thông minh ứng dụng trí tuệ nhân tạo (AI) nhằm mang đến trải
               nghiệm học tập cá nhân hóa, hiện đại và hiệu quả cho mọi đối tượng
-              yêu thích công nghệ thông tin. Nền tảng cung cấp các khóa học từ
-              cơ bản đến nâng cao, hỗ trợ người học phát triển kỹ năng, tư duy
-              sáng tạo và khả năng ứng dụng công nghệ vào thực tiễn.
-            </p>
-            <p className="mt-3">
-              Ngoài ra, FTES còn cho phép người dùng dễ dàng tạo chatbot AI phục
-              vụ nhiều mục đích khác nhau, tham gia đấu trường AI để khám phá và
-              tranh luận cùng các mô hình trí tuệ nhân tạo, cũng như tích hợp
-              API chatbot vào website, ứng dụng của riêng mình. Đội ngũ FTES
-              luôn hướng tới việc hỗ trợ giáo viên, học sinh và các nhà phát
-              triển tiếp cận công nghệ mới một cách an toàn, hiệu quả và sáng
-              tạo.
+              yêu thích công nghệ thông tin.
             </p>
           </div>
-          <p
-            className="text-base md:text-xl text-muted-foreground mb-8 md:mb-12 leading-relaxed animate-slide-in"
-            style={{ animationDelay: "0.2s" }}
-          >
-            Hệ thống học tập thông minh được tích hợp AI, cung cấp các khóa học
-            từ cơ bản đến nâng cao cho những người đam mê công nghệ thông tin.
-          </p>
-          <div
-            className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 animate-slide-in"
-            style={{ animationDelay: "0.4s" }}
-          >
+          <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 fade-in">
             <Link href="/assistants" className="w-full sm:w-auto">
-              <Button className="w-full bg-foreground text-background hover:bg-foreground/80 h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-300 rounded-full">
+              <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-200 rounded-full shadow-lg hover:shadow-xl">
                 Bắt đầu ngay
               </Button>
             </Link>
             <Link href="/create-prompt" className="w-full sm:w-auto">
-              <Button className="w-full border-foreground text-background hover:bg-foreground/10 h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-300 rounded-full">
+              <Button className="w-full border-primary text-background hover:bg-background/10 hover:text-foreground h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-200 rounded-full">
                 Tạo Chatbot
               </Button>
             </Link>
@@ -164,176 +156,92 @@ const HomeClient: React.FC = () => {
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section className="bg-background py-12 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 md:mb-8 text-foreground">
-              Sứ mệnh của chúng tôi
-            </h2>
-            <p className="text-base md:text-xl text-muted-foreground leading-relaxed">
-              Với công nghệ AI được tích hợp, FTES mong muốn hỗ trợ phát triển
-              kỹ năng và tối ưu hóa quá trình học tập, hướng đến việc cá nhân
-              hóa học tập theo năng lực và định hướng của người học.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Features Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
-        <h2 className="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-foreground">
+        <h2 className="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-foreground fade-in">
           Tính năng nổi bật
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
-          <article className="feature-card">
-            <div className="icon-wrapper">
-              <FcReading className="text-2xl md:text-3xl" />
-            </div>
-            <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-foreground">
-              Tạo Chatbot với AI
-            </h3>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Tạo chatbot thông minh với sự trợ giúp của chuyên gia AI, phục vụ
-              cho từng nhu cầu cụ thể của người dùng.
-            </p>
-          </article>
-          <article className="feature-card">
-            <div className="icon-wrapper">
-              <Brain className="text-2xl md:text-3xl" />
-            </div>
-            <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-foreground">
-              Đấu trường AI
-            </h3>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Khám phá khả năng của các AI trong việc đối thoại và tranh luận,
-              giúp hiểu sâu hơn về công nghệ AI.
-            </p>
-          </article>
-          <article className="feature-card">
-            <div className="icon-wrapper">
-              <FcDataBackup className="text-2xl md:text-3xl" />
-            </div>
-            <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-foreground">
-              API Integration
-            </h3>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Export chatbot thành API để tích hợp vào các trang web khác, phục
-              vụ nhu cầu phát triển của developer.
-            </p>
-          </article>
+          {[
+            {
+              icon: <FcReading className="text-2xl md:text-3xl" />,
+              title: "Tạo Chatbot với AI",
+              description: "Tạo chatbot thông minh với sự trợ giúp của chuyên gia AI, phục vụ cho từng nhu cầu cụ thể của người dùng."
+            },
+            {
+              icon: <Brain className="text-2xl md:text-3xl" />,
+              title: "Đấu trường AI",
+              description: "Khám phá khả năng của các AI trong việc đối thoại và tranh luận, giúp hiểu sâu hơn về công nghệ AI."
+            },
+            {
+              icon: <FcDataBackup className="text-2xl md:text-3xl" />,
+              title: "API Integration",
+              description: "Export chatbot thành API để tích hợp vào các trang web khác, phục vụ nhu cầu phát triển của developer."
+            }
+          ].map((feature, index) => (
+            <article key={index} className="feature-card fade-in">
+              <div className="icon-wrapper">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-foreground">
+                {feature.title}
+              </h3>
+              <p className="text-sm md:text-base text-muted-foreground">
+                {feature.description}
+              </p>
+            </article>
+          ))}
         </div>
       </section>
 
       {/* Chatbot Management Section */}
-      <section className="bg-secondary/30 py-12 md:py-20">
+      <section className="bg-secondary/10 py-12 md:py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-foreground">
+          <h2 className="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-foreground fade-in">
             Quản lý Chatbot Thông Minh
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            <article className="feature-card">
-              <div className="icon-wrapper animate-float">
-                <FcSettings className="text-3xl md:text-4xl" />
-              </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 text-foreground">
-                Quản lý Chatbot
-              </h3>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Dễ dàng quản lý và tổ chức các chatbot đã tạo, với khả năng
-                chỉnh sửa và cập nhật thông tin.
-              </p>
-            </article>
-            <article className="feature-card">
-              <div className="icon-wrapper">
-                <FcGlobe className="text-3xl md:text-4xl" />
-              </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 text-foreground">
-                Public Chatbot
-              </h3>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Chia sẻ chatbot của bạn với cộng đồng và nhận phản hồi từ người
-                dùng.
-              </p>
-            </article>
-            <article className="feature-card">
-              <div className="icon-wrapper">
-                <FcVoicePresentation className="text-3xl md:text-4xl" />
-              </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 text-foreground">
-                Quản lý Hội thoại
-              </h3>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Theo dõi và quản lý các cuộc hội thoại, phân tích tương tác và
-                cải thiện chất lượng phản hồi.
-              </p>
-            </article>
-            <article className="feature-card">
-              <div className="icon-wrapper">
-                <FcTimeline className="text-3xl md:text-4xl" />
-              </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 text-foreground">
-                Lịch sử Chat
-              </h3>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Lưu trữ và truy xuất lịch sử chat, giúp theo dõi tiến trình và
-                cải thiện trải nghiệm người dùng.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      {/* AI Combat Arena Section */}
-      <section className="bg-background py-12 md:py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-6 md:mb-16 text-foreground">
-            Đấu Trường AI
-          </h2>
-          <div className="max-w-4xl mx-auto">
-            <p className="text-base md:text-xl text-muted-foreground text-center mb-6 md:mb-8">
-              Khám phá khả năng của các AI trong việc đối thoại và tranh luận
-            </p>
-            <Link href="/rag-agent" className="flex justify-center">
-              <Button className="bg-foreground text-background hover:bg-foreground/80 h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-300 rounded-full">
-                Bắt đầu ngay
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Training Section */}
-      <section className="bg-secondary/30 py-12 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center max-w-4xl mx-auto text-center">
-            <div className="icon-wrapper mb-6 md:mb-8 animate-pulse">
-              <FcCollaboration className="text-4xl md:text-6xl" />
-            </div>
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 md:mb-8 text-foreground">
-              Đào tạo chuyên sâu
-            </h2>
-            <p className="text-base md:text-xl mb-8 md:mb-12 leading-relaxed text-muted-foreground">
-              FTES tổ chức các buổi tập huấn chuyên đề AI cho đội ngũ giáo viên
-              tại các trường THPT/THCS, góp phần nâng cao chất lượng giảng dạy
-              và cải thiện trải nghiệm học tập cho học sinh trong kỷ nguyên số.
-            </p>
-            <Link
-              href="https://www.facebook.com/profile.php?id=61576822237399"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-300 rounded-full">
-                Liên hệ tư vấn
-              </Button>
-            </Link>
+            {[
+              {
+                icon: <FcSettings className="text-3xl md:text-4xl" />,
+                title: "Quản lý Chatbot",
+                description: "Dễ dàng quản lý và tổ chức các chatbot đã tạo, với khả năng chỉnh sửa và cập nhật thông tin."
+              },
+              {
+                icon: <FcGlobe className="text-3xl md:text-4xl" />,
+                title: "Public Chatbot",
+                description: "Chia sẻ chatbot của bạn với cộng đồng và nhận phản hồi từ người dùng."
+              },
+              {
+                icon: <FcVoicePresentation className="text-3xl md:text-4xl" />,
+                title: "Quản lý Hội thoại",
+                description: "Theo dõi và quản lý các cuộc hội thoại, phân tích tương tác và cải thiện chất lượng phản hồi."
+              },
+              {
+                icon: <FcTimeline className="text-3xl md:text-4xl" />,
+                title: "Lịch sử Chat",
+                description: "Lưu trữ và truy xuất lịch sử chat, giúp theo dõi tiến trình và cải thiện trải nghiệm người dùng."
+              }
+            ].map((feature, index) => (
+              <article key={index} className="feature-card fade-in">
+                <div className="icon-wrapper">
+                  {feature.icon}
+                </div>
+                <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 text-foreground">
+                  {feature.title}
+                </h3>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  {feature.description}
+                </p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
-        <div className="glass-effect rounded-3xl p-6 md:p-16 text-center">
+        <div className="glass-effect rounded-3xl p-6 md:p-16 text-center fade-in">
           <h2 className="text-2xl md:text-4xl font-bold mb-4 md:mb-8 text-foreground">
             Bắt đầu hành trình học tập thông minh
           </h2>
@@ -342,7 +250,7 @@ const HomeClient: React.FC = () => {
             và phát triển kỹ năng.
           </p>
           <Link href="/assistants">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-300 rounded-full">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-200 rounded-full shadow-lg hover:shadow-xl">
               Xem Chatbot
             </Button>
           </Link>

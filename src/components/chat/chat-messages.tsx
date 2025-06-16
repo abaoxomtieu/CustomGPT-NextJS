@@ -69,11 +69,13 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 <>
                   <Bot className="text-3xl md:text-4xl text-primary mb-3 md:mb-4" />
                   <h3 className="text-base md:text-lg font-medium text-card-foreground mb-2">
-                    {chatbotDetails?.name || "AI Assistant"}
+                    {chatbotDetails?.name ||
+                      "Bắt đầu tạo chatbot của bạn ở khung bên trái"}
                   </h3>
                   <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6">
-                    {chatbotDetails?.prompt?.substring(0, 150) + "..." ||
-                      "Ask me anything about travel destinations, plan your trips, or inquire about images of places."}
+                    {chatbotDetails === null
+                      ? "Nhập yêu cầu chatbot bạn muốn tạo ở khung bên trái để trợ lý AI có thể hiểu và tạo ra chatbot cho bạn"
+                      : chatbotDetails?.prompt?.substring(0, 150) + "..."}
                   </p>
                 </>
               )}

@@ -15,7 +15,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   const router = useRouter();
   const setUserInfo = useAppState((state) => state.setUserInfo);
   const setIslogin = useAppState((state) => state.setIslogin);
-  const { fetchUserInfo, isLogin } = useAuth();
+  const { fetchUserInfo, isLogin, isLoading } = useAuth();
 
   const loginFunction = (credentialResponse: CredentialResponse): void => {
     const apiLogin = async () => {
@@ -64,7 +64,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
           shape="pill"
           text="signin"
           onSuccess={loginFunction}
-          useOneTap={!isLogin}
+          useOneTap={isLoading && isLogin}
           width={100}
           onError={() => {
             toast.error("Login failed", {

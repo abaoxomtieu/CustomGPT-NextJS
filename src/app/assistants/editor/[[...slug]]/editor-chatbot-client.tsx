@@ -58,7 +58,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     setModelName,
     clearModalVisible,
     setClearModalVisible,
-    isCompleted,
     ragInput,
     setRagInput,
     ragLoading,
@@ -362,7 +361,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
             >
               <div className="flex-1 overflow-y-auto">
                 {messages.length === 0 ? (
-                    <div className="text-center py-6 md:py-10">
+                  <div className="text-center py-6 md:py-10">
                     <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border">
                       <div className="flex flex-col items-center mb-6 md:mb-8">
                         <div className="bg-primary/10 p-3 md:p-4 rounded-full mb-3 md:mb-4">
@@ -419,9 +418,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                               <span className="text-lg md:text-xl">🎯</span>
                             </div>
                             <h4 className="font-semibold text-card-foreground text-base md:text-lg">
-                              {notFounded
-                                ? "Ví dụ tạo mới"
-                                : "Ví dụ cập nhật"}
+                              {notFounded ? "Ví dụ tạo mới" : "Ví dụ cập nhật"}
                             </h4>
                           </div>
                           <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
@@ -490,7 +487,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                 <div className="w-full max-w-none">
                   <ChatInput
                     input={input}
-                    loading={loading || isCompleted}
+                    loading={loading}
                     botId={botId}
                     onInputChange={handleInputChange}
                     onSend={handleSendWrapper}
@@ -498,7 +495,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                     inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
                     selectedFiles={selectedFiles}
                     onSelectedFilesChange={setSelectedFiles}
-                    disabled={isCompleted}
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -547,6 +544,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               botId={botId}
               onInputChange={handleRagInputChange}
               onSend={handleRagSendWrapper}
+              disabled={chatbotData === null ? true : false}
               onKeyPress={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();

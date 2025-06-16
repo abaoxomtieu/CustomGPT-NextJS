@@ -75,6 +75,71 @@ const thinkingTexts = [
   "Đang chuẩn bị phản hồi...",
 ];
 
+// Add these styles at the top of the file after imports
+const styles = `
+  .chat-container {
+    background: linear-gradient(to bottom, var(--background), var(--background)/95);
+  }
+
+  .glass-header {
+    background: rgba(var(--card), 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(var(--border), 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .glass-sidebar {
+    background: rgba(var(--card), 0.8);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(var(--border), 0.1);
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .message-bubble {
+    transition: all 0.2s ease;
+  }
+
+  .message-bubble:hover {
+    transform: translateY(-1px);
+  }
+
+  .thinking-bubble {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+`;
+
 export default function RagAgentClient({
   params,
 }: {
@@ -433,16 +498,17 @@ export default function RagAgentClient({
   }
 
   return (
-    <div className="flex h-screen relative w-full">
+    <div className="flex h-screen relative w-full chat-container">
+      <style>{styles}</style>
       {loadingChatbot && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <Loader2 className="w-10 h-10 animate-spin text-primary" />
           <span className="ml-4 text-lg text-foreground">Đang tải...</span>
         </div>
       )}
-      {/* Sidebar - Hidden on mobile by default */}
+      {/* Sidebar */}
       <div
-        className={`fixed md:relative z-30 h-full bg-card/90 backdrop-blur-sm border-r border-border transition-all duration-300 ${
+        className={`fixed md:relative z-30 h-full glass-sidebar transition-all duration-300 ${
           isSidebarCollapsed ? "w-16" : "w-64"
         } ${
           isMobileConversationOpen
@@ -467,7 +533,7 @@ export default function RagAgentClient({
       {/* Mobile Conversation Toggle Button */}
       <button
         onClick={() => setIsMobileConversationOpen(!isMobileConversationOpen)}
-        className="md:hidden fixed bottom-20 right-4 z-40 bg-primary text-primary-foreground p-3 rounded-full shadow-lg"
+        className="md:hidden fixed bottom-20 right-4 z-40 bg-primary text-primary-foreground p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors duration-200"
       >
         <Menu className="w-6 h-6" />
       </button>
@@ -475,7 +541,7 @@ export default function RagAgentClient({
       {/* Overlay for mobile */}
       {isMobileConversationOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          className="fixed inset-0 bg-black/50 z-20 md:hidden backdrop-blur-sm"
           onClick={() => setIsMobileConversationOpen(false)}
         />
       )}
@@ -483,23 +549,23 @@ export default function RagAgentClient({
       {/* Main Content */}
       <div className="flex flex-col w-full">
         {/* Header */}
-        <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-3 md:py-4">
+        <div className="flex-none glass-header py-3 md:py-4">
           <div className="flex justify-between items-center px-4 md:px-6">
             <div className="flex items-center gap-2 md:gap-3">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => router.push("/assistants")}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-colors duration-200"
               >
                 <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
-              <Avatar className="bg-primary/10 w-8 h-8 md:w-10 md:h-10">
+              <Avatar className="bg-primary/10 w-8 h-8 md:w-10 md:h-10 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-200">
                 <AvatarFallback className="text-primary">
                   <Bot className="w-4 h-4 md:w-5 md:h-5" />
                 </AvatarFallback>
               </Avatar>
-              <div>
+              <div className="fade-in">
                 {loadingChatbot ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="animate-spin w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
@@ -526,7 +592,7 @@ export default function RagAgentClient({
                     <TooltipTrigger asChild>
                       <Badge
                         variant="secondary"
-                        className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs"
+                        className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs transition-colors duration-200"
                         onClick={() => router.push("/login")}
                       >
                         Chưa đăng nhập
@@ -541,17 +607,17 @@ export default function RagAgentClient({
               <Popover>
                 <PopoverTrigger asChild>
                   <Badge
-                    className={`ml-2 text-xs ${
+                    className={`ml-2 text-xs transition-colors duration-200 ${
                       geminiApiKey
-                        ? "bg-green-500/10 text-green-500"
-                        : "bg-yellow-500/10 text-yellow-500"
+                        ? "bg-green-500/10 text-green-500 hover:bg-green-500/20"
+                        : "bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20"
                     } cursor-pointer`}
                   >
                     <KeyRound className="w-3 h-3 md:w-4 md:h-4 mr-1" />
                     {geminiApiKey ? "Đã thiết lập" : "Chưa thiết lập"}
                   </Badge>
                 </PopoverTrigger>
-                <PopoverContent className="bg-popover text-popover-foreground border-border">
+                <PopoverContent className="bg-popover text-popover-foreground border-border shadow-lg">
                   {geminiApiKey ? (
                     "Bạn đã thiết lập Gemini API Key, có thể sử dụng đầy đủ tính năng AI Gemini."
                   ) : (
@@ -561,7 +627,7 @@ export default function RagAgentClient({
                       <Button
                         size="sm"
                         variant="link"
-                        className="text-primary hover:text-primary/80"
+                        className="text-primary hover:text-primary/80 transition-colors duration-200"
                         onClick={() => router.push("/profile")}
                       >
                         Thiết lập ngay
@@ -572,10 +638,10 @@ export default function RagAgentClient({
               </Popover>
               {headerDropdown}
               <Select value={modelName} onValueChange={setModelName}>
-                <SelectTrigger className="w-32 md:w-44 bg-background border-border">
+                <SelectTrigger className="w-32 md:w-44 bg-background border-border hover:border-primary/50 transition-colors duration-200">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-popover text-popover-foreground border-border">
+                <SelectContent className="bg-popover text-popover-foreground border-border shadow-lg">
                   {modelOptions.map((opt) => (
                     <SelectItem value={opt.value} key={opt.value}>
                       {opt.label}
@@ -586,43 +652,48 @@ export default function RagAgentClient({
             </div>
           </div>
         </div>
+
         {/* Chat Messages */}
-        <ChatMessages
-          messages={messages}
-          streamingMessage={streamingMessage}
-          selectedDocuments={selectedDocuments}
-          loadingChatbot={loadingChatbot}
-          chatbotDetails={chatbotDetails}
-          messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
-          onRecommendationClick={(recommendation: string) =>
-            setInput(recommendation)
-          }
-          thinkingMessage={thinkingText}
-          renderChatbotDetails={true}
-        />
+        <div className="flex-1 overflow-y-auto">
+          <ChatMessages
+            messages={messages}
+            streamingMessage={streamingMessage}
+            selectedDocuments={selectedDocuments}
+            loadingChatbot={loadingChatbot}
+            chatbotDetails={chatbotDetails}
+            messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
+            onRecommendationClick={(recommendation: string) =>
+              setInput(recommendation)
+            }
+            thinkingMessage={thinkingText}
+            renderChatbotDetails={true}
+          />
+        </div>
+
         {/* Thinking Text with Animation */}
         {thinkingText && (
           <div className="fixed bottom-24 right-4 z-50">
-            <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border">
+            <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border thinking-bubble">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-              <span className="animate-fade-in-out text-sm">
-                {thinkingText}
-              </span>
+              <span className="text-sm">{thinkingText}</span>
             </div>
           </div>
         )}
+
         {/* Chat Input */}
-        <ChatInput
-          input={input}
-          loading={loading}
-          botId={botId}
-          onInputChange={setInput}
-          onSend={handleSend}
-          onKeyPress={handleKeyPress}
-          inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
-          selectedFiles={selectedFiles}
-          onSelectedFilesChange={setSelectedFiles}
-        />
+        <div className="flex-none border-t border-border bg-background/95 backdrop-blur-sm">
+          <ChatInput
+            input={input}
+            loading={loading}
+            botId={botId}
+            onInputChange={setInput}
+            onSend={handleSend}
+            onKeyPress={handleKeyPress}
+            inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
+            selectedFiles={selectedFiles}
+            onSelectedFilesChange={setSelectedFiles}
+          />
+        </div>
       </div>
 
       {/* Document Management Dialog */}
