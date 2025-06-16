@@ -33,6 +33,222 @@ import ChatMessages from "@/components/chat/chat-messages";
 import ToolMessage from "@/components/chat/tool-message";
 import { useEditorChatbot } from "@/hooks/use-editor-chatbot";
 import { fetchChatbotDetail } from "@/services/chatbotService";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Styles
+const styles = {
+  header:
+    "flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-0",
+  headerContainer:
+    "max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center px-4 gap-2 md:gap-0",
+  headerLeft: "flex items-center gap-2 md:gap-3",
+  headerRight: "flex items-center gap-2 w-full md:w-auto",
+  mainContent: "flex-1 flex flex-col md:flex-row overflow-hidden",
+  leftSection:
+    "w-full md:w-1/2 transition-all duration-300 ease-in-out overflow-hidden",
+  rightSection:
+    "flex-1 flex flex-col md:w-1/2 transition-all duration-300 ease-in-out overflow-hidden bg-muted/50",
+  tabList: "w-2/3 flex justify-center",
+  tabTrigger:
+    "w-fit data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-sm",
+  chatContainer: "h-[calc(100%-40px)] overflow-y-auto flex flex-col",
+  chatInput:
+    "flex-none p-2 md:p-4 border-t border-border bg-background/80 backdrop-blur-sm",
+  emptyState: "text-center py-6 md:py-10",
+  emptyStateCard:
+    "bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border",
+  featureCard:
+    "bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200",
+  featureIcon: "bg-primary/10 p-2 rounded-lg mr-3",
+  featureList:
+    "text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3",
+  featureItem: "flex items-center",
+  featureDot: "w-2 h-2 bg-primary rounded-full mr-2",
+};
+
+// Empty State Component
+const EmptyState = ({ notFounded }: { notFounded: boolean }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={styles.emptyState}
+  >
+    <div className={styles.emptyStateCard}>
+      <div className="flex flex-col items-center mb-6 md:mb-8">
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          className="bg-primary/10 p-3 md:p-4 rounded-full mb-3 md:mb-4"
+        >
+          <Bot className="text-3xl md:text-4xl text-primary" />
+        </motion.div>
+        <h3 className="text-xl md:text-2xl font-bold text-card-foreground mb-2 md:mb-3">
+          🤖 {notFounded ? "Tạo Chatbot AI Mới" : "Cập Nhật Chatbot AI"}
+        </h3>
+        <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
+          {notFounded
+            ? "Trợ lý AI thông minh sẽ giúp bạn tạo chatbot mới từ đầu."
+            : "Trợ lý AI thông minh sẽ giúp bạn cập nhật và chỉnh sửa chatbot của bạn."}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+        <FeatureCard
+          icon="💡"
+          title="Hướng dẫn sử dụng"
+          items={[
+            notFounded
+              ? "Mô tả chatbot bạn muốn tạo"
+              : "Mô tả các thay đổi bạn muốn thực hiện",
+            notFounded
+              ? "Xác định mục đích và đối tượng sử dụng"
+              : "Cập nhật thông tin về người dùng mục tiêu",
+            notFounded
+              ? "Thiết lập tính năng và khả năng"
+              : "Thêm hoặc chỉnh sửa các tính năng",
+          ]}
+        />
+        <FeatureCard
+          icon="🎯"
+          title={notFounded ? "Ví dụ tạo mới" : "Ví dụ cập nhật"}
+          items={[
+            notFounded
+              ? "Tạo chatbot hỗ trợ khách hàng"
+              : "Cập nhật prompt cho chatbot",
+            notFounded ? "Thiết lập chatbot giáo dục" : "Thêm tính năng mới",
+            notFounded
+              ? "Cấu hình chatbot bán hàng"
+              : "Chỉnh sửa cài đặt hiện có",
+          ]}
+        />
+      </div>
+
+      <motion.div
+        whileHover={{ scale: 1.01 }}
+        className="bg-secondary/50 rounded-xl p-4 md:p-6 border border-border"
+      >
+        <div className="flex items-center">
+          <div className={styles.featureIcon}>
+            <span className="text-lg md:text-xl">💬</span>
+          </div>
+          <div>
+            <p className="text-card-foreground font-medium text-base md:text-lg">
+              Bắt đầu ngay
+            </p>
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">
+              {notFounded
+                ? "Hãy nhập mô tả chatbot bạn muốn tạo vào ô chat bên dưới!"
+                : "Hãy nhập câu hỏi hoặc mô tả các thay đổi bạn muốn thực hiện vào ô chat bên dưới!"}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  </motion.div>
+);
+
+// Feature Card Component
+const FeatureCard = ({
+  icon,
+  title,
+  items,
+}: {
+  icon: string;
+  title: string;
+  items: string[];
+}) => (
+  <motion.div whileHover={{ scale: 1.02 }} className={styles.featureCard}>
+    <div className="flex items-center mb-3 md:mb-4">
+      <div className={styles.featureIcon}>
+        <span className="text-lg md:text-xl">{icon}</span>
+      </div>
+      <h4 className="font-semibold text-card-foreground text-base md:text-lg">
+        {title}
+      </h4>
+    </div>
+    <ul className={styles.featureList}>
+      {items.map((item, index) => (
+        <motion.li
+          key={index}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: index * 0.1 }}
+          className={styles.featureItem}
+        >
+          <span className={styles.featureDot}></span>
+          {item}
+        </motion.li>
+      ))}
+    </ul>
+  </motion.div>
+);
+
+// Loading State Component
+const LoadingState = () => (
+  <div className="flex items-center justify-center h-screen bg-background">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="text-center"
+    >
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        className="rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"
+      />
+      <p className="text-muted-foreground">
+        Đang kiểm tra thông tin đăng nhập...
+      </p>
+    </motion.div>
+  </div>
+);
+
+// Unauthorized State Component
+const UnauthorizedState = ({ notFounded }: { notFounded: boolean }) => {
+  const router = useRouter();
+  return (
+    <main className="flex items-center justify-center h-screen bg-background">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center max-w-md mx-auto p-6"
+      >
+        <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+          <div className="flex flex-col items-center mb-6">
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              className="bg-yellow-500/10 p-4 rounded-full mb-4"
+            >
+              <LogIn className="text-4xl text-yellow-500" />
+            </motion.div>
+            <h2 className="text-xl font-bold text-card-foreground mb-2">
+              Yêu cầu đăng nhập
+            </h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Bạn cần đăng nhập để sử dụng tính năng{" "}
+              {notFounded ? "tạo" : "cập nhật"} chatbot AI.
+            </p>
+            <p className="text-xs text-muted-foreground mb-4">
+              Đang chuyển hướng về trang chủ trong 3 giây...
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Button onClick={() => router.push("/")} className="w-full">
+              <LogIn className="mr-2 w-4 h-4" />
+              Về trang chủ để đăng nhập
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => router.push("/assistants")}
+              className="w-full"
+            >
+              Quay lại danh sách chatbot
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+    </main>
+  );
+};
 
 interface UpdateChatbotClientProps {
   botId: string;
@@ -45,7 +261,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
 }) => {
   const router = useRouter();
   const {
-    // States
     messages,
     input,
     setInput,
@@ -68,20 +283,14 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     setChatbotData,
     toolsMessage,
     toolsMetadata,
-
-    // Constants
     geminiApiKey,
     modelOptions,
     isLogin,
     isLoading,
-
-    // Refs
     messagesEndRef,
     inputRef,
     ragMessagesEndRef,
     ragInputRef,
-
-    // Handlers
     handleSend,
     handleRagSend,
     handleKeyPress,
@@ -93,7 +302,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     if (!notFounded) {
       fetchChatbotDetail(botId)
         .then((data) => {
-          console.log(data);
           setChatbotData(data);
         })
         .catch((error) => {
@@ -102,7 +310,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     }
   }, []);
 
-  // Redirect to home if not logged in after loading
   useEffect(() => {
     if (!isLoading && !isLogin) {
       const timer = setTimeout(() => {
@@ -112,7 +319,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     }
   }, [isLoading, isLogin, router]);
 
-  // Handle input change for unauthenticated users
   const handleInputChange = (value: string) => {
     if (!isLogin) {
       toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
@@ -126,7 +332,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     setInput(value);
   };
 
-  // Handle RAG input change for unauthenticated users
   const handleRagInputChange = (value: string) => {
     if (!isLogin) {
       toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
@@ -140,7 +345,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     setRagInput(value);
   };
 
-  // Handle send for unauthenticated users
   const handleSendWrapper = async (files: File[]) => {
     if (!isLogin) {
       toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
@@ -154,7 +358,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     await handleSend(files);
   };
 
-  // Handle RAG send for unauthenticated users
   const handleRagSendWrapper = async (files: File[]) => {
     if (!isLogin) {
       toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
@@ -169,69 +372,22 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">
-            Đang kiểm tra thông tin đăng nhập...
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
-  // Show warning for unauthenticated users
   if (!isLogin) {
-    return (
-      <main className="flex items-center justify-center h-screen bg-background">
-        <div className="text-center max-w-md mx-auto p-6">
-          <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-            <div className="flex flex-col items-center mb-6">
-              <div className="bg-yellow-500/10 p-4 rounded-full mb-4">
-                <LogIn className="text-4xl text-yellow-500" />
-              </div>
-              <h2 className="text-xl font-bold text-card-foreground mb-2">
-                Yêu cầu đăng nhập
-              </h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                Bạn cần đăng nhập để sử dụng tính năng{" "}
-                {notFounded ? "tạo" : "cập nhật"} chatbot AI.
-              </p>
-              <p className="text-xs text-muted-foreground mb-4">
-                Đang chuyển hướng về trang chủ trong 3 giây...
-              </p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <Button onClick={() => router.push("/")} className="w-full">
-                <LogIn className="mr-2 w-4 h-4" />
-                Về trang chủ để đăng nhập
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => router.push("/assistants")}
-                className="w-full"
-              >
-                Quay lại danh sách chatbot
-              </Button>
-            </div>
-          </div>
-        </div>
-      </main>
-    );
+    return <UnauthorizedState notFounded={notFounded} />;
   }
 
   return (
     <main className="flex flex-col h-[100dvh] bg-background">
-      {/* SEO Hidden Headings */}
       <h1 className="sr-only">
         {notFounded ? "Tạo Chatbot AI Mới" : "Cập Nhật Chatbot AI"} - AI FTES
       </h1>
 
-      {/* Header */}
-      <header className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-0">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center px-4 gap-2 md:gap-0">
-          <div className="flex items-center gap-2 md:gap-3">
+      <header className={styles.header}>
+        <div className={styles.headerContainer}>
+          <div className={styles.headerLeft}>
             <Button
               variant="ghost"
               onClick={() => router.push("/assistants")}
@@ -295,7 +451,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               </PopoverContent>
             </Popover>
           </div>
-          <div className="flex items-center gap-2 w-full md:w-auto">
+          <div className={styles.headerRight}>
             <Select value={modelName} onValueChange={setModelName}>
               <SelectTrigger
                 className="w-full md:w-[180px] bg-background border-border text-sm"
@@ -327,163 +483,69 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-        {/* Left Side - Editor */}
-        <section className="w-full md:w-1/2 transition-all duration-300 ease-in-out overflow-hidden">
+      <div className={styles.mainContent}>
+        <section className={styles.leftSection}>
           <Tabs
             defaultValue="chat"
             className="h-full"
             onValueChange={handleTabChange}
           >
             <div className="w-full flex justify-center">
-              <TabsList className="w-2/3 flex justify-center" role="tablist">
+              <TabsList className={styles.tabList} role="tablist">
                 <TabsTrigger
                   value="chat"
-                  className="w-fit data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-sm"
+                  className={styles.tabTrigger}
                   role="tab"
                 >
                   {notFounded ? "Tạo chatbot" : "Tạo và cập nhật"}
                 </TabsTrigger>
-                <TabsTrigger
-                  value="form"
-                  className="w-fit data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-sm"
-                  role="tab"
-                >
-                  Cấu hình
-                </TabsTrigger>
+                {chatbotData && (
+                  <TabsTrigger
+                    value="form"
+                    className={styles.tabTrigger}
+                    role="tab"
+                  >
+                    Cấu hình
+                  </TabsTrigger>
+                )}
               </TabsList>
             </div>
             <TabsContent
               value="chat"
-              className="h-[calc(100%-40px)] overflow-y-auto flex flex-col"
+              className={styles.chatContainer}
               role="tabpanel"
             >
               <div className="flex-1 overflow-y-auto">
-                {messages.length === 0 ? (
-                  <div className="text-center py-6 md:py-10">
-                    <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border">
-                      <div className="flex flex-col items-center mb-6 md:mb-8">
-                        <div className="bg-primary/10 p-3 md:p-4 rounded-full mb-3 md:mb-4">
-                          <Bot className="text-3xl md:text-4xl text-primary" />
-                        </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-card-foreground mb-2 md:mb-3">
-                          🤖{" "}
-                          {notFounded
-                            ? "Tạo Chatbot AI Mới"
-                            : "Cập Nhật Chatbot AI"}
-                        </h3>
-                        <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
-                          {notFounded
-                            ? "Trợ lý AI thông minh sẽ giúp bạn tạo chatbot mới từ đầu."
-                            : "Trợ lý AI thông minh sẽ giúp bạn cập nhật và chỉnh sửa chatbot của bạn."}
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-                        <div className="bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
-                          <div className="flex items-center mb-3 md:mb-4">
-                            <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                              <span className="text-lg md:text-xl">💡</span>
-                            </div>
-                            <h4 className="font-semibold text-card-foreground text-base md:text-lg">
-                              Hướng dẫn sử dụng
-                            </h4>
-                          </div>
-                          <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
-                            <li className="flex items-center">
-                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              {notFounded
-                                ? "Mô tả chatbot bạn muốn tạo"
-                                : "Mô tả các thay đổi bạn muốn thực hiện"}
-                            </li>
-                            <li className="flex items-center">
-                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              {notFounded
-                                ? "Xác định mục đích và đối tượng sử dụng"
-                                : "Cập nhật thông tin về người dùng mục tiêu"}
-                            </li>
-                            <li className="flex items-center">
-                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              {notFounded
-                                ? "Thiết lập tính năng và khả năng"
-                                : "Thêm hoặc chỉnh sửa các tính năng"}
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200">
-                          <div className="flex items-center mb-3 md:mb-4">
-                            <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                              <span className="text-lg md:text-xl">🎯</span>
-                            </div>
-                            <h4 className="font-semibold text-card-foreground text-base md:text-lg">
-                              {notFounded ? "Ví dụ tạo mới" : "Ví dụ cập nhật"}
-                            </h4>
-                          </div>
-                          <ul className="text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3">
-                            <li className="flex items-center">
-                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              {notFounded
-                                ? "Tạo chatbot hỗ trợ khách hàng"
-                                : "Cập nhật prompt cho chatbot"}
-                            </li>
-                            <li className="flex items-center">
-                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              {notFounded
-                                ? "Thiết lập chatbot giáo dục"
-                                : "Thêm tính năng mới"}
-                            </li>
-                            <li className="flex items-center">
-                              <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
-                              {notFounded
-                                ? "Cấu hình chatbot bán hàng"
-                                : "Chỉnh sửa cài đặt hiện có"}
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div className="bg-secondary/50 rounded-xl p-4 md:p-6 border border-border">
-                        <div className="flex items-center">
-                          <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                            <span className="text-lg md:text-xl">💬</span>
-                          </div>
-                          <div>
-                            <p className="text-card-foreground font-medium text-base md:text-lg">
-                              Bắt đầu ngay
-                            </p>
-                            <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                              {notFounded
-                                ? "Hãy nhập mô tả chatbot bạn muốn tạo vào ô chat bên dưới!"
-                                : "Hãy nhập câu hỏi hoặc mô tả các thay đổi bạn muốn thực hiện vào ô chat bên dưới!"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <ChatMessages
-                    messages={messages}
-                    streamingMessage={streamingMessage}
-                    selectedDocuments={[]}
-                    loadingChatbot={false}
-                    chatbotDetails={chatbotData}
-                    messagesEndRef={
-                      messagesEndRef as React.RefObject<HTMLDivElement>
-                    }
-                    onRecommendationClick={(recommendation: string) =>
-                      setInput(recommendation)
-                    }
-                    thinkingMessage={toolsMessage}
-                    renderChatbotDetails={false}
-                  />
-                )}
+                <AnimatePresence mode="wait">
+                  {messages.length === 0 ? (
+                    <EmptyState notFounded={notFounded} />
+                  ) : (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <ChatMessages
+                        messages={messages}
+                        streamingMessage={streamingMessage}
+                        selectedDocuments={[]}
+                        loadingChatbot={false}
+                        chatbotDetails={chatbotData}
+                        messagesEndRef={
+                          messagesEndRef as React.RefObject<HTMLDivElement>
+                        }
+                        onRecommendationClick={(recommendation: string) =>
+                          setInput(recommendation)
+                        }
+                        thinkingMessage={toolsMessage}
+                        renderChatbotDetails={false}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              {/* Chat Input */}
-              <div className="flex-none p-2 md:p-4 border-t border-border bg-background/80 backdrop-blur-sm">
+              <div className={styles.chatInput}>
                 <div className="w-full max-w-none">
                   <ChatInput
                     input={input}
@@ -501,24 +563,23 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               </div>
             </TabsContent>
 
-            <TabsContent
-              value="form"
-              className="h-[calc(100%-40px)] overflow-y-auto"
-              role="tabpanel"
-            >
-              <UpdateChatbotForm
-                botId={botId}
-                initialData={chatbotData}
-                onSuccess={() => {
-                  // toast.success("Cập nhật chatbot thành công!");
-                }}
-              />
-            </TabsContent>
+            {chatbotData && (
+              <TabsContent
+                value="form"
+                className="h-[calc(100%-40px)] overflow-y-auto"
+                role="tabpanel"
+              >
+                <UpdateChatbotForm
+                  botId={botId}
+                  initialData={chatbotData}
+                  onSuccess={() => {}}
+                />
+              </TabsContent>
+            )}
           </Tabs>
         </section>
 
-        {/* Right Side - RAG Chat */}
-        <section className="flex-1 flex flex-col md:w-1/2 transition-all duration-300 ease-in-out overflow-hidden bg-muted/50">
+        <section className={styles.rightSection}>
           <h3 className="sr-only">Chat với Chatbot</h3>
           <div className="flex-1 overflow-y-auto p-4">
             <ChatMessages
@@ -544,7 +605,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               botId={botId}
               onInputChange={handleRagInputChange}
               onSend={handleRagSendWrapper}
-              disabled={chatbotData === null ? true : false}
+              disabled={chatbotData === null}
               onKeyPress={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -560,7 +621,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
         </section>
       </div>
 
-      {/* Clear Confirmation Dialog */}
       <Dialog open={clearModalVisible} onOpenChange={setClearModalVisible}>
         <DialogContent className="bg-card border-border">
           <DialogHeader>
