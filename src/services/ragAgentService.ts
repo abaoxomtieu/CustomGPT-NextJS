@@ -8,6 +8,7 @@ export interface RagAgentPayload {
   conversation_id?: string;
   model_name?: string;
   attachs?: File[];
+  reasoning?: boolean;
 }
 
 // Response structure for RAG Agent
@@ -46,6 +47,7 @@ export const sendStreamingRagAgentMessage = async (
     if (payload.model_name) formData.append("model_name", payload.model_name);
     if (getCookie("gemini_api_key"))
       formData.append("api_key", getCookie("gemini_api_key") || "");
+    if (payload.reasoning !== undefined) formData.append("reasoning", payload.reasoning.toString());
     if (payload.attachs) {
       payload.attachs.forEach((file) => {
         formData.append("attachs", file);

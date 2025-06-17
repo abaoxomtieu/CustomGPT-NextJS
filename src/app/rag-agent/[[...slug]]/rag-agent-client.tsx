@@ -13,6 +13,7 @@ import {
   Loader2,
   KeyRound,
   Menu,
+  Brain,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -169,6 +170,7 @@ export default function RagAgentClient({
   const [isApiDocsOpen, setIsApiDocsOpen] = useState(false);
   const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [reasoning, setReasoning] = useState(false);
   const [allowFirstRequest, setAllowFirstRequest] = useState(
     !getCookie("gemini_api_key")
   );
@@ -417,6 +419,7 @@ export default function RagAgentClient({
       conversation_id: usedConversationId,
       model_name: modelName,
       attachs: messageFiles,
+      reasoning: reasoning,
     };
     await handleStreamingChat(payload);
   };
@@ -665,20 +668,20 @@ export default function RagAgentClient({
             onRecommendationClick={(recommendation: string) =>
               setInput(recommendation)
             }
-            thinkingMessage={thinkingText}
+            thinkingMessage={reasoning ? thinkingText : ""}
             renderChatbotDetails={true}
           />
         </div>
 
         {/* Thinking Text with Animation */}
-        {thinkingText && (
+        {/* {thinkingText && (
           <div className="fixed bottom-24 right-4 z-50">
             <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border thinking-bubble">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
               <span className="text-sm">{thinkingText}</span>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Chat Input */}
         <div className="flex-none border-t border-border bg-background/95 backdrop-blur-sm">
@@ -692,6 +695,8 @@ export default function RagAgentClient({
             inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
             selectedFiles={selectedFiles}
             onSelectedFilesChange={setSelectedFiles}
+            reasoning={reasoning}
+            onReasoningChange={setReasoning}
           />
         </div>
       </div>

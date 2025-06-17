@@ -82,6 +82,7 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
   const [ragStreamingMessage, setRagStreamingMessage] = useState("");
   const [ragMessages, setRagMessages] = useState<StructuredMessage[]>([]);
   const [ragSelectedDocuments, setRagSelectedDocuments] = useState<any[]>([]);
+  const [ragReasoning, setRagReasoning] = useState(false);
 
   // Chatbot data
   const [chatbotData, setChatbotData] = useState<any>(null);
@@ -369,6 +370,7 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
       bot_id: botId,
       conversation_id: `conv_${Date.now()}`,
       attachs: messageFiles,
+      reasoning: ragReasoning,
     };
     await handleRagStreamingChat(payload);
   };
@@ -429,6 +431,8 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
     setChatbotData,
     toolsMessage,
     toolsMetadata,
+    ragReasoning,
+    setRagReasoning,
 
     // Constants
     geminiApiKey,

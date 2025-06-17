@@ -1,5 +1,12 @@
 import React, { useRef, useState } from "react";
-import { Paperclip, Send, Loader2 } from "lucide-react";
+import { Paperclip, Send, Loader2, Brain } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 interface ChatInputProps {
   input: string;
@@ -13,6 +20,8 @@ interface ChatInputProps {
   inputRef?: React.RefObject<HTMLTextAreaElement>;
   disabled?: boolean;
   color?: string;
+  reasoning?: boolean;
+  onReasoningChange?: (value: boolean) => void;
 }
 
 const MAX_TOTAL_SIZE = 50 * 1024 * 1024; // 50MB in bytes
@@ -28,9 +37,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
   inputRef,
   disabled = false,
   color = "bg-background",
+  reasoning = false,
+  onReasoningChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string>("");
+
   const calculateTotalSize = (files: File[]): number => {
     return files.reduce((total, file) => total + file.size, 0);
   };
@@ -48,6 +60,66 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
     setError("");
     onSelectedFilesChange([...selectedFiles, ...newFiles]);
+  };
+
+  const handlePaste = async (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    const newFiles: File[] = [];
+
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (file) {
+          // Convert to PNG if it's not already PNG or JPEG
+          if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+            try {
+              const img = new Image();
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              
+              // Create a promise to handle the image loading
+              const imageLoadPromise = new Promise((resolve) => {
+                img.onload = resolve;
+                img.src = URL.createObjectURL(file);
+              });
+
+              await imageLoadPromise;
+              
+              canvas.width = img.width;
+              canvas.height = img.height;
+              ctx?.drawImage(img, 0, 0);
+              
+              // Convert to PNG
+              const blob = await new Promise<Blob>((resolve) => {
+                canvas.toBlob((blob) => {
+                  if (blob) resolve(blob);
+                }, 'image/png');
+              });
+              
+              const convertedFile = new File([blob], 'pasted-image.png', { type: 'image/png' });
+              newFiles.push(convertedFile);
+            } catch (error) {
+              console.error('Error converting image:', error);
+              newFiles.push(file);
+            }
+          } else {
+            newFiles.push(file);
+          }
+        }
+      }
+    }
+
+    if (newFiles.length > 0) {
+      const totalSize = calculateTotalSize([...selectedFiles, ...newFiles]);
+      if (totalSize > MAX_TOTAL_SIZE) {
+        setError("File size limit exceeded");
+        return;
+      }
+      setError("");
+      onSelectedFilesChange([...selectedFiles, ...newFiles]);
+    }
   };
 
   const handleSend = () => {
@@ -110,7 +182,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 value={input}
                 onChange={(e) => onInputChange(e.target.value)}
                 onKeyDown={onKeyPress}
-                placeholder="Type a message..."
+                onPaste={handlePaste}
+                placeholder="Type a message or paste an image..."
                 disabled={loading || disabled}
                 className="w-full h-full min-h-[50px] md:min-h-[60px] px-3 md:px-4 py-2 md:py-3 text-base md:text-lg bg-transparent border-none focus:outline-none resize-none"
                 style={{ lineHeight: "1.5" }}
@@ -141,24 +214,45 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 <Paperclip className="w-4 h-4 md:w-5 md:h-5" />
               </button>
 
-              <button
-                onClick={handleSend}
-                disabled={
-                  loading || disabled || (!input.trim() && selectedFiles.length === 0)
-                }
-                className={`p-2 md:p-3 rounded-full transition-all duration-200 ${
-                  loading || disabled || (!input.trim() && selectedFiles.length === 0)
-                    ? "bg-foreground text-background cursor-not-allowed"
-                    : "bg-foreground text-background shadow-sm hover:bg-foreground/80 hover:shadow-md"
-                }`}
-                title={loading ? "Processing..." : "Send"}
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <Send size={18} className="md:w-5 md:h-5" />
+              <div className="flex items-center gap-2">
+                {onReasoningChange && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant={reasoning ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => onReasoningChange(!reasoning)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Brain className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {reasoning ? "Tắt chế độ lý luận" : "Bật chế độ lý luận"}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
-              </button>
+                <Button
+                  onClick={handleSend}
+                  disabled={
+                    loading || disabled || (!input.trim() && selectedFiles.length === 0)
+                  }
+                  className={`p-2 md:p-3 rounded-full transition-all duration-200 ${
+                    loading || disabled || (!input.trim() && selectedFiles.length === 0)
+                      ? "bg-foreground text-background cursor-not-allowed"
+                      : "bg-foreground text-background shadow-sm hover:bg-foreground/80 hover:shadow-md"
+                  }`}
+                  title={loading ? "Processing..." : "Send"}
+                >
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Send size={18} className="md:w-5 md:h-5" />
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </div>

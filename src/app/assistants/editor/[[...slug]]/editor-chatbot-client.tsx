@@ -22,7 +22,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Trash2, Bot, ChevronLeft, KeyRound, LogIn } from "lucide-react";
+import { Trash2, Bot, ChevronLeft, KeyRound, LogIn, Brain } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -34,6 +34,12 @@ import ToolMessage from "@/components/chat/tool-message";
 import { useEditorChatbot } from "@/hooks/use-editor-chatbot";
 import { fetchChatbotDetail } from "@/services/chatbotService";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Styles
 const styles = {
@@ -296,6 +302,8 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     handleKeyPress,
     handleClearConfirm,
     handleTabChange,
+    ragReasoning,
+    setRagReasoning,
   } = useEditorChatbot(botId, notFounded);
 
   useEffect(() => {
@@ -558,6 +566,8 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                     selectedFiles={selectedFiles}
                     onSelectedFilesChange={setSelectedFiles}
                     disabled={loading}
+                    reasoning={false}
+                    onReasoningChange={() => {}}
                   />
                 </div>
               </div>
@@ -616,6 +626,8 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               selectedFiles={[]}
               onSelectedFilesChange={() => {}}
               color="bg-muted/50"
+              reasoning={ragReasoning}
+              onReasoningChange={setRagReasoning}
             />
           </div>
         </section>
