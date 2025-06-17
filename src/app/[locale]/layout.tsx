@@ -6,6 +6,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import "./globals.css";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
+import { setRequestLocale } from "next-intl/server";
 
 const inter = Inter({
   subsets: ["vietnamese"],
@@ -77,29 +81,38 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+  setRequestLocale(locale);
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable}`} suppressHydrationWarning>
-        <GoogleOAuthProvider clientId="486285301849-fjcp1e941fdrhkpj0ufjom8mqu8r0chv.apps.googleusercontent.com">
-          <SidebarProvider defaultOpen={true}>
-            <Toaster />
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="light"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <AppSidebar />
+        <NextIntlClientProvider>
+          <GoogleOAuthProvider clientId="486285301849-fjcp1e941fdrhkpj0ufjom8mqu8r0chv.apps.googleusercontent.com">
+            <SidebarProvider defaultOpen={true}>
+              <Toaster />
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="light"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <AppSidebar />
 
-              <div className="w-full">{children}</div>
-            </ThemeProvider>
-          </SidebarProvider>
-        </GoogleOAuthProvider>
+                <div className="w-full">{children}</div>
+              </ThemeProvider>
+            </SidebarProvider>
+          </GoogleOAuthProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -1,0 +1,292 @@
+{
+  "HomePage": {
+    "title": "Welcome to FTES",
+    "about": "FTES is a platform that helps you manage your business effectively",
+    "subtitle": "First Technology Education Services",
+    "description": "FTES (First Technology Education Services) is an intelligent learning system that applies artificial intelligence (AI) to provide personalized, modern, and effective learning experiences for everyone interested in information technology.",
+    "start_now": "Start Now",
+    "create_chatbot": "Create Chatbot",
+    "features_title": "Outstanding Features",
+    "features": {
+      "create_chatbot": {
+        "title": "Create Chatbot with AI",
+        "description": "Create intelligent chatbots with AI expert assistance, serving specific user needs."
+      },
+      "ai_combat": {
+        "title": "AI Combat",
+        "description": "Explore AI capabilities in dialogue and debate, helping to better understand AI technology."
+      },
+      "api_integration": {
+        "title": "API Integration",
+        "description": "Export chatbot as API to integrate into other websites, serving developer needs."
+      }
+    },
+    "management_title": "Smart Chatbot Management",
+    "management": {
+      "manage": {
+        "title": "Manage Chatbot",
+        "description": "Easily manage and organize created chatbots, with the ability to edit and update information."
+      },
+      "public": {
+        "title": "Public Chatbot",
+        "description": "Share your chatbot with the community and receive user feedback."
+      },
+      "conversation": {
+        "title": "Conversation Management",
+        "description": "Track and manage conversations, analyze interactions and improve response quality."
+      },
+      "history": {
+        "title": "Chat History",
+        "description": "Store and retrieve chat history, helping to track progress and improve user experience."
+      }
+    },
+    "cta": {
+      "title": "Start Your Smart Learning Journey",
+      "description": "Discover AI tools specially designed for learning and skill development.",
+      "button": "View Chatbots"
+    }
+  },
+  "sidebar": {
+    "home": "Home",
+    "assistants": "Assistants",
+    "chatbot": "Chatbot",
+    "settings": "Settings",
+    "create_chatbot": "Create chatbot",
+    "chatbot_list": "Chatbot list",
+    "ai_combat": "AI Combat",
+    "profile": "Profile",
+    "language": {
+      "title": "Language",
+      "en": "English",
+      "vi": "Vietnamese"
+    }
+  },
+  "aiCombat": {
+    "loading": "Loading chatbot list...",
+    "title": "AI COMBAT ARENA",
+    "subtitle": "Watch two AI agents engage in an intelligent conversation",
+    "leftFighter": "Left Fighter",
+    "rightFighter": "Right Fighter",
+    "selectChatbot": "Select a chatbot",
+    "selectModel": "Select a model",
+    "firstAskingAgent": "First Asking Agent",
+    "startConversation": "Start Conversation",
+    "back": "Back",
+    "home": "Home",
+    "continue": "Continue",
+    "stop": "Stop",
+    "leftAI": "Left AI",
+    "rightAI": "Right AI",
+    "vs": "VS",
+    "maxConversations": "Reached maximum {count} conversations. Click Continue to start a new round.",
+    "modelOptions": {
+      "gemini25": "Gemini 2.5 Flash",
+      "gemini20": "Gemini 2.0 Flash"
+    }
+  },
+  "chatbotList": {
+    "back": "Back",
+    "home": "Home",
+    "searchPlaceholder": "Search chatbots...",
+    "createNew": "Create New",
+    "myChatbots": "My Chatbots",
+    "publicChatbots": "Public Chatbots",
+    "noChatbots": "No chatbots yet",
+    "createFirst": "Create your first chatbot now",
+    "createNewChatbot": "Create New Chatbot",
+    "noPublicChatbots": "No public chatbots",
+    "noPublicChatbotsDesc": "No public chatbots have been created yet",
+    "public": "Public",
+    "private": "Private",
+    "integratedTools": "Integrated {count} tool calling",
+    "chatWithBot": "Chat with bot",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this chatbot?",
+    "errors": {
+      "loadError": "Error loading chatbots",
+      "loadPublicError": "Error loading public chatbots",
+      "deleteSuccess": "Chatbot deleted successfully",
+      "deleteError": "Error deleting chatbot",
+      "loginRequired": "Please login to create a chatbot"
+    }
+  },
+  "editorChatbot": {
+    "title": {
+      "create": "Create New AI Chatbot",
+      "update": "Update AI Chatbot"
+    },
+    "subtitle": {
+      "create": "Create an intelligent AI chatbot with Gemini technology.",
+      "update": "Edit and update your chatbot."
+    },
+    "back": "Back",
+    "backToList": "Back to chatbot list",
+    "geminiKey": {
+      "status": "Gemini API Key:",
+      "set": "Set",
+      "notSet": "Not set",
+      "tooltip": {
+        "set": "You have set up Gemini API Key, can use full Gemini AI features.",
+        "notSet": "You haven't set up Gemini API Key.",
+        "setupNow": "Set up now"
+      }
+    },
+    "model": {
+      "select": "Select AI model",
+      "placeholder": "Select AI model"
+    },
+    "clearChat": "Clear conversation",
+    "tabs": {
+      "create": "Create chatbot",
+      "update": "Create and update",
+      "config": "Configuration"
+    },
+    "emptyState": {
+      "create": {
+        "title": "Create New AI Chatbot",
+        "description": "Smart AI assistant will help you create a new chatbot from scratch.",
+        "guide": {
+          "title": "Usage Guide",
+          "item1": "Describe the chatbot you want to create",
+          "item2": "Define the purpose and target users",
+          "item3": "Set up features and capabilities"
+        },
+        "examples": {
+          "title": "Creation Examples",
+          "item1": "Create a customer support chatbot",
+          "item2": "Set up an educational chatbot",
+          "item3": "Configure a sales chatbot"
+        },
+        "start": {
+          "title": "Get Started",
+          "description": "Enter the description of the chatbot you want to create in the chat box below!"
+        }
+      },
+      "update": {
+        "title": "Update AI Chatbot",
+        "description": "Smart AI assistant will help you update and modify your chatbot.",
+        "guide": {
+          "title": "Usage Guide",
+          "item1": "Describe the changes you want to make",
+          "item2": "Update information about target users",
+          "item3": "Add or modify features"
+        },
+        "examples": {
+          "title": "Update Examples",
+          "item1": "Update chatbot prompts",
+          "item2": "Add new features",
+          "item3": "Modify existing settings"
+        },
+        "start": {
+          "title": "Get Started",
+          "description": "Enter your questions or describe the changes you want to make in the chat box below!"
+        }
+      }
+    },
+    "loading": {
+      "checking": "Checking login information..."
+    },
+    "unauthorized": {
+      "title": "Login Required",
+      "description": "You need to login to use the {action} AI chatbot feature.",
+      "redirecting": "Redirecting to home page in 3 seconds...",
+      "buttons": {
+        "home": "Go to home page to login",
+        "back": "Back to chatbot list"
+      }
+    },
+    "clearModal": {
+      "title": "Clear conversation",
+      "description": "Are you sure you want to clear the entire conversation?",
+      "buttons": {
+        "clear": "Clear",
+        "cancel": "Cancel"
+      }
+    },
+    "errors": {
+      "loginRequired": "You need to login to use this feature",
+      "login": "Login"
+    }
+  },
+  "chatMessages": {
+    "emptyState": {
+      "title": "Start creating your chatbot in the left frame",
+      "description": "Enter your chatbot requirements in the left frame for the AI assistant to understand and create your chatbot",
+      "loading": {
+        "title": "Loading chatbot details..."
+      }
+    },
+    "sourceDocuments": {
+      "title": "Source Documents",
+      "count": "Source Documents ({count})",
+      "source": "Source: {source}"
+    }
+  },
+  "profile": {
+    "title": "Welcome to AI FTES",
+    "subtitle": "Please complete your profile to get started.",
+    "loading": {
+      "checking": "Checking login information...",
+      "loading": "Loading profile..."
+    },
+    "form": {
+      "name": {
+        "label": "Full Name",
+        "placeholder": "Enter your full name"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number"
+      },
+      "major": {
+        "label": "Major",
+        "placeholder": "Select your major",
+        "options": {
+          "SE": "Software Engineering",
+          "AI": "Artificial Intelligence",
+          "IB": "International Business"
+        }
+      },
+      "submit": {
+        "loading": "Updating...",
+        "text": "Update Profile"
+      }
+    },
+    "gemini": {
+      "title": "Gemini API Key",
+      "status": {
+        "valid": "API key is valid",
+        "invalid": "Not verified"
+      },
+      "form": {
+        "apiKey": {
+          "placeholder": "Enter Gemini API key"
+        },
+        "model": {
+          "placeholder": "Select model"
+        },
+        "test": {
+          "loading": "Testing...",
+          "text": "Test API key"
+        },
+        "save": {
+          "loading": "Saving...",
+          "text": "Save API key"
+        }
+      }
+    },
+    "errors": {
+      "userNotFound": "User not found",
+      "updateError": "Error updating profile",
+      "testError": "Could not test API key",
+      "invalidKey": "Invalid API key",
+      "saveError": "Please fill in all information",
+      "saveSuccess": "API key saved successfully"
+    },
+    "back": "Back"
+  },
+  "modeToggle": {
+    "toggleTheme": "Toggle Theme"
+  }
+}

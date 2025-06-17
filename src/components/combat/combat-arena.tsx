@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import CombatChatMessages from "./combat-chat-message";
 import { StructuredMessage } from "./combat-message";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface CombatArenaProps {
   leftBot: { name: string } | undefined;
@@ -55,6 +56,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const t = useTranslations("aiCombat");
 
   // Memoize background styles to prevent unnecessary re-renders
   const backgroundStyles = useMemo(
@@ -126,7 +128,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
                 className="text-yellow-400 hover:text-red-400 border border-yellow-400/30 hover:border-red-400/50 bg-black/50 font-bold text-xs md:text-sm"
               >
                 <ArrowLeft className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                Back
+                {t("back")}
               </Button>
               <Button
                 variant="outline"
@@ -135,7 +137,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
                 className="text-yellow-400 hover:text-red-400 border border-yellow-400/30 hover:border-red-400/50 bg-black/50 font-bold text-xs md:text-sm"
               >
                 <Home className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                Home
+                {t("home")}
               </Button>
             </div>
 
@@ -152,13 +154,13 @@ const CombatArena: React.FC<CombatArenaProps> = ({
                 </div>
                 <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2 z-10 relative">
                   <Badge className="px-2 md:px-4 py-0.5 md:py-1 text-xs md:text-sm font-bold border border-cyan-400 bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
-                    Left AI
+                    {t("leftAI")}
                   </Badge>
                   <CombatSelect
                     value={leftModelName}
                     onChange={setLeftModelName}
                     options={modelOptions}
-                    placeholder="Select a model"
+                    placeholder={t("selectModel")}
                     side="left"
                   />
                 </div>
@@ -169,7 +171,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
                 <span className="absolute inset-0 text-red-500 opacity-50 pointer-events-none select-none">
                   <Sword className="w-8 h-8 md:w-14 md:h-14" />
                 </span>
-                VS
+                {t("vs")}
               </div>
 
               {/* Right Fighter */}
@@ -183,13 +185,13 @@ const CombatArena: React.FC<CombatArenaProps> = ({
                 </div>
                 <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2 z-10 relative">
                   <Badge className="px-2 md:px-4 py-0.5 md:py-1 text-xs md:text-sm font-bold border border-red-400 bg-gradient-to-r from-red-600 to-pink-500 text-white">
-                    Right AI
+                    {t("rightAI")}
                   </Badge>
                   <CombatSelect
                     value={rightModelName}
                     onChange={setRightModelName}
                     options={modelOptions}
-                    placeholder="Select a model"
+                    placeholder={t("selectModel")}
                     side="right"
                   />
                 </div>
@@ -205,7 +207,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
                   className="bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 border border-green-400 shadow-lg font-bold text-sm md:text-lg px-3 md:px-6 py-1 md:py-2 h-auto"
                 >
                   <PlayCircle className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />
-                  Continue
+                  {t("continue")}
                 </Button>
               )}
               <Button
@@ -215,7 +217,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
                 className="bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 border border-red-400 shadow-lg font-bold text-sm md:text-lg px-3 md:px-6 py-1 md:py-2 h-auto"
               >
                 <StopCircle className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />
-                Stop
+                {t("stop")}
               </Button>
             </div>
           </div>
@@ -235,8 +237,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
         {/* Conversation Limit Warning */}
         {canContinue && !isConversationActive && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-yellow-400/30 text-yellow-400 text-sm md:text-base">
-            Reached maximum {MAX_CONVERSATIONS} conversations. Click Continue to
-            start a new round.
+            {t("maxConversations", { count: MAX_CONVERSATIONS })}
           </div>
         )}
       </div>

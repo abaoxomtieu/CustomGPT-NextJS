@@ -13,6 +13,7 @@ import {
 } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
 import { Brain } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // Optimized styles with better performance
 const styles = `
@@ -119,6 +120,7 @@ const useIntersectionObserver = () => {
 
 const HomeClient: React.FC = () => {
   useIntersectionObserver();
+  const t = useTranslations("HomePage");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
@@ -128,28 +130,25 @@ const HomeClient: React.FC = () => {
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="text-center max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 title-gradient fade-in">
-            FTES
+            {t("title")}
             <span className="block text-xl md:text-3xl text-foreground mt-2 md:mt-4">
-              First Technology Education Services
+              {t("subtitle")}
             </span>
           </h2>
           <div className="mb-6 md:mb-8 text-sm md:text-base text-muted-foreground leading-relaxed text-justify fade-in">
             <p>
-              <b>FTES</b> (First Technology Education Services) là hệ thống học
-              tập thông minh ứng dụng trí tuệ nhân tạo (AI) nhằm mang đến trải
-              nghiệm học tập cá nhân hóa, hiện đại và hiệu quả cho mọi đối tượng
-              yêu thích công nghệ thông tin.
+              {t("description")}
             </p>
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 fade-in">
             <Link href="/assistants" className="w-full sm:w-auto">
               <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-200 rounded-full shadow-lg hover:shadow-xl">
-                Bắt đầu ngay
+                {t("start_now")}
               </Button>
             </Link>
             <Link href="/create-prompt" className="w-full sm:w-auto">
               <Button className="w-full border-primary text-background hover:bg-background/10 hover:text-foreground h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-200 rounded-full">
-                Tạo Chatbot
+                {t("create_chatbot")}
               </Button>
             </Link>
           </div>
@@ -159,24 +158,24 @@ const HomeClient: React.FC = () => {
       {/* Features Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
         <h2 className="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-foreground fade-in">
-          Tính năng nổi bật
+          {t("features_title")}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
           {[
             {
               icon: <FcReading className="text-2xl md:text-3xl" />,
-              title: "Tạo Chatbot với AI",
-              description: "Tạo chatbot thông minh với sự trợ giúp của chuyên gia AI, phục vụ cho từng nhu cầu cụ thể của người dùng."
+              title: t("features.create_chatbot.title"),
+              description: t("features.create_chatbot.description")
             },
             {
               icon: <Brain className="text-2xl md:text-3xl" />,
-              title: "Đấu trường AI",
-              description: "Khám phá khả năng của các AI trong việc đối thoại và tranh luận, giúp hiểu sâu hơn về công nghệ AI."
+              title: t("features.ai_combat.title"),
+              description: t("features.ai_combat.description")
             },
             {
               icon: <FcDataBackup className="text-2xl md:text-3xl" />,
-              title: "API Integration",
-              description: "Export chatbot thành API để tích hợp vào các trang web khác, phục vụ nhu cầu phát triển của developer."
+              title: t("features.api_integration.title"),
+              description: t("features.api_integration.description")
             }
           ].map((feature, index) => (
             <article key={index} className="feature-card fade-in">
@@ -198,29 +197,29 @@ const HomeClient: React.FC = () => {
       <section className="bg-secondary/10 py-12 md:py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-foreground fade-in">
-            Quản lý Chatbot Thông Minh
+            {t("management_title")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {[
               {
                 icon: <FcSettings className="text-3xl md:text-4xl" />,
-                title: "Quản lý Chatbot",
-                description: "Dễ dàng quản lý và tổ chức các chatbot đã tạo, với khả năng chỉnh sửa và cập nhật thông tin."
+                title: t("management.manage.title"),
+                description: t("management.manage.description")
               },
               {
                 icon: <FcGlobe className="text-3xl md:text-4xl" />,
-                title: "Public Chatbot",
-                description: "Chia sẻ chatbot của bạn với cộng đồng và nhận phản hồi từ người dùng."
+                title: t("management.public.title"),
+                description: t("management.public.description")
               },
               {
                 icon: <FcVoicePresentation className="text-3xl md:text-4xl" />,
-                title: "Quản lý Hội thoại",
-                description: "Theo dõi và quản lý các cuộc hội thoại, phân tích tương tác và cải thiện chất lượng phản hồi."
+                title: t("management.conversation.title"),
+                description: t("management.conversation.description")
               },
               {
                 icon: <FcTimeline className="text-3xl md:text-4xl" />,
-                title: "Lịch sử Chat",
-                description: "Lưu trữ và truy xuất lịch sử chat, giúp theo dõi tiến trình và cải thiện trải nghiệm người dùng."
+                title: t("management.history.title"),
+                description: t("management.history.description")
               }
             ].map((feature, index) => (
               <article key={index} className="feature-card fade-in">
@@ -243,15 +242,14 @@ const HomeClient: React.FC = () => {
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="glass-effect rounded-3xl p-6 md:p-16 text-center fade-in">
           <h2 className="text-2xl md:text-4xl font-bold mb-4 md:mb-8 text-foreground">
-            Bắt đầu hành trình học tập thông minh
+            {t("cta.title")}
           </h2>
           <p className="text-base md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-2xl mx-auto">
-            Khám phá ngay các công cụ AI được thiết kế đặc biệt cho việc học tập
-            và phát triển kỹ năng.
+            {t("cta.description")}
           </p>
           <Link href="/assistants">
             <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 md:h-14 px-6 md:px-10 text-base md:text-lg transition-all duration-200 rounded-full shadow-lg hover:shadow-xl">
-              Xem Chatbot
+              {t("cta.button")}
             </Button>
           </Link>
         </div>

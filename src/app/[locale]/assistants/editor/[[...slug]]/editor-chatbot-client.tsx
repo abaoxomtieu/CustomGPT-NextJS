@@ -40,6 +40,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useTranslations } from "next-intl";
 
 // Styles
 const styles = {
@@ -73,84 +74,81 @@ const styles = {
 };
 
 // Empty State Component
-const EmptyState = ({ notFounded }: { notFounded: boolean }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className={styles.emptyState}
-  >
-    <div className={styles.emptyStateCard}>
-      <div className="flex flex-col items-center mb-6 md:mb-8">
-        <motion.div
-          whileHover={{ scale: 1.1 }}
-          className="bg-primary/10 p-3 md:p-4 rounded-full mb-3 md:mb-4"
-        >
-          <Bot className="text-3xl md:text-4xl text-primary" />
-        </motion.div>
-        <h3 className="text-xl md:text-2xl font-bold text-card-foreground mb-2 md:mb-3">
-          🤖 {notFounded ? "Tạo Chatbot AI Mới" : "Cập Nhật Chatbot AI"}
-        </h3>
-        <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
-          {notFounded
-            ? "Trợ lý AI thông minh sẽ giúp bạn tạo chatbot mới từ đầu."
-            : "Trợ lý AI thông minh sẽ giúp bạn cập nhật và chỉnh sửa chatbot của bạn."}
-        </p>
-      </div>
+const EmptyState = ({ notFounded }: { notFounded: boolean }) => {
+  const t = useTranslations("editorChatbot.emptyState");
+  const mode = notFounded ? "create" : "update";
+  
+  // Get guide items
+  const guideItems = [
+    t(`${mode}.guide.item1`),
+    t(`${mode}.guide.item2`),
+    t(`${mode}.guide.item3`)
+  ];
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-        <FeatureCard
-          icon="💡"
-          title="Hướng dẫn sử dụng"
-          items={[
-            notFounded
-              ? "Mô tả chatbot bạn muốn tạo"
-              : "Mô tả các thay đổi bạn muốn thực hiện",
-            notFounded
-              ? "Xác định mục đích và đối tượng sử dụng"
-              : "Cập nhật thông tin về người dùng mục tiêu",
-            notFounded
-              ? "Thiết lập tính năng và khả năng"
-              : "Thêm hoặc chỉnh sửa các tính năng",
-          ]}
-        />
-        <FeatureCard
-          icon="🎯"
-          title={notFounded ? "Ví dụ tạo mới" : "Ví dụ cập nhật"}
-          items={[
-            notFounded
-              ? "Tạo chatbot hỗ trợ khách hàng"
-              : "Cập nhật prompt cho chatbot",
-            notFounded ? "Thiết lập chatbot giáo dục" : "Thêm tính năng mới",
-            notFounded
-              ? "Cấu hình chatbot bán hàng"
-              : "Chỉnh sửa cài đặt hiện có",
-          ]}
-        />
-      </div>
+  // Get example items
+  const exampleItems = [
+    t(`${mode}.examples.item1`),
+    t(`${mode}.examples.item2`),
+    t(`${mode}.examples.item3`)
+  ];
 
-      <motion.div
-        whileHover={{ scale: 1.01 }}
-        className="bg-secondary/50 rounded-xl p-4 md:p-6 border border-border"
-      >
-        <div className="flex items-center">
-          <div className={styles.featureIcon}>
-            <span className="text-lg md:text-xl">💬</span>
-          </div>
-          <div>
-            <p className="text-card-foreground font-medium text-base md:text-lg">
-              Bắt đầu ngay
-            </p>
-            <p className="text-xs md:text-sm text-muted-foreground mt-1">
-              {notFounded
-                ? "Hãy nhập mô tả chatbot bạn muốn tạo vào ô chat bên dưới!"
-                : "Hãy nhập câu hỏi hoặc mô tả các thay đổi bạn muốn thực hiện vào ô chat bên dưới!"}
-            </p>
-          </div>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={styles.emptyState}
+    >
+      <div className={styles.emptyStateCard}>
+        <div className="flex flex-col items-center mb-6 md:mb-8">
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            className="bg-primary/10 p-3 md:p-4 rounded-full mb-3 md:mb-4"
+          >
+            <Bot className="text-3xl md:text-4xl text-primary" />
+          </motion.div>
+          <h3 className="text-xl md:text-2xl font-bold text-card-foreground mb-2 md:mb-3">
+            {t(`${mode}.title`)}
+          </h3>
+          <p className="text-sm md:text-base text-muted-foreground max-w-2xl">
+            {t(`${mode}.description`)}
+          </p>
         </div>
-      </motion.div>
-    </div>
-  </motion.div>
-);
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+          <FeatureCard
+            icon="💡"
+            title={t(`${mode}.guide.title`)}
+            items={guideItems}
+          />
+          <FeatureCard
+            icon="🎯"
+            title={t(`${mode}.examples.title`)}
+            items={exampleItems}
+          />
+        </div>
+
+        <motion.div
+          whileHover={{ scale: 1.01 }}
+          className="bg-secondary/50 rounded-xl p-4 md:p-6 border border-border"
+        >
+          <div className="flex items-center">
+            <div className={styles.featureIcon}>
+              <span className="text-lg md:text-xl">💬</span>
+            </div>
+            <div>
+              <p className="text-card-foreground font-medium text-base md:text-lg">
+                {t(`${mode}.start.title`)}
+              </p>
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
+                {t(`${mode}.start.description`)}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
 
 // Feature Card Component
 const FeatureCard = ({
@@ -189,28 +187,32 @@ const FeatureCard = ({
 );
 
 // Loading State Component
-const LoadingState = () => (
-  <div className="flex items-center justify-center h-screen bg-background">
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="text-center"
-    >
+const LoadingState = () => {
+  const t = useTranslations("editorChatbot.loading");
+  return (
+    <div className="flex items-center justify-center h-screen bg-background">
       <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        className="rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"
-      />
-      <p className="text-muted-foreground">
-        Đang kiểm tra thông tin đăng nhập...
-      </p>
-    </motion.div>
-  </div>
-);
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center"
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"
+        />
+        <p className="text-muted-foreground">{t("checking")}</p>
+      </motion.div>
+    </div>
+  );
+};
 
 // Unauthorized State Component
 const UnauthorizedState = ({ notFounded }: { notFounded: boolean }) => {
   const router = useRouter();
+  const t = useTranslations("editorChatbot.unauthorized");
+  const action = notFounded ? "create" : "update";
+
   return (
     <main className="flex items-center justify-center h-screen bg-background">
       <motion.div
@@ -227,27 +229,26 @@ const UnauthorizedState = ({ notFounded }: { notFounded: boolean }) => {
               <LogIn className="text-4xl text-yellow-500" />
             </motion.div>
             <h2 className="text-xl font-bold text-card-foreground mb-2">
-              Yêu cầu đăng nhập
+              {t("title")}
             </h2>
             <p className="text-sm text-muted-foreground mb-4">
-              Bạn cần đăng nhập để sử dụng tính năng{" "}
-              {notFounded ? "tạo" : "cập nhật"} chatbot AI.
+              {t("description", { action })}
             </p>
             <p className="text-xs text-muted-foreground mb-4">
-              Đang chuyển hướng về trang chủ trong 3 giây...
+              {t("redirecting")}
             </p>
           </div>
           <div className="flex flex-col gap-2">
             <Button onClick={() => router.push("/")} className="w-full">
               <LogIn className="mr-2 w-4 h-4" />
-              Về trang chủ để đăng nhập
+              {t("buttons.home")}
             </Button>
             <Button
               variant="outline"
               onClick={() => router.push("/assistants")}
               className="w-full"
             >
-              Quay lại danh sách chatbot
+              {t("buttons.back")}
             </Button>
           </div>
         </div>
@@ -266,6 +267,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
   notFounded,
 }) => {
   const router = useRouter();
+  const t = useTranslations("editorChatbot");
   const {
     messages,
     input,
@@ -329,9 +331,9 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
 
   const handleInputChange = (value: string) => {
     if (!isLogin) {
-      toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
+      toast.warning(t("errors.loginRequired"), {
         action: {
-          label: "Đăng nhập",
+          label: t("errors.login"),
           onClick: () => router.push("/"),
         },
       });
@@ -342,9 +344,9 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
 
   const handleRagInputChange = (value: string) => {
     if (!isLogin) {
-      toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
+      toast.warning(t("errors.loginRequired"), {
         action: {
-          label: "Đăng nhập",
+          label: t("errors.login"),
           onClick: () => router.push("/"),
         },
       });
@@ -355,9 +357,9 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
 
   const handleSendWrapper = async (files: File[]) => {
     if (!isLogin) {
-      toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
+      toast.warning(t("errors.loginRequired"), {
         action: {
-          label: "Đăng nhập",
+          label: t("errors.login"),
           onClick: () => router.push("/"),
         },
       });
@@ -368,9 +370,9 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
 
   const handleRagSendWrapper = async (files: File[]) => {
     if (!isLogin) {
-      toast.warning("Bạn cần đăng nhập để sử dụng tính năng này", {
+      toast.warning(t("errors.loginRequired"), {
         action: {
-          label: "Đăng nhập",
+          label: t("errors.login"),
           onClick: () => router.push("/"),
         },
       });
@@ -390,7 +392,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
   return (
     <main className="flex flex-col h-[100dvh] bg-background">
       <h1 className="sr-only">
-        {notFounded ? "Tạo Chatbot AI Mới" : "Cập Nhật Chatbot AI"} - AI FTES
+        {notFounded ? t("title.create") : t("title.update")} - AI FTES
       </h1>
 
       <header className={styles.header}>
@@ -400,10 +402,10 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               variant="ghost"
               onClick={() => router.push("/assistants")}
               className="text-muted-foreground hover:text-foreground p-1 md:p-2"
-              aria-label="Quay lại danh sách chatbot"
+              aria-label={t("backToList")}
             >
               <ChevronLeft className="mr-1 w-4 h-4" />
-              <span className="hidden md:inline">Quay lại</span>
+              <span className="hidden md:inline">{t("back")}</span>
             </Button>
             <Bot
               className="w-5 h-5 md:w-6 md:h-6 text-primary"
@@ -411,12 +413,10 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
             />
             <div>
               <h2 className="text-lg md:text-xl font-semibold text-card-foreground">
-                {notFounded ? "Tạo Chatbot AI Mới" : "Cập Nhật Chatbot AI"}
+                {notFounded ? t("title.create") : t("title.update")}
               </h2>
               <p className="text-xs md:text-sm text-muted-foreground">
-                {notFounded
-                  ? "Tạo chatbot AI thông minh với công nghệ Gemini."
-                  : "Chỉnh sửa và cập nhật chatbot của bạn."}
+                {notFounded ? t("subtitle.create") : t("subtitle.update")}
               </p>
             </div>
             <Popover>
@@ -428,22 +428,24 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                       : "bg-yellow-500/10 text-yellow-500"
                   } cursor-pointer`}
                   role="button"
-                  aria-label={`Trạng thái Gemini API Key: ${
-                    geminiApiKey ? "Đã thiết lập" : "Chưa thiết lập"
+                  aria-label={`${t("geminiKey.status")} ${
+                    geminiApiKey ? t("geminiKey.set") : t("geminiKey.notSet")
                   }`}
                 >
                   <KeyRound className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-                  <span className="hidden md:inline">Gemini API Key:</span>{" "}
-                  {geminiApiKey ? "Đã thiết lập" : "Chưa thiết lập"}
+                  <span className="hidden md:inline">
+                    {t("geminiKey.status")}
+                  </span>{" "}
+                  {geminiApiKey ? t("geminiKey.set") : t("geminiKey.notSet")}
                 </Badge>
               </PopoverTrigger>
               <PopoverContent className="bg-card border-border">
                 <p className="text-card-foreground text-sm">
                   {geminiApiKey ? (
-                    "Bạn đã thiết lập Gemini API Key, có thể sử dụng đầy đủ tính năng AI Gemini."
+                    t("geminiKey.tooltip.set")
                   ) : (
                     <span>
-                      Bạn chưa thiết lập Gemini API Key.
+                      {t("geminiKey.tooltip.notSet")}
                       <br />
                       <Button
                         size="sm"
@@ -451,7 +453,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                         onClick={() => router.push("/profile")}
                         className="text-primary"
                       >
-                        Thiết lập ngay
+                        {t("geminiKey.tooltip.setupNow")}
                       </Button>
                     </span>
                   )}
@@ -463,9 +465,9 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
             <Select value={modelName} onValueChange={setModelName}>
               <SelectTrigger
                 className="w-full md:w-[180px] bg-background border-border text-sm"
-                aria-label="Chọn mô hình AI"
+                aria-label={t("model.select")}
               >
-                <SelectValue placeholder="Chọn mô hình AI" />
+                <SelectValue placeholder={t("model.placeholder")} />
               </SelectTrigger>
               <SelectContent className="bg-background border-border">
                 {modelOptions.map((opt) => (
@@ -483,9 +485,9 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               variant="destructive"
               onClick={() => setClearModalVisible(true)}
               className="text-sm whitespace-nowrap"
-              aria-label="Xóa toàn bộ hội thoại"
+              aria-label={t("clearChat")}
             >
-              <Trash2 className="mr-2 w-4 h-4" /> Xoá hội thoại
+              <Trash2 className="mr-2 w-4 h-4" /> {t("clearChat")}
             </Button>
           </div>
         </div>
@@ -505,7 +507,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                   className={styles.tabTrigger}
                   role="tab"
                 >
-                  {notFounded ? "Tạo chatbot" : "Tạo và cập nhật"}
+                  {notFounded ? t("tabs.create") : t("tabs.update")}
                 </TabsTrigger>
                 {chatbotData && (
                   <TabsTrigger
@@ -513,7 +515,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                     className={styles.tabTrigger}
                     role="tab"
                   >
-                    Cấu hình
+                    {t("tabs.config")}
                   </TabsTrigger>
                 )}
               </TabsList>
@@ -637,10 +639,10 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
         <DialogContent className="bg-card border-border">
           <DialogHeader>
             <DialogTitle className="text-card-foreground text-base md:text-lg">
-              Xoá hội thoại
+              {t("clearModal.title")}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground text-sm">
-              Bạn có chắc chắn muốn xoá toàn bộ hội thoại không?
+              {t("clearModal.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-2 mt-4">
@@ -649,14 +651,14 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               onClick={handleClearConfirm}
               className="text-sm"
             >
-              Xoá
+              {t("clearModal.buttons.clear")}
             </Button>
             <Button
               variant="outline"
               onClick={() => setClearModalVisible(false)}
               className="border-border text-sm"
             >
-              Huỷ
+              {t("clearModal.buttons.cancel")}
             </Button>
           </div>
         </DialogContent>

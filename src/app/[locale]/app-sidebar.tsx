@@ -9,6 +9,7 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronLeft,
+  Languages,
 } from "lucide-react";
 
 import {
@@ -28,7 +29,7 @@ import { LoginButton } from "@/components/login-button";
 import { Button } from "@/components/ui/button";
 import { deleteCookie } from "@/helpers/Cookies";
 import useAppState from "@/context/state";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useParams } from "next/navigation";
 import Image from "next/image";
 import { ModeToggle } from "@/components/mode-toggle";
 import {
@@ -38,55 +39,64 @@ import {
 } from "@/components/ui/collapsible";
 import Link from "next/link";
 import { useState } from "react";
-
+import { useTranslations } from "next-intl";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 // Menu items, chỉnh lại icon cho mục con của Chatbot
-const data = [
-  {
-    title: "Home",
-    url: "/",
-    icon: Home,
-  },
-  {
-    title: "Chatbot",
-    url: "/assistants",
-    icon: MessageCircle,
-    items: [
-      {
-        title: "Tạo chatbot",
-        url: "/assistants/editor",
-        icon: Plus,
-      },
-      {
-        title: "Danh sách chatbot",
-        url: "/assistants",
-        icon: MessageCircle,
-      },
-    ],
-  },
-  {
-    title: "Đấu trường",
-    url: "/ai-combat",
-    icon: Award,
-  },
-  {
-    title: "Quản lý thông tin",
-    url: "/profile",
-    icon: Users,
-  },
-];
 
 export function AppSidebar() {
+  const { locale } = useParams();
   const { isLogin, userInfo } = useAuth();
   const { setUserInfo, setIslogin } = useAppState();
   const router = useRouter();
   const pathname = usePathname();
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
   const { state, toggleSidebar } = useSidebar();
-
+  const t = useTranslations("sidebar");
+  const data = [
+    {
+      title: t("home"),
+      url: "/",
+      icon: Home,
+    },
+    {
+      title: t("chatbot"),
+      url: "/assistants",
+      icon: MessageCircle,
+      items: [
+        {
+          title: t("create_chatbot"),
+          url: "/assistants/editor",
+          icon: Plus,
+        },
+        {
+          title: t("chatbot_list"),
+          url: "/assistants",
+          icon: MessageCircle,
+        },
+      ],
+    },
+    {
+      title: t("ai_combat"),
+      url: "/ai-combat",
+      icon: Award,
+    },
+    {
+      title: t("profile"),
+      url: "/profile",
+      icon: Users,
+    },
+  ];
   // Check if current page should hide sidebar
   const shouldHideSidebar =
     pathname.startsWith("/assistants/editor") ||
-    pathname.startsWith("/rag-agent");
+    pathname.startsWith("/rag-agent") ||
+    pathname.startsWith(`/${locale}/assistants/editor`) ||
+    pathname.startsWith(`/${locale}/rag-agent`);
 
   // If we should hide the sidebar, return null
   if (shouldHideSidebar) {
@@ -142,7 +152,7 @@ export function AppSidebar() {
             </SidebarHeader>
             <SidebarGroup>
               <SidebarGroupLabel className="text-xs font-semibold text-primary/70 px-3">
-                Ứng dụng
+                Sidebar
               </SidebarGroupLabel>
               <SidebarMenu>
                 <ul className="flex w-full min-w-0 flex-col gap-1.5 p-2">
@@ -232,6 +242,38 @@ export function AppSidebar() {
           </SidebarContent>
           <SidebarFooter className="flex flex-col items-center gap-3 p-4 border-t border-primary/10 bg-gradient-to-t from-primary/5 to-transparent">
             <ModeToggle />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full flex justify-between items-center gap-2 hover:bg-primary/10 transition-colors duration-200 border-primary/20"
+                >
+                  <div className="flex items-center gap-2">
+                    <Languages className="w-4 h-4" />
+                    <span>{t("language.title")}</span>
+                  </div>
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[200px]">
+                <DropdownMenuItem
+                  onClick={() =>
+                    router.push(`/en${pathname.replace(/^\/[a-z]{2}/, "")}`)
+                  }
+                  className={locale === "en" ? "bg-primary/10" : ""}
+                >
+                  {t("language.en")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    router.push(`/vi${pathname.replace(/^\/[a-z]{2}/, "")}`)
+                  }
+                  className={locale === "vi" ? "bg-primary/10" : ""}
+                >
+                  {t("language.vi")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             {isLogin && (
               <Button
                 variant="outline"
@@ -287,6 +329,36 @@ export function AppSidebar() {
                   <span className="text-xs mt-1">{item.title}</span>
                 </Link>
               ))}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="flex flex-col items-center p-2 text-primary/70 hover:text-primary transition-colors duration-200"
+                >
+                  <Languages className="w-6 h-6" />
+                  <span className="text-xs mt-1">{t("language.title")}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[200px]">
+                <DropdownMenuItem
+                  onClick={() =>
+                    router.push(`/en${pathname.replace(/^\/[a-z]{2}/, "")}`)
+                  }
+                  className={locale === "en" ? "bg-primary/10" : ""}
+                >
+                  {t("language.en")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    router.push(`/vi${pathname.replace(/^\/[a-z]{2}/, "")}`)
+                  }
+                  className={locale === "vi" ? "bg-primary/10" : ""}
+                >
+                  {t("language.vi")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             {isLogin ? (
               <Button
                 variant="ghost"

@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 // } from "./RecommendationContainer";
 import ChatMessageAgent from "./chat-message-box";
 import ThinkingMessage from "./thinking-message";
+import { useTranslations } from "next-intl";
 
 interface StructuredMessage {
   role: string;
@@ -52,6 +53,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   renderChatbotDetails,
 }) => {
   const [isDocumentsOpen, setIsDocumentsOpen] = React.useState(false);
+  const t = useTranslations("chatMessages");
 
   return (
     <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4 bg-gradient-to-b from-background to-background/95">
@@ -82,12 +84,11 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                       <Bot className="text-3xl md:text-4xl text-primary mb-3 md:mb-4 mx-auto" />
                     </motion.div>
                     <h3 className="text-base md:text-lg font-medium text-card-foreground mb-2">
-                      {chatbotDetails?.name ||
-                        "Bắt đầu tạo chatbot của bạn ở khung bên trái"}
+                      {chatbotDetails?.name || t("emptyState.title")}
                     </h3>
                     <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6 leading-relaxed">
                       {chatbotDetails === null
-                        ? "Nhập yêu cầu chatbot bạn muốn tạo ở khung bên trái để trợ lý AI có thể hiểu và tạo ra chatbot cho bạn"
+                        ? t("emptyState.description")
                         : chatbotDetails?.prompt?.substring(0, 150) + "..."}
                     </p>
                   </>
@@ -153,7 +154,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
               <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
                 <CollapsibleTrigger className="flex w-full items-center justify-between p-3 md:p-4 text-left hover:bg-muted/50 transition-colors">
                   <span className="text-sm md:text-base text-card-foreground font-medium">
-                    Source Documents ({selectedDocuments.length})
+                    {t("sourceDocuments.count", {
+                      count: selectedDocuments.length,
+                    })}
                   </span>
                   <ChevronDown
                     className={`h-4 w-4 transition-transform duration-300 text-muted-foreground ${
@@ -180,7 +183,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                                 </div>
                                 {doc.metadata?.source && (
                                   <div className="text-[10px] md:text-xs text-muted-foreground/70">
-                                    Source: {doc.metadata.source}
+                                    {t("sourceDocuments.source", {
+                                      source: doc.metadata.source,
+                                    })}
                                   </div>
                                 )}
                               </div>

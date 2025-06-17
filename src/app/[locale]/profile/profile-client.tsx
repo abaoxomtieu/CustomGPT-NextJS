@@ -39,6 +39,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { updateUser } from "@/services/account";
+import { useTranslations } from "next-intl";
 
 const modelOptions = [
   { label: "Gemini 2.5 Flash", value: "gemini-2.5-flash-preview-05-20" },
@@ -59,6 +60,7 @@ const geminiSchema = z.object({
 export default function ProfileClient() {
   const router = useRouter();
   const { userInfo, setUserInfo, isLoading } = useAuth();
+  const t = useTranslations("profile");
 
   const [loading, setLoading] = useState(false);
   const [testing, setTesting] = useState(false);
@@ -89,14 +91,14 @@ export default function ProfileClient() {
     const initializeProfile = async () => {
       if (!isLoading) {
         if (!userInfo?.id) {
-      router.push("/");
+          router.push("/");
         } else {
-      form.reset({
-        name: userInfo.name || "",
-        contact_number: userInfo.contact_number || "",
-        major: (userInfo.major as "SE" | "AI" | "IB") || "SE",
-      });
-    }
+          form.reset({
+            name: userInfo.name || "",
+            contact_number: userInfo.contact_number || "",
+            major: (userInfo.major as "SE" | "AI" | "IB") || "SE",
+          });
+        }
         setInitialLoading(false);
       }
     };
@@ -108,19 +110,19 @@ export default function ProfileClient() {
   // Xử lý update user
   const onSubmit = async (values: any) => {
     if (!userInfo?.id) {
-      toast.error("Không tìm thấy user");
+      toast.error(t("errors.userNotFound"));
       return;
     }
     setLoading(true);
     try {
       const response = await updateUser(userInfo.id, values);
       if (response.status === 200) {
-        toast.success("Cập nhật thành công");
+        toast.success(t("errors.saveSuccess"));
         setUserInfo({ ...userInfo, ...values });
         router.push("/");
       }
     } catch (err: any) {
-      toast.error("Lỗi khi cập nhật");
+      toast.error(t("errors.updateError"));
     } finally {
       setLoading(false);
     }
@@ -145,14 +147,14 @@ export default function ProfileClient() {
         }
       );
       if (response.status === 200) {
-        toast.success("API key hợp lệ!");
+        toast.success(t("gemini.status.valid"));
         setIsApiKeyValid(true);
       }
     } catch (error: any) {
       if (error?.response?.data?.error) {
-        toast.error("API key không hợp lệ");
+        toast.error(t("errors.invalidKey"));
       } else {
-        toast.error("Không thể test API key");
+        toast.error(t("errors.testError"));
       }
       setIsApiKeyValid(false);
     } finally {
@@ -168,10 +170,10 @@ export default function ProfileClient() {
       setLoading(true);
       setCookie("gemini_api_key", values.api_key, 100);
       setCookie("gemini_model_name", values.model_name, 100);
-      toast.success("Lưu API key thành công");
+      toast.success(t("errors.saveSuccess"));
       setIsSaved(true);
     } catch {
-      toast.error("Vui lòng điền đầy đủ thông tin");
+      toast.error(t("errors.saveError"));
     } finally {
       setLoading(false);
     }
@@ -189,7 +191,7 @@ export default function ProfileClient() {
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="animate-spin h-16 w-16 text-primary" />
           <span className="text-foreground">
-            {isLoading ? "Đang kiểm tra thông tin đăng nhập..." : "Đang tải hồ sơ..."}
+            {isLoading ? t("loading.checking") : t("loading.loading")}
           </span>
         </div>
       </div>
@@ -206,16 +208,16 @@ export default function ProfileClient() {
           className="mb-4 flex items-center gap-2 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft size={18} />
-          <span className="hidden sm:inline">Quay lại</span>
+          <span className="hidden sm:inline">{t("back")}</span>
         </Button>
 
         <Card className="shadow-2xl border-border/50 backdrop-blur-sm bg-card text-background/80">
           <CardHeader className="space-y-2">
             <CardTitle className="text-xl md:text-2xl text-center text-card-foreground">
-              Chào mừng đến với AI FTES
+              {t("title")}
             </CardTitle>
             <p className="text-sm md:text-base text-center text-muted-foreground">
-              Vui lòng hoàn thiện hồ sơ để bắt đầu sử dụng.
+              {t("subtitle")}
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -231,11 +233,11 @@ export default function ProfileClient() {
                     <FormItem>
                       <FormLabel className="text-card-foreground">
                         <User className="inline mr-1" size={16} />
-                        Họ và tên
+                        {t("form.name.label")}
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Nhập họ và tên"
+                          placeholder={t("form.name.placeholder")}
                           {...field}
                           className="bg-background/80 border-border/50 text-foreground placeholder:text-muted-foreground"
                         />
@@ -252,11 +254,11 @@ export default function ProfileClient() {
                     <FormItem>
                       <FormLabel className="text-card-foreground">
                         <Phone className="inline mr-1" size={16} />
-                        Số điện thoại
+                        {t("form.phone.label")}
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Nhập số điện thoại"
+                          placeholder={t("form.phone.placeholder")}
                           {...field}
                           className="bg-background/80 border-border/50 text-foreground placeholder:text-muted-foreground"
                         />
@@ -273,7 +275,7 @@ export default function ProfileClient() {
                     <FormItem>
                       <FormLabel className="text-card-foreground">
                         <Book className="inline mr-1" size={16} />
-                        Chuyên ngành
+                        {t("form.major.label")}
                       </FormLabel>
                       <Select
                         onValueChange={field.onChange}
@@ -281,18 +283,18 @@ export default function ProfileClient() {
                       >
                         <FormControl>
                           <SelectTrigger className="bg-background/80 border-border/50 text-foreground">
-                            <SelectValue placeholder="Chọn chuyên ngành" />
+                            <SelectValue placeholder={t("form.major.placeholder")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="SE">
-                            Software Engineering
+                            {t("form.major.options.SE")}
                           </SelectItem>
                           <SelectItem value="AI">
-                            Artificial Intelligence
+                            {t("form.major.options.AI")}
                           </SelectItem>
                           <SelectItem value="IB">
-                            International Business
+                            {t("form.major.options.IB")}
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -309,10 +311,10 @@ export default function ProfileClient() {
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Đang cập nhật...
+                      {t("form.submit.loading")}
                     </>
                   ) : (
-                    "Cập nhật hồ sơ"
+                    t("form.submit.text")
                   )}
                 </Button>
               </form>
@@ -320,16 +322,16 @@ export default function ProfileClient() {
 
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <Label className="text-card-foreground">Gemini API Key</Label>
+                <Label className="text-card-foreground">{t("gemini.title")}</Label>
                 {isApiKeyValid ? (
                   <div className="flex items-center text-green-500">
                     <CheckCircle className="mr-1" size={16} />
-                    <span className="text-sm">API key hợp lệ</span>
+                    <span className="text-sm">{t("gemini.status.valid")}</span>
                   </div>
                 ) : (
                   <div className="flex items-center text-yellow-500">
                     <AlertCircle className="mr-1" size={16} />
-                    <span className="text-sm">Chưa xác thực</span>
+                    <span className="text-sm">{t("gemini.status.invalid")}</span>
                   </div>
                 )}
               </div>
@@ -343,7 +345,7 @@ export default function ProfileClient() {
                       <FormItem>
                         <FormControl>
                           <Input
-                            placeholder="Nhập Gemini API key"
+                            placeholder={t("gemini.form.apiKey.placeholder")}
                             {...field}
                             className="bg-background/80 border-border/50 text-foreground placeholder:text-muted-foreground"
                           />
@@ -364,7 +366,7 @@ export default function ProfileClient() {
                         >
                           <FormControl>
                             <SelectTrigger className="bg-background/80 border-border/50 text-foreground">
-                              <SelectValue placeholder="Chọn model" />
+                              <SelectValue placeholder={t("gemini.form.model.placeholder")} />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -394,10 +396,10 @@ export default function ProfileClient() {
                       {testing ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Đang kiểm tra...
+                          {t("gemini.form.test.loading")}
                         </>
                       ) : (
-                        "Kiểm tra API key"
+                        t("gemini.form.test.text")
                       )}
                     </Button>
                     <Button
@@ -409,10 +411,10 @@ export default function ProfileClient() {
                       {loading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Đang lưu...
+                          {t("gemini.form.save.loading")}
                         </>
                       ) : (
-                        "Lưu API key"
+                        t("gemini.form.save.text")
                       )}
                     </Button>
                   </div>

@@ -6,8 +6,11 @@ import CombatSelection from "@/components/combat/combat-selection";
 import { useAICombat } from "@/hooks/use-ai-combat";
 import { arenaStyles } from "@/constant/combat-style";
 import CombatArena from "@/components/combat/combat-arena";
+import { useTranslations } from "next-intl";
 
 export default function AICombatClient() {
+  const t = useTranslations("aiCombat");
+
   // Inject custom styles
   useEffect(() => {
     const styleElement = document.createElement("style");
@@ -82,7 +85,7 @@ export default function AICombatClient() {
       <div className="flex items-center justify-center h-screen bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Đang tải danh sách chatbot...</p>
+          <p className="text-muted-foreground">{t("loading")}</p>
         </div>
       </div>
     );

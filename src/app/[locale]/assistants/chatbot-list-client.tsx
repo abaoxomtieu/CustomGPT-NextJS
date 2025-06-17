@@ -6,7 +6,7 @@ import {
   deleteChatbot,
   Chatbot,
   fetchPublicChatbots,
-} from "../../services/chatbotService";
+} from "@/services/chatbotService";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import {
@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BackToTopButton from "@/components/back-to-top";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const ChatbotListClient: React.FC = () => {
   const [chatbots, setChatbots] = useState<Chatbot[]>([]);
@@ -38,6 +39,7 @@ const ChatbotListClient: React.FC = () => {
 
   const { isLogin } = useAuth();
   const router = useRouter();
+  const t = useTranslations("chatbotList");
 
   const loadChatbots = async () => {
     if (!isLogin || hasLoadedMyChatbots) return;
@@ -48,7 +50,7 @@ const ChatbotListClient: React.FC = () => {
       setChatbots(data);
       setHasLoadedMyChatbots(true);
     } catch (error) {
-      toast.error("Lỗi khi tải chatbot");
+      toast.error(t("errors.loadError"));
     } finally {
       setLoading(false);
     }
@@ -63,7 +65,7 @@ const ChatbotListClient: React.FC = () => {
       setPublicChatbots(data);
       setHasLoadedPublicChatbots(true);
     } catch (error) {
-      toast.error("Lỗi khi tải chatbot công khai");
+      toast.error(t("errors.loadPublicError"));
     } finally {
       setPublicLoading(false);
     }
@@ -105,7 +107,7 @@ const ChatbotListClient: React.FC = () => {
 
   const handleCreateChatbot = () => {
     if (!isLogin) {
-      toast.error("Vui lòng đăng nhập để tạo chatbot");
+      toast.error(t("errors.loginRequired"));
       return;
     }
     router.push("/assistants/editor");
@@ -119,13 +121,12 @@ const ChatbotListClient: React.FC = () => {
     e.stopPropagation();
     try {
       await deleteChatbot(botId);
-      toast.success("Xóa chatbot thành công");
+      toast.success(t("errors.deleteSuccess"));
       setChatbots(chatbots.filter((bot) => bot.id !== botId));
     } catch (error) {
-      toast.error("Lỗi khi xóa chatbot");
+      toast.error(t("errors.deleteError"));
     }
   };
-
 
   const renderSkeletonCards = () => {
     return Array(6)
@@ -160,11 +161,11 @@ const ChatbotListClient: React.FC = () => {
             <Bot className="text-4xl md:text-6xl text-primary" />
           </div>
           <h3 className="text-lg md:text-xl font-semibold text-card-foreground mb-2">
-            Chưa có chatbot nào
+            {t("noChatbots")}
           </h3>
         </div>
         <div className="text-sm md:text-base text-muted-foreground mb-6 max-w-md mx-auto px-4">
-          Tạo chatbot đầu tiên của bạn ngay bây giờ
+          {t("createFirst")}
         </div>
         <Button
           variant="outline"
@@ -172,7 +173,7 @@ const ChatbotListClient: React.FC = () => {
           className="bg-primary text-primary-foreground border-none hover:bg-primary/90 hover:scale-105 transition-all duration-300 flex justify-center w-4/5 md:w-2/3 mx-auto shadow-lg"
         >
           <Plus className="mr-2 size-4 md:size-5" />
-          Tạo chatbot mới
+          {t("createNewChatbot")}
         </Button>
       </div>
     );
@@ -207,7 +208,7 @@ const ChatbotListClient: React.FC = () => {
                 className="hover:bg-destructive/20 border-none size-7 md:size-8 transition-all duration-200"
                 onClick={(e) => {
                   if (
-                    window.confirm("Bạn có chắc chắn muốn xóa chatbot này?")
+                    window.confirm(t("deleteConfirm"))
                   ) {
                     handleDeleteClick(e, bot.id);
                   }
@@ -228,12 +229,12 @@ const ChatbotListClient: React.FC = () => {
             "size-2 rounded-full",
             bot.public ? "bg-green-500" : "bg-red-500"
           )} />
-          {bot.public ? "Công khai" : "Riêng tư"}
+          {bot.public ? t("public") : t("private")}
         </CardDescription>
         {bot.tools && bot.tools.length > 0 && (
           <CardDescription className="text-xs md:text-sm text-muted-foreground flex items-center gap-1">
             <div className="size-2 rounded-full bg-primary/50" />
-            Được tích hợp {bot.tools.length} tool calling
+            {t("integratedTools", { count: bot.tools.length })}
           </CardDescription>
         )}
       </CardHeader>
@@ -247,7 +248,7 @@ const ChatbotListClient: React.FC = () => {
           className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border-none text-xs md:text-sm h-8 md:h-9 transition-all duration-200"
         >
           <MessageCircle className="mr-2 size-3.5 md:size-4" />
-          Chat với chatbot
+          {t("chatWithBot")}
         </Button>
       </CardFooter>
     </Card>
@@ -262,7 +263,7 @@ const ChatbotListClient: React.FC = () => {
           onClick={() => router.back()}
           className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors duration-200 p-0"
         >
-          Quay lại
+          {t("back")}
         </Button>
         <span className="text-muted-foreground">|</span>
         <Button
@@ -271,13 +272,13 @@ const ChatbotListClient: React.FC = () => {
           className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors duration-200 p-0 flex items-center gap-1"
         >
           <Home className="size-4 md:size-5" />
-          Trang chủ
+          {t("home")}
         </Button>
       </div>
       {/* Search and Create */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4 mb-6 md:mb-8">
         <Input
-          placeholder="Tìm kiếm chatbot..."
+          placeholder={t("searchPlaceholder")}
           onChange={(e) => handleSearch(e.target.value)}
           className="w-full sm:w-72 md:w-96 bg-card/50 border-primary/10 text-sm md:text-base focus:border-primary/50 transition-colors duration-200"
         />
@@ -285,11 +286,11 @@ const ChatbotListClient: React.FC = () => {
           <Button
             variant="outline"
             onClick={handleCreateChatbot}
-            className="w-full sm:w-auto bg-primary text-primary-foreground border-none hover:bg-primary/90 hover:scale-105 transition-all duration-300 flex text-sm md:text-base shadow-lg"
+            className="w-full sm:w-auto bg-primary text-background hover:text-background border-none hover:bg-primary/90 hover:scale-105 transition-all duration-300 flex text-sm md:text-base shadow-lg"
             disabled={!isLogin}
           >
             <Plus className="mr-2 size-4 md:size-5" />
-            Tạo mới
+            {t("createNew")}
           </Button>
         )}
       </div>
@@ -300,13 +301,13 @@ const ChatbotListClient: React.FC = () => {
             value="my-chatbots"
             className="flex-1 text-sm md:text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
           >
-            Chatbot của tôi
+            {t("myChatbots")}
           </TabsTrigger>
           <TabsTrigger
             value="public-chatbots"
             className="flex-1 text-sm md:text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
           >
-            Chatbot công khai
+            {t("publicChatbots")}
           </TabsTrigger>
         </TabsList>
         <TabsContent value="my-chatbots" className="mt-4 md:mt-6 p-4">
@@ -333,10 +334,10 @@ const ChatbotListClient: React.FC = () => {
                     <Globe className="text-4xl md:text-6xl text-primary" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-card-foreground mb-2">
-                    Không có chatbot công khai
+                    {t("noPublicChatbots")}
                   </h3>
                   <p className="text-sm md:text-base text-muted-foreground mb-6 max-w-md mx-auto px-4">
-                    Chưa có chatbot công khai nào được tạo
+                    {t("noPublicChatbotsDesc")}
                   </p>
                 </div>
               </div>

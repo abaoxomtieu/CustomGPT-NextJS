@@ -1,0 +1,292 @@
+{
+  "HomePage": {
+    "title": "Chào mừng đến với FTES",
+    "about": "FTES là nền tảng giúp bạn quản lý doanh nghiệp hiệu quả",
+    "subtitle": "First Technology Education Services",
+    "description": "FTES (First Technology Education Services) là hệ thống học tập thông minh ứng dụng trí tuệ nhân tạo (AI) nhằm mang đến trải nghiệm học tập cá nhân hóa, hiện đại và hiệu quả cho mọi đối tượng yêu thích công nghệ thông tin.",
+    "start_now": "Bắt đầu ngay",
+    "create_chatbot": "Tạo Chatbot",
+    "features_title": "Tính năng nổi bật",
+    "features": {
+      "create_chatbot": {
+        "title": "Tạo Chatbot với AI",
+        "description": "Tạo chatbot thông minh với sự trợ giúp của chuyên gia AI, phục vụ cho từng nhu cầu cụ thể của người dùng."
+      },
+      "ai_combat": {
+        "title": "Đấu trường AI",
+        "description": "Khám phá khả năng của các AI trong việc đối thoại và tranh luận, giúp hiểu sâu hơn về công nghệ AI."
+      },
+      "api_integration": {
+        "title": "API Integration",
+        "description": "Export chatbot thành API để tích hợp vào các trang web khác, phục vụ nhu cầu phát triển của developer."
+      }
+    },
+    "management_title": "Quản lý Chatbot Thông Minh",
+    "management": {
+      "manage": {
+        "title": "Quản lý Chatbot",
+        "description": "Dễ dàng quản lý và tổ chức các chatbot đã tạo, với khả năng chỉnh sửa và cập nhật thông tin."
+      },
+      "public": {
+        "title": "Public Chatbot",
+        "description": "Chia sẻ chatbot của bạn với cộng đồng và nhận phản hồi từ người dùng."
+      },
+      "conversation": {
+        "title": "Quản lý Hội thoại",
+        "description": "Theo dõi và quản lý các cuộc hội thoại, phân tích tương tác và cải thiện chất lượng phản hồi."
+      },
+      "history": {
+        "title": "Lịch sử Chat",
+        "description": "Lưu trữ và truy xuất lịch sử chat, giúp theo dõi tiến trình và cải thiện trải nghiệm người dùng."
+      }
+    },
+    "cta": {
+      "title": "Bắt đầu hành trình học tập thông minh",
+      "description": "Khám phá ngay các công cụ AI được thiết kế đặc biệt cho việc học tập và phát triển kỹ năng.",
+      "button": "Xem Chatbot"
+    }
+  },
+  "sidebar": {
+    "home": "Trang chủ",
+    "assistants": "Assistants",
+    "chatbot": "Chatbot",
+    "settings": "Settings",
+    "create_chatbot": "Tạo chatbot",
+    "chatbot_list": "Danh sách chatbot",
+    "ai_combat": "Đấu trường",
+    "profile": "Quản lý thông tin",
+    "language": {
+      "title": "Ngôn ngữ",
+      "en": "Tiếng Anh",
+      "vi": "Tiếng Việt"
+    }
+  },
+  "aiCombat": {
+    "loading": "Đang tải danh sách chatbot...",
+    "title": "ĐẤU TRƯỜNG AI",
+    "subtitle": "Xem hai AI tham gia vào một cuộc trò chuyện thông minh",
+    "home": "Trang chủ",
+    "leftFighter": "Chiến binh trái",
+    "rightFighter": "Chiến binh phải",
+    "selectChatbot": "Chọn chatbot",
+    "selectModel": "Chọn mô hình",
+    "firstAskingAgent": "AI hỏi trước",
+    "leftAI": "AI trái",
+    "rightAI": "AI phải",
+    "startConversation": "Bắt đầu trò chuyện",
+    "back": "Quay Lại",
+    "continue": "Tiếp Tục",
+    "stop": "Dừng Lại",
+    "vs": "VS",
+    "maxConversations": "Đã đạt tối đa {count} cuộc hội thoại. Nhấn Tiếp Tục để bắt đầu vòng mới.",
+    "modelOptions": {
+      "gemini25": "Gemini 2.5 Flash",
+      "gemini20": "Gemini 2.0 Flash"
+    }
+  },
+  "chatbotList": {
+    "back": "Quay lại",
+    "home": "Trang chủ",
+    "searchPlaceholder": "Tìm kiếm chatbot...",
+    "createNew": "Tạo mới",
+    "myChatbots": "Chatbot của tôi",
+    "publicChatbots": "Chatbot công khai",
+    "noChatbots": "Chưa có chatbot nào",
+    "createFirst": "Tạo chatbot đầu tiên của bạn ngay bây giờ",
+    "createNewChatbot": "Tạo chatbot mới",
+    "noPublicChatbots": "Không có chatbot công khai",
+    "noPublicChatbotsDesc": "Không có chatbot công khai nào được tạo",
+    "public": "Công khai",
+    "private": "Riêng tư",
+    "integratedTools": "Được tích hợp {count} tool calling",
+    "chatWithBot": "Chat với chatbot",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa chatbot này?",
+    "errors": {
+      "loadError": "Lỗi khi tải chatbot",
+      "loadPublicError": "Lỗi khi tải chatbot công khai",
+      "deleteSuccess": "Xóa chatbot thành công",
+      "deleteError": "Lỗi khi xóa chatbot",
+      "loginRequired": "Vui lòng đăng nhập để tạo chatbot"
+    }
+  },
+  "editorChatbot": {
+    "title": {
+      "create": "Tạo Chatbot AI Mới",
+      "update": "Cập Nhật Chatbot AI"
+    },
+    "subtitle": {
+      "create": "Tạo chatbot AI thông minh với công nghệ Gemini.",
+      "update": "Chỉnh sửa và cập nhật chatbot của bạn."
+    },
+    "back": "Quay lại",
+    "backToList": "Quay lại danh sách chatbot",
+    "geminiKey": {
+      "status": "Gemini API Key:",
+      "set": "Đã thiết lập",
+      "notSet": "Chưa thiết lập",
+      "tooltip": {
+        "set": "Bạn đã thiết lập Gemini API Key, có thể sử dụng đầy đủ tính năng AI Gemini.",
+        "notSet": "Bạn chưa thiết lập Gemini API Key.",
+        "setupNow": "Thiết lập ngay"
+      }
+    },
+    "model": {
+      "select": "Chọn mô hình AI",
+      "placeholder": "Chọn mô hình AI"
+    },
+    "clearChat": "Xoá hội thoại",
+    "tabs": {
+      "create": "Tạo chatbot",
+      "update": "Tạo và cập nhật",
+      "config": "Cấu hình"
+    },
+    "emptyState": {
+      "create": {
+        "title": "Tạo Chatbot AI Mới",
+        "description": "Trợ lý AI thông minh sẽ giúp bạn tạo chatbot mới từ đầu.",
+        "guide": {
+          "title": "Hướng dẫn sử dụng",
+          "item1": "Mô tả chatbot bạn muốn tạo",
+          "item2": "Xác định mục đích và đối tượng sử dụng",
+          "item3": "Thiết lập tính năng và khả năng"
+        },
+        "examples": {
+          "title": "Ví dụ tạo mới",
+          "item1": "Tạo chatbot hỗ trợ khách hàng",
+          "item2": "Thiết lập chatbot giáo dục",
+          "item3": "Cấu hình chatbot bán hàng"
+        },
+        "start": {
+          "title": "Bắt đầu ngay",
+          "description": "Hãy nhập mô tả chatbot bạn muốn tạo vào ô chat bên dưới!"
+        }
+      },
+      "update": {
+        "title": "Cập Nhật Chatbot AI",
+        "description": "Trợ lý AI thông minh sẽ giúp bạn cập nhật và chỉnh sửa chatbot của bạn.",
+        "guide": {
+          "title": "Hướng dẫn sử dụng",
+          "item1": "Mô tả các thay đổi bạn muốn thực hiện",
+          "item2": "Cập nhật thông tin về người dùng mục tiêu",
+          "item3": "Thêm hoặc chỉnh sửa các tính năng"
+        },
+        "examples": {
+          "title": "Ví dụ cập nhật",
+          "item1": "Cập nhật prompt cho chatbot",
+          "item2": "Thêm tính năng mới",
+          "item3": "Chỉnh sửa cài đặt hiện có"
+        },
+        "start": {
+          "title": "Bắt đầu ngay",
+          "description": "Hãy nhập câu hỏi hoặc mô tả các thay đổi bạn muốn thực hiện vào ô chat bên dưới!"
+        }
+      }
+    },
+    "loading": {
+      "checking": "Đang kiểm tra thông tin đăng nhập..."
+    },
+    "unauthorized": {
+      "title": "Yêu cầu đăng nhập",
+      "description": "Bạn cần đăng nhập để sử dụng tính năng {action} chatbot AI.",
+      "redirecting": "Đang chuyển hướng về trang chủ trong 3 giây...",
+      "buttons": {
+        "home": "Về trang chủ để đăng nhập",
+        "back": "Quay lại danh sách chatbot"
+      }
+    },
+    "clearModal": {
+      "title": "Xoá hội thoại",
+      "description": "Bạn có chắc chắn muốn xoá toàn bộ hội thoại không?",
+      "buttons": {
+        "clear": "Xoá",
+        "cancel": "Huỷ"
+      }
+    },
+    "errors": {
+      "loginRequired": "Bạn cần đăng nhập để sử dụng tính năng này",
+      "login": "Đăng nhập"
+    }
+  },
+  "chatMessages": {
+    "emptyState": {
+      "title": "Bắt đầu tạo chatbot của bạn ở khung bên trái",
+      "description": "Nhập yêu cầu chatbot bạn muốn tạo ở khung bên trái để trợ lý AI có thể hiểu và tạo ra chatbot cho bạn",
+      "loading": {
+        "title": "Đang tải thông tin chatbot..."
+      }
+    },
+    "sourceDocuments": {
+      "title": "Tài liệu nguồn",
+      "count": "Tài liệu nguồn ({count})",
+      "source": "Nguồn: {source}"
+    }
+  },
+  "profile": {
+    "title": "Chào mừng đến với AI FTES",
+    "subtitle": "Vui lòng hoàn thiện hồ sơ để bắt đầu sử dụng.",
+    "loading": {
+      "checking": "Đang kiểm tra thông tin đăng nhập...",
+      "loading": "Đang tải hồ sơ..."
+    },
+    "form": {
+      "name": {
+        "label": "Họ và tên",
+        "placeholder": "Nhập họ và tên"
+      },
+      "phone": {
+        "label": "Số điện thoại",
+        "placeholder": "Nhập số điện thoại"
+      },
+      "major": {
+        "label": "Chuyên ngành",
+        "placeholder": "Chọn chuyên ngành",
+        "options": {
+          "SE": "Software Engineering",
+          "AI": "Artificial Intelligence",
+          "IB": "International Business"
+        }
+      },
+      "submit": {
+        "loading": "Đang cập nhật...",
+        "text": "Cập nhật hồ sơ"
+      }
+    },
+    "gemini": {
+      "title": "Gemini API Key",
+      "status": {
+        "valid": "API key hợp lệ",
+        "invalid": "Chưa xác thực"
+      },
+      "form": {
+        "apiKey": {
+          "placeholder": "Nhập Gemini API key"
+        },
+        "model": {
+          "placeholder": "Chọn model"
+        },
+        "test": {
+          "loading": "Đang kiểm tra...",
+          "text": "Kiểm tra API key"
+        },
+        "save": {
+          "loading": "Đang lưu...",
+          "text": "Lưu API key"
+        }
+      }
+    },
+    "errors": {
+      "userNotFound": "Không tìm thấy user",
+      "updateError": "Lỗi khi cập nhật",
+      "testError": "Không thể test API key",
+      "invalidKey": "API key không hợp lệ",
+      "saveError": "Vui lòng điền đầy đủ thông tin",
+      "saveSuccess": "Lưu API key thành công"
+    },
+    "back": "Quay lại"
+  },
+  "modeToggle": {
+    "toggleTheme": "Chuyển chế độ"
+  }
+}
