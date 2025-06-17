@@ -111,7 +111,8 @@ export function AppSidebar() {
   };
 
   // Check if current page should show mobile navigation
-  const shouldShowMobileNav = pathname === "/" || pathname === "/profile";
+  const shouldShowMobileNav =
+    pathname === `/${locale}` || pathname === `/${locale}/profile`;
 
   return (
     <>
