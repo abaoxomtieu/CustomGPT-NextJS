@@ -7,6 +7,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 // import RecommendationContainer, {
 //   travelGuideRecommendations,
 // } from "./RecommendationContainer";
@@ -53,72 +54,110 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   const [isDocumentsOpen, setIsDocumentsOpen] = React.useState(false);
 
   return (
-    <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4">
+    <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4 bg-gradient-to-b from-background to-background/95">
       <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
-        {messages.length === 0 && renderChatbotDetails ? (
-          <div className="text-center py-6 md:py-10">
-            <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border">
-              {loadingChatbot ? (
-                <div className="space-y-2 md:space-y-3">
-                  <Skeleton className="h-8 md:h-12 w-8 md:w-12 rounded-full mx-auto bg-muted/50" />
-                  <Skeleton className="h-3 md:h-4 w-[150px] md:w-[200px] mx-auto bg-muted/50" />
-                  <Skeleton className="h-3 md:h-4 w-[200px] md:w-[300px] mx-auto bg-muted/50" />
-                  <Skeleton className="h-3 md:h-4 w-[180px] md:w-[250px] mx-auto bg-muted/50" />
-                </div>
-              ) : (
-                <>
-                  <Bot className="text-3xl md:text-4xl text-primary mb-3 md:mb-4" />
-                  <h3 className="text-base md:text-lg font-medium text-card-foreground mb-2">
-                    {chatbotDetails?.name ||
-                      "Bắt đầu tạo chatbot của bạn ở khung bên trái"}
-                  </h3>
-                  <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6">
-                    {chatbotDetails === null
-                      ? "Nhập yêu cầu chatbot bạn muốn tạo ở khung bên trái để trợ lý AI có thể hiểu và tạo ra chatbot cho bạn"
-                      : chatbotDetails?.prompt?.substring(0, 150) + "..."}
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        ) : (
-          messages.map((msg: StructuredMessage, index: number) => {
-            const displayMessage = {
-              role: msg.role,
-              content:
-                typeof msg.content === "string" ? msg.content : msg.content,
-            };
-            return <ChatMessageAgent key={index} message={displayMessage} />;
-          })
-        )}
+        <AnimatePresence>
+          {messages.length === 0 && renderChatbotDetails ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="text-center py-6 md:py-10"
+            >
+              <div className="bg-card rounded-xl p-4 md:p-8 shadow-lg border border-border hover:shadow-xl transition-all duration-300">
+                {loadingChatbot ? (
+                  <div className="space-y-2 md:space-y-3">
+                    <Skeleton className="h-8 md:h-12 w-8 md:w-12 rounded-full mx-auto bg-muted/50" />
+                    <Skeleton className="h-3 md:h-4 w-[150px] md:w-[200px] mx-auto bg-muted/50" />
+                    <Skeleton className="h-3 md:h-4 w-[200px] md:w-[300px] mx-auto bg-muted/50" />
+                    <Skeleton className="h-3 md:h-4 w-[180px] md:w-[250px] mx-auto bg-muted/50" />
+                  </div>
+                ) : (
+                  <>
+                    <motion.div
+                      initial={{ scale: 0.8 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Bot className="text-3xl md:text-4xl text-primary mb-3 md:mb-4 mx-auto" />
+                    </motion.div>
+                    <h3 className="text-base md:text-lg font-medium text-card-foreground mb-2">
+                      {chatbotDetails?.name ||
+                        "Bắt đầu tạo chatbot của bạn ở khung bên trái"}
+                    </h3>
+                    <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6 leading-relaxed">
+                      {chatbotDetails === null
+                        ? "Nhập yêu cầu chatbot bạn muốn tạo ở khung bên trái để trợ lý AI có thể hiểu và tạo ra chatbot cho bạn"
+                        : chatbotDetails?.prompt?.substring(0, 150) + "..."}
+                    </p>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          ) : (
+            messages.map((msg: StructuredMessage, index: number) => {
+              const displayMessage = {
+                role: msg.role,
+                content:
+                  typeof msg.content === "string" ? msg.content : msg.content,
+              };
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  <ChatMessageAgent message={displayMessage} />
+                </motion.div>
+              );
+            })
+          )}
+        </AnimatePresence>
 
         {/* Streaming Message */}
         {streamingMessage && (
-          <ChatMessageAgent
-            message={{ role: "assistant", content: streamingMessage }}
-          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ChatMessageAgent
+              message={{ role: "assistant", content: streamingMessage }}
+            />
+          </motion.div>
         )}
 
         {/* Thinking Message */}
         {thinkingMessage && !streamingMessage && (
-          <ThinkingMessage thinking={thinkingMessage} />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ThinkingMessage thinking={thinkingMessage} />
+          </motion.div>
         )}
-        {/* <ThinkingMessage thinking="Đang xử lý..." /> */}
 
         {/* Source Documents */}
         {selectedDocuments.length > 0 && (
-          <div className="mt-2 md:mt-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-2 md:mt-4"
+          >
             <Collapsible
               open={isDocumentsOpen}
               onOpenChange={setIsDocumentsOpen}
             >
-              <div className="bg-card/80 border border-border rounded-xl overflow-hidden">
+              <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
                 <CollapsibleTrigger className="flex w-full items-center justify-between p-3 md:p-4 text-left hover:bg-muted/50 transition-colors">
                   <span className="text-sm md:text-base text-card-foreground font-medium">
                     Source Documents ({selectedDocuments.length})
                   </span>
                   <ChevronDown
-                    className={`h-4 w-4 transition-transform text-muted-foreground ${
+                    className={`h-4 w-4 transition-transform duration-300 text-muted-foreground ${
                       isDocumentsOpen ? "rotate-180" : ""
                     }`}
                   />
@@ -127,14 +166,17 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                   <div className="px-3 md:px-4 pb-3 md:pb-4">
                     <div className="space-y-2 md:space-y-3">
                       {selectedDocuments.map((doc, index) => (
-                        <div
+                        <motion.div
                           key={index}
-                          className="border-b border-border pb-2 md:pb-3 last:border-b-0"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.3, delay: index * 0.1 }}
+                          className="border-b border-border pb-2 md:pb-3 last:border-b-0 hover:bg-muted/30 transition-colors rounded-lg p-2"
                         >
                           <div className="w-full">
                             <div className="flex items-start gap-2 md:gap-3">
                               <div className="flex-1">
-                                <div className="text-xs md:text-sm text-muted-foreground mb-1">
+                                <div className="text-xs md:text-sm text-muted-foreground mb-1 leading-relaxed">
                                   {doc.metadata?.content || doc.page_content}
                                 </div>
                                 {doc.metadata?.source && (
@@ -145,14 +187,14 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
                 </CollapsibleContent>
               </div>
             </Collapsible>
-          </div>
+          </motion.div>
         )}
         <div ref={messagesEndRef} />
       </div>

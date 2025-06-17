@@ -64,7 +64,6 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
           shape="pill"
           text="signin"
           onSuccess={loginFunction}
-          useOneTap={isLoading && isLogin}
           width={100}
           onError={() => {
             toast.error("Login failed", {

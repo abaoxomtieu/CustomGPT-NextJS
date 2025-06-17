@@ -21,8 +21,6 @@ export const useAuth = () => {
         setIsLoading(false);
         return;
       }
-
-      // Nếu đã có thông tin user và đã login, không cần fetch lại
       if (isLogin && userInfo) {
         setIsLoading(false);
         return;
