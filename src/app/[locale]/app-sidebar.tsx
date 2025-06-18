@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronLeft,
   Languages,
+  Code,
 } from "lucide-react";
 
 import {
@@ -84,6 +85,11 @@ export function AppSidebar() {
       title: t("ai_combat"),
       url: "/ai-combat",
       icon: Award,
+    },
+    {
+      title: t("code_grader"),
+      url: "/code-grader",
+      icon: Code,
     },
     {
       title: t("profile"),

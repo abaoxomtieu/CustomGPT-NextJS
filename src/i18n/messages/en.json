@@ -55,6 +55,7 @@
     "chatbot_list": "Chatbot list",
     "ai_combat": "AI Combat",
     "profile": "Profile",
+    "code_grader": "Grade Code",
     "language": {
       "title": "Language",
       "en": "English",
@@ -288,5 +289,31 @@
   },
   "modeToggle": {
     "toggleTheme": "Toggle Theme"
+  },
+  "Login": {
+    "back": "Back",
+    "welcome": "Welcome to FTES AI",
+    "description": "Login to access all platform features",
+    "loginWithGoogle": "Login with Google",
+    "useGoogleAccount": "Use your Google account to login",
+    "agreement": "By logging in, you agree to our",
+    "terms": "Terms of Service",
+    "and": "and",
+    "privacy": "Privacy Policy",
+    "ourPolicy": "our",
+    "features": {
+      "smartAI": {
+        "title": "Smart AI",
+        "description": "Using advanced Gemini technology"
+      },
+      "security": {
+        "title": "High Security",
+        "description": "Data is encrypted and protected"
+      },
+      "easyUse": {
+        "title": "Easy to Use",
+        "description": "Friendly, intuitive interface"
+      }
+    }
   }
 }

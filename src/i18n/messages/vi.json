@@ -55,6 +55,7 @@
     "chatbot_list": "Danh sách chatbot",
     "ai_combat": "Đấu trường",
     "profile": "Quản lý thông tin",
+    "code_grader": "Đánh giá code",
     "language": {
       "title": "Ngôn ngữ",
       "en": "Tiếng Anh",
@@ -288,5 +289,31 @@
   },
   "modeToggle": {
     "toggleTheme": "Chuyển chế độ"
+  },
+  "Login": {
+    "back": "Quay lại",
+    "welcome": "Chào mừng đến với FTES AI",
+    "description": "Đăng nhập để sử dụng đầy đủ tính năng của nền tảng",
+    "loginWithGoogle": "Đăng nhập với Google",
+    "useGoogleAccount": "Sử dụng tài khoản Google của bạn để đăng nhập",
+    "agreement": "Bằng cách đăng nhập, bạn đồng ý với",
+    "terms": "Điều khoản sử dụng",
+    "and": "và",
+    "privacy": "Chính sách bảo mật",
+    "ourPolicy": "của chúng tôi",
+    "features": {
+      "smartAI": {
+        "title": "AI Thông minh",
+        "description": "Sử dụng công nghệ Gemini tiên tiến"
+      },
+      "security": {
+        "title": "Bảo mật cao",
+        "description": "Dữ liệu được mã hóa và bảo vệ"
+      },
+      "easyUse": {
+        "title": "Dễ sử dụng",
+        "description": "Giao diện thân thiện, trực quan"
+      }
+    }
   }
 }
