@@ -22,7 +22,15 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Trash2, Bot, ChevronLeft, KeyRound, LogIn, Brain } from "lucide-react";
+import {
+  Trash2,
+  Bot,
+  ChevronLeft,
+  KeyRound,
+  LogIn,
+  Brain,
+  Code2,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -31,6 +39,7 @@ import ChatMessageAgent from "@/components/chat/chat-message-box";
 import UpdateChatbotForm from "@/components/update-chatbot-form";
 import ChatMessages from "@/components/chat/chat-messages";
 import ToolMessage from "@/components/chat/tool-message";
+import ApiDocs from "@/components/chat/api-docs";
 import { useEditorChatbot } from "@/hooks/use-editor-chatbot";
 import { fetchChatbotDetail } from "@/services/chatbotService";
 import { motion, AnimatePresence } from "framer-motion";
@@ -77,19 +86,19 @@ const styles = {
 const EmptyState = ({ notFounded }: { notFounded: boolean }) => {
   const t = useTranslations("editorChatbot.emptyState");
   const mode = notFounded ? "create" : "update";
-  
+
   // Get guide items
   const guideItems = [
     t(`${mode}.guide.item1`),
     t(`${mode}.guide.item2`),
-    t(`${mode}.guide.item3`)
+    t(`${mode}.guide.item3`),
   ];
 
   // Get example items
   const exampleItems = [
     t(`${mode}.examples.item1`),
     t(`${mode}.examples.item2`),
-    t(`${mode}.examples.item3`)
+    t(`${mode}.examples.item3`),
   ];
 
   return (
@@ -268,6 +277,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
 }) => {
   const router = useRouter();
   const t = useTranslations("editorChatbot");
+  const [isApiDocsOpen, setIsApiDocsOpen] = React.useState(false);
   const {
     messages,
     input,
@@ -593,6 +603,34 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
 
         <section className={styles.rightSection}>
           <h3 className="sr-only">Chat với Chatbot</h3>
+          {chatbotData && (
+            <div className="flex items-center justify-between p-3 border-b border-border bg-background/50">
+              <div className="flex items-center gap-2">
+                <Bot className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium">
+                  {chatbotData.name || "Chatbot"}
+                </span>
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsApiDocsOpen(true)}
+                      className="h-8 px-2 bg-foreground text-background"
+                    >
+                      <Code2 className="w-4 h-4" />
+                      <span className="ml-1 hidden sm:inline">API</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Xem hướng dẫn tích hợp API</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          )}
           <div className="flex-1 overflow-y-auto p-4">
             <ChatMessages
               messages={ragMessages}
@@ -663,6 +701,14 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
           </div>
         </DialogContent>
       </Dialog>
+
+      {chatbotData && (
+        <ApiDocs
+          botId={botId}
+          open={isApiDocsOpen}
+          onOpenChange={setIsApiDocsOpen}
+        />
+      )}
     </main>
   );
 };

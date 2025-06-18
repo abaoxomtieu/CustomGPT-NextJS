@@ -38,10 +38,15 @@ export default function GradingPanel({
   gradeLoading,
 }: GradingPanelProps) {
   return (
-    <Card className="shadow-sm hover:shadow-md transition-shadow h-full">
-      <CardHeader className="flex flex-row items-center justify-between py-3 px-4">
-        <CardTitle className="text-base font-medium">
-          Grading Criteria
+    <Card className="shadow-sm hover:shadow-md transition-shadow h-[500px] flex flex-col">
+      <CardHeader className="flex flex-row items-center justify-between py-2.5 px-3 flex-shrink-0">
+        <CardTitle className="text-sm font-medium">
+          <div className="flex flex-col">
+            <span>Grading Criteria</span>
+            <span className="text-xs text-foreground/50 font-normal">
+              {criteria.filter(c => c.trim() !== '').length} criteria
+            </span>
+          </div>
         </CardTitle>
         <div className="flex gap-1.5">
           <Button
@@ -64,8 +69,9 @@ export default function GradingPanel({
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="p-3 space-y-3">
-        <div className="flex gap-2">
+      
+      <CardContent className="p-3 flex-1 flex flex-col overflow-hidden">
+        <div className="flex gap-2 mb-3 flex-shrink-0">
           <Textarea
             value={projectDescription}
             onChange={(e) => setProjectDescription(e.target.value)}
@@ -82,13 +88,17 @@ export default function GradingPanel({
             Generate
           </Button>
         </div>
-        <div className="space-y-3">
+        
+        <div className="flex-1 overflow-y-auto mb-3">
           <CriteriaInput
             criterias={criteria}
             folderCriteria={folderCriteria}
             setFolderCriteria={setFolderCriteria}
             setCriterias={setCriteria}
           />
+        </div>
+        
+        <div className="pt-3 border-t border-foreground/10 flex-shrink-0">
           <Button
             type="button"
             size="lg"

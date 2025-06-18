@@ -18,7 +18,9 @@ export const useFileTree = ({ onTreeLoaded }: UseFileTreeProps) => {
       setFileTreeData([]);
       setError("");
 
-      const toastId = toast.loading("Cloning repository...");
+      toast.loading("Cloning repository...", {
+        id: "clone-repository-loading",
+      });
 
       const { data, error: fetchError } = await apiService.fetchFileTree(
         repoUrl,
@@ -27,11 +29,13 @@ export const useFileTree = ({ onTreeLoaded }: UseFileTreeProps) => {
 
       if (data) {
         setFileTreeData(data);
-        toast.success("Repository cloned successfully!", { id: toastId });
+        toast.success("Repository cloned successfully!", {
+          id: "clone-repository-loading",
+        });
       } else if (fetchError) {
         setError(fetchError);
         setFileTreeData([]);
-        toast.error(fetchError, { id: toastId });
+        toast.error(fetchError, { id: "clone-repository-loading" });
       }
 
       setLoading(false);

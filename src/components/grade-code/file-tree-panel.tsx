@@ -34,8 +34,8 @@ export default function FileTreePanel({
 
   return (
     <>
-      <Card className="shadow-sm hover:shadow-md transition-shadow h-full">
-        <CardHeader className="flex flex-row items-center justify-between py-2.5 px-3">
+      <Card className="shadow-sm hover:shadow-md transition-shadow h-[500px] flex flex-col">
+        <CardHeader className="flex flex-row items-center justify-between py-2.5 px-3 flex-shrink-0">
           <CardTitle className="text-sm font-medium text-foreground">
             File Tree
           </CardTitle>
@@ -57,7 +57,7 @@ export default function FileTreePanel({
             </Button>
           )}
         </CardHeader>
-        <CardContent className="p-2 min-h-[250px] max-h-[450px] overflow-y-auto">
+        <CardContent className="p-2 flex-1 overflow-y-auto">
           {fileTreeData.length > 0 ? (
             <FileTree nodes={fileTreeData} onFileSelection={onFileSelection} />
           ) : (

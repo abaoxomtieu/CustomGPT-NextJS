@@ -1,224 +1,183 @@
 "use client";
 
-import { marked } from "marked";
-
-import { FolderOpen, ArrowUp, History } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
-import { useCallback, useEffect, useState } from "react";
-import { DEFAULT_REPO_URL } from "@/constant";
-import { EXTENSION_OPTIONS } from "@/constant";
-import { useFileTree } from "@/hooks/use-file-tree";
-import { useGrading } from "@/hooks/use-grading";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import RepositoryConfig from "@/components/grade-code/reposistory-config";
-import FileTreePanel from "@/components/grade-code/file-tree-panel";
-import GradingPanel from "@/components/grade-code/grading-panel";
-import GradingResultView from "@/components/grade-code/grading-result";
-import ErrorNotification from "@/components/grade-code/error-notification";
+import { format } from "date-fns";
+import { Loader2, Trash2, Plus } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { GradedAssignment, gradedAssignmentService } from "@/services/gradedAssignmentService";
 
-const GradePage = () => {
-  const [isFolderStructureModalVisible, setIsFolderStructureModalVisible] =
-    useState(false);
-  const [repoUrl, setRepoUrl] = useState(DEFAULT_REPO_URL);
-  const [selectedExtensions, setSelectedExtensions] = useState<string[]>(
-    EXTENSION_OPTIONS.map((option) => option.value)
-  );
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
-  const [projectDescription, setProjectDescription] = useState<string>("");
+export default function CodeGraderHistoryPage() {
+  const [assignments, setAssignments] = useState<GradedAssignment[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const {
-    fileTreeData,
-    loading: treeLoading,
-    error: treeError,
-    fetchFileTree,
-    generateProjectDescription,
-  } = useFileTree({
-    onTreeLoaded: () => setSelectedFiles([]),
-  });
-
-  const {
-    criteria,
-    setCriteria,
-    folderCriteria,
-    setFolderCriteria,
-    gradeLoading,
-    gradeError,
-    gradeResult,
-    gradeFolderStructureResult,
-    percentage,
-    gradeCode,
-    loadFrontendCriteria,
-    loadBackendCriteria,
-  } = useGrading({
-    selectedFiles,
-    projectDescription,
-  });
-
-  // Handler functions
-  const handleExtensionChange = useCallback((value: string[]) => {
-    setSelectedExtensions(value);
-  }, []);
-
-  const handleFileSelection = useCallback((files: string[]) => {
-    setSelectedFiles(files);
-  }, []);
-
-  const handleFetchFileTree = useCallback(() => {
-    fetchFileTree(repoUrl, selectedExtensions);
-  }, [fetchFileTree, repoUrl, selectedExtensions]);
-
-  const handleGenerateDescription = useCallback(() => {
-    generateProjectDescription(selectedFiles).then((description) => {
-      if (description) {
-        setProjectDescription(description);
-      }
-    });
-  }, [generateProjectDescription, selectedFiles]);
-
-  const error = treeError || gradeError;
-
-  // Progress toast
-  useEffect(() => {
-    if (gradeLoading && percentage > 0) {
-      toast.loading("Grading in progress...", {
-        id: "grading-progress",
-      });
-      <Progress value={percentage} />;
-    } else if (!gradeLoading && percentage === 100) {
-      toast.success("Grading completed!", {
-        id: "grading-progress",
-      });
+  const fetchAssignments = async () => {
+    try {
+      const data = await gradedAssignmentService.getAllAssignments();
+      setAssignments(data);
+    } catch (error) {
+      toast.error("Failed to load assignments");
+    } finally {
+      setLoading(false);
     }
-    // eslint-disable-next-line
-  }, [percentage, gradeLoading]);
-
-  // Back to top button (simple implementation)
-  const handleBackTop = () => {
-    if (typeof window !== "undefined")
-      window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const deleteAssignment = async (id: string) => {
+    try {
+      await gradedAssignmentService.deleteAssignment(id);
+      setAssignments(assignments.filter((assignment) => assignment.id !== id));
+      toast.success("Assignment deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete assignment");
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen p-6">
-      <div className="container mx-auto max-w-6xl">
-        <div className="flex justify-between items-center mb-6">
-          <RepositoryConfig
-            repoUrl={repoUrl}
-            loading={treeLoading}
-            selectedExtensions={selectedExtensions}
-            onRepoUrlChange={setRepoUrl}
-            onExtensionChange={handleExtensionChange}
-            onFetchFiles={handleFetchFileTree}
-          />
+    <div className="container mx-auto py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Graded Assignments History</h1>
+        <Button
+          onClick={() => router.push("/code-grader/grade")}
+          className="flex items-center gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          New Grading
+        </Button>
+      </div>
+      
+      {assignments.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500 mb-4">No graded assignments found</p>
           <Button
-            variant="outline"
-            onClick={() => router.push("/code-grader/history")}
+            onClick={() => router.push("/code-grader/grade")}
             className="flex items-center gap-2"
           >
-            <History className="w-4 h-4" />
-            View History
+            <Plus className="w-4 h-4" />
+            Create First Assignment
           </Button>
         </div>
-
-        {error && <ErrorNotification message={error} />}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <FileTreePanel
-            fileTreeData={fileTreeData}
-            selectedFiles={selectedFiles}
-            onFileSelection={handleFileSelection}
-          />
-
-          <GradingPanel
-            criteria={criteria}
-            setCriteria={setCriteria}
-            folderCriteria={folderCriteria}
-            setFolderCriteria={setFolderCriteria}
-            projectDescription={projectDescription}
-            setProjectDescription={setProjectDescription}
-            onGenerateDescription={handleGenerateDescription}
-            onGradeCode={() => gradeCode(criteria)}
-            onLoadFrontendCriteria={loadFrontendCriteria}
-            onLoadBackendCriteria={loadBackendCriteria}
-            isGenerateDisabled={selectedFiles.length === 0}
-            isGradeDisabled={
-              gradeLoading ||
-              selectedFiles.length === 0 ||
-              criteria.filter((c) => c.trim() !== "").length === 0
-            }
-            gradeLoading={gradeLoading}
-          />
-        </div>
-        {gradeFolderStructureResult && (
-          <>
-            <Button
-              variant="default"
-              onClick={() => setIsFolderStructureModalVisible(true)}
-              className="mb-4 flex items-center gap-2"
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {assignments.map((assignment) => (
+            <Card
+              key={assignment.id}
+              className="hover:shadow-md transition-shadow border border-foreground/10"
             >
-              <FolderOpen className="w-4 h-4 text-blue-500" />
-              View Folder Structure Evaluation
-            </Button>
-
-            <Dialog
-              open={isFolderStructureModalVisible}
-              onOpenChange={setIsFolderStructureModalVisible}
-            >
-              <DialogContent className="overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2 text-lg">
-                    <FolderOpen className="text-blue-500" />
-                    <span className="font-semibold">
-                      Folder Structure Evaluation
-                    </span>
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="prose max-w-none break-words">
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: marked(gradeFolderStructureResult),
-                    }}
-                  />
+              <CardHeader className="pb-2">
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-base font-medium line-clamp-2 flex-1 mr-2">
+                    {assignment.project_name}
+                  </CardTitle>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                        <Trash2 className="h-3 w-3 text-red-500" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Assignment</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this assignment? This
+                          action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteAssignment(assignment.id)}
+                          className="bg-red-500 hover:bg-red-600"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
-                <DialogFooter>
+                <p className="text-xs text-muted-foreground">
+                  {format(new Date(assignment.created_at), "MMM dd, yyyy")}
+                </p>
+              </CardHeader>
+              <CardContent className="pt-0 pb-3">
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-xs font-medium text-foreground/80 mb-1">
+                      Files ({assignment.selected_files.length})
+                    </p>
+                    <div className="text-xs text-muted-foreground">
+                      {assignment.selected_files.slice(0, 2).map((file, index) => (
+                        <div key={index} className="truncate">
+                          {file.split('/').pop()}
+                        </div>
+                      ))}
+                      {assignment.selected_files.length > 2 && (
+                        <div className="text-muted-foreground/60">
+                          +{assignment.selected_files.length - 2} more
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs font-medium text-foreground/80 mb-1">
+                      Criteria ({assignment.criterias_list.length})
+                    </p>
+                    <div className="text-xs text-muted-foreground">
+                      {assignment.criterias_list.slice(0, 1).map((criteria, index) => (
+                        <div key={index} className="truncate">
+                          {criteria.length > 40 ? criteria.substring(0, 40) + '...' : criteria}
+                        </div>
+                      ))}
+                      {assignment.criterias_list.length > 1 && (
+                        <div className="text-muted-foreground/60">
+                          +{assignment.criterias_list.length - 1} more
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   <Button
-                    variant="secondary"
-                    onClick={() => setIsFolderStructureModalVisible(false)}
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-3 h-7 text-xs"
+                    onClick={() =>
+                      router.push(`/code-grader/history/${assignment.id}`)
+                    }
                   >
-                    Close
+                    View Details
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </>
-        )}
-        {gradeResult.length > 0 && (
-          <GradingResultView
-            results={gradeResult}
-            gradeFolderStructureResult={gradeFolderStructureResult}
-          />
-        )}
-      </div>
-      <Button
-        variant="secondary"
-        className="fixed bottom-4 right-4 rounded-full p-3 shadow-lg"
-        onClick={handleBackTop}
-        aria-label="Back to Top"
-      >
-        <ArrowUp className="w-5 h-5" />
-      </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
-};
-
-export default GradePage;
+}

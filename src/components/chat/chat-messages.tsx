@@ -56,7 +56,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   const t = useTranslations("chatMessages");
 
   return (
-    <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4 bg-gradient-to-b from-background to-background/95">
+    <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4">
       <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
         <AnimatePresence>
           {messages.length === 0 && renderChatbotDetails ? (

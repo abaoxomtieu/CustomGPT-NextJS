@@ -84,7 +84,7 @@ const FileTree: React.FC<FileTreeProps> = ({ nodes, onFileSelection }) => {
       return (
         <li key={node.value} className="list-none mb-1">
           <div
-            className={`flex items-center px-1.5 py-1 rounded-md transition-all hover:bg-foreground/5 ${
+            className={`flex items-center p-1.5 rounded transition-all hover:bg-foreground/5 ${
               isChecked ? "bg-foreground/5" : ""
             }`}
             onClick={() => isDirectory && toggleNode(node.value)}
@@ -100,9 +100,7 @@ const FileTree: React.FC<FileTreeProps> = ({ nodes, onFileSelection }) => {
 
               <span
                 className={`cursor-pointer flex items-center min-w-0 text-xs ${
-                  isDirectory
-                    ? "text-foreground font-medium"
-                    : "text-foreground/80"
+                  isDirectory ? "text-foreground font-medium" : "text-foreground/80"
                 }`}
               >
                 {isDirectory ? (
@@ -112,11 +110,9 @@ const FileTree: React.FC<FileTreeProps> = ({ nodes, onFileSelection }) => {
                     <Folder className="mr-1.5 w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
                   )
                 ) : (
-                  <File className="mr-1.5 w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                  <File className="mr-1.5 w-3.5 h-3.5 text-foreground/60 flex-shrink-0" />
                 )}
-                <span className="truncate text-xs leading-tight">
-                  {node.label}
-                </span>
+                <span className="truncate text-xs leading-tight">{node.label}</span>
               </span>
             </div>
           </div>
@@ -134,7 +130,7 @@ const FileTree: React.FC<FileTreeProps> = ({ nodes, onFileSelection }) => {
 
   return (
     <div className="file-tree-container p-1">
-      <ul className="text-xs">{nodes.map((node) => renderTree(node))}</ul>
+      <ul className="space-y-0">{nodes.map((node) => renderTree(node))}</ul>
     </div>
   );
 };

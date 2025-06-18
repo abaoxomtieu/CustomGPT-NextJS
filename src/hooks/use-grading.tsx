@@ -90,7 +90,7 @@ export const useGrading = ({
 
             // Process chunks even if previous chunks had errors
             if (chunk.type === "noti") {
-              toast.loading(chunk.output as string);
+              toast.info(chunk.output as string);
               setPercentage(chunk.percentage as number);
             } else if (chunk.type === "folder_structure") {
               setGradeFolderStructureResult(chunk.output as string);

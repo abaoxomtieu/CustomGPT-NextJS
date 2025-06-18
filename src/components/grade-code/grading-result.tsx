@@ -34,6 +34,7 @@ import {
   Download,
   FolderOpen,
   Loader2,
+  Maximize2,
 } from "lucide-react";
 import { marked } from "marked";
 import * as XLSX from "xlsx";
@@ -64,6 +65,7 @@ export default function GradingResultView({
   const [activeTabKey, setActiveTabKey] = useState<string>("0");
   const [codeContent, setCodeContent] = useState<string>("");
   const [loadingGrade, setLoadingGrade] = useState<Record<string, boolean>>({});
+  const [isCodeFullscreen, setIsCodeFullscreen] = useState(false);
 
   // View file details modal
   const handleViewDetails = (fileResult: {
@@ -361,38 +363,38 @@ export default function GradingResultView({
 
           {/* File details modal */}
           <Dialog open={isModalVisible} onOpenChange={setIsModalVisible}>
-            <DialogContent className="max-w-6xl">
+            <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-lg">
                   <FileText className="text-blue-500 w-5 h-5" />
-                  <span className="font-semibold">
+                  <span className="font-semibold truncate">
                     {selectedFile?.file_name}
                   </span>
                 </DialogTitle>
               </DialogHeader>
-              <div className="flex flex-col space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex-1 overflow-hidden flex flex-col space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[300px]">
                   {/* Comments */}
-                  <div className="bg-background p-6 rounded-lg shadow-sm border">
-                    <div className="flex items-center gap-2 mb-4">
+                  <div className="bg-background p-4 rounded-lg shadow-sm border flex flex-col">
+                    <div className="flex items-center gap-2 mb-3 flex-shrink-0">
                       <MessageSquare className="text-green-500 w-5 h-5" />
-                      <h3 className="font-semibold text-xl">Comments</h3>
+                      <h3 className="font-semibold text-lg">Comments</h3>
                     </div>
                     <div
-                      className="prose max-w-none"
+                      className="prose prose-sm max-w-none overflow-y-auto flex-1 text-sm"
                       dangerouslySetInnerHTML={{
                         __html: marked(selectedFile?.comment || ""),
                       }}
                     />
                   </div>
                   {/* Evaluation */}
-                  <div className="bg-background p-6 rounded-lg shadow-sm border">
-                    <div className="flex items-center gap-2 mb-4">
+                  <div className="bg-background p-4 rounded-lg shadow-sm border flex flex-col">
+                    <div className="flex items-center gap-2 mb-3 flex-shrink-0">
                       <CheckCircle2 className="text-blue-500 w-5 h-5" />
-                      <h3 className="font-semibold text-xl">Evaluation</h3>
+                      <h3 className="font-semibold text-lg">Evaluation</h3>
                     </div>
                     <div
-                      className="prose max-w-none"
+                      className="prose prose-sm max-w-none overflow-y-auto flex-1 text-sm"
                       dangerouslySetInnerHTML={{
                         __html: marked(selectedFile?.criteria_eval || ""),
                       }}
@@ -401,18 +403,30 @@ export default function GradingResultView({
                 </div>
                 {/* Source code */}
                 {codeContent && (
-                  <div className="bg-background p-6 rounded-lg shadow-sm border">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Code className="text-purple-500 w-5 h-5" />
-                      <h3 className="font-semibold text-xl">Source Code</h3>
+                  <div className="bg-background p-4 rounded-lg shadow-sm border flex flex-col h-[350px]">
+                    <div className="flex items-center justify-between mb-3 flex-shrink-0">
+                      <div className="flex items-center gap-2">
+                        <Code className="text-purple-500 w-5 h-5" />
+                        <h3 className="font-semibold text-lg">Source Code</h3>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsCodeFullscreen(true)}
+                        className="h-8 px-2"
+                      >
+                        <Maximize2 className="w-4 h-4" />
+                        <span className="ml-1 hidden sm:inline">
+                          Fullscreen
+                        </span>
+                      </Button>
                     </div>
                     <pre
-                      className="w-full overflow-x-auto bg-muted rounded-lg"
+                      className="w-full overflow-auto bg-muted rounded-lg flex-1"
                       style={{
-                        padding: "1.25rem",
-                        maxHeight: "600px",
-                        fontSize: "0.875rem",
-                        lineHeight: "1.5",
+                        padding: "1rem",
+                        fontSize: "0.8rem",
+                        lineHeight: "1.4",
                         fontFamily:
                           "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
                       }}
@@ -422,7 +436,7 @@ export default function GradingResultView({
                   </div>
                 )}
               </div>
-              <DialogFooter>
+              <DialogFooter className="mt-4">
                 <Button
                   onClick={handleShowCode}
                   disabled={!!codeContent}
@@ -449,6 +463,39 @@ export default function GradingResultView({
                   <Trash2 className="w-4 h-4" />
                   Remove File
                 </Button>
+                <DialogClose asChild>
+                  <Button variant="secondary">Close</Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Fullscreen Code Dialog */}
+          <Dialog open={isCodeFullscreen} onOpenChange={setIsCodeFullscreen}>
+            <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full flex flex-col p-0">
+              <DialogHeader className="px-6 py-4 border-b">
+                <DialogTitle className="flex items-center gap-2 text-lg">
+                  <Code className="text-purple-500 w-5 h-5" />
+                  <span className="font-semibold truncate">
+                    {selectedFile?.file_name}
+                  </span>
+                </DialogTitle>
+              </DialogHeader>
+              <div className="flex-1 overflow-hidden p-6">
+                <pre
+                  className="w-full h-full overflow-auto bg-muted rounded-lg"
+                  style={{
+                    padding: "1.5rem",
+                    fontSize: "0.9rem",
+                    lineHeight: "1.5",
+                    fontFamily:
+                      "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                  }}
+                >
+                  <code>{codeContent}</code>
+                </pre>
+              </div>
+              <DialogFooter className="px-6 py-4 border-t">
                 <DialogClose asChild>
                   <Button variant="secondary">Close</Button>
                 </DialogClose>
