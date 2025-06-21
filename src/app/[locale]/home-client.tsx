@@ -1,7 +1,7 @@
 "use client";
 
 import React, { lazy, Suspense } from "react";
-import Link from "next/link";
+
 import {
   FcReading,
   FcDataBackup,
@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Brain } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 // Optimized styles with better performance
 const styles = `
@@ -125,7 +126,7 @@ const HomeClient: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
       <style>{styles}</style>
-      
+
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="text-center max-w-4xl mx-auto">
@@ -136,9 +137,7 @@ const HomeClient: React.FC = () => {
             </span>
           </h2>
           <div className="mb-6 md:mb-8 text-sm md:text-base text-muted-foreground leading-relaxed text-justify fade-in">
-            <p>
-              {t("description")}
-            </p>
+            <p>{t("description")}</p>
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 fade-in">
             <Link href="/assistants" className="w-full sm:w-auto">
@@ -165,23 +164,21 @@ const HomeClient: React.FC = () => {
             {
               icon: <FcReading className="text-2xl md:text-3xl" />,
               title: t("features.create_chatbot.title"),
-              description: t("features.create_chatbot.description")
+              description: t("features.create_chatbot.description"),
             },
             {
               icon: <Brain className="text-2xl md:text-3xl" />,
               title: t("features.ai_combat.title"),
-              description: t("features.ai_combat.description")
+              description: t("features.ai_combat.description"),
             },
             {
               icon: <FcDataBackup className="text-2xl md:text-3xl" />,
               title: t("features.api_integration.title"),
-              description: t("features.api_integration.description")
-            }
+              description: t("features.api_integration.description"),
+            },
           ].map((feature, index) => (
             <article key={index} className="feature-card fade-in">
-              <div className="icon-wrapper">
-                {feature.icon}
-              </div>
+              <div className="icon-wrapper">{feature.icon}</div>
               <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-foreground">
                 {feature.title}
               </h3>
@@ -204,28 +201,26 @@ const HomeClient: React.FC = () => {
               {
                 icon: <FcSettings className="text-3xl md:text-4xl" />,
                 title: t("management.manage.title"),
-                description: t("management.manage.description")
+                description: t("management.manage.description"),
               },
               {
                 icon: <FcGlobe className="text-3xl md:text-4xl" />,
                 title: t("management.public.title"),
-                description: t("management.public.description")
+                description: t("management.public.description"),
               },
               {
                 icon: <FcVoicePresentation className="text-3xl md:text-4xl" />,
                 title: t("management.conversation.title"),
-                description: t("management.conversation.description")
+                description: t("management.conversation.description"),
               },
               {
                 icon: <FcTimeline className="text-3xl md:text-4xl" />,
                 title: t("management.history.title"),
-                description: t("management.history.description")
-              }
+                description: t("management.history.description"),
+              },
             ].map((feature, index) => (
               <article key={index} className="feature-card fade-in">
-                <div className="icon-wrapper">
-                  {feature.icon}
-                </div>
+                <div className="icon-wrapper">{feature.icon}</div>
                 <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3 text-foreground">
                   {feature.title}
                 </h3>
@@ -258,4 +253,4 @@ const HomeClient: React.FC = () => {
   );
 };
 
-export default HomeClient; 
+export default HomeClient;

@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   Languages,
   Code,
+  TestTube,
 } from "lucide-react";
 
 import {
@@ -38,7 +39,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
@@ -90,6 +91,11 @@ export function AppSidebar() {
       title: t("code_grader"),
       url: "/code-grader",
       icon: Code,
+    },
+    {
+      title: t("api_testing"),
+      url: "/api-testing",
+      icon: TestTube,
     },
     {
       title: t("profile"),

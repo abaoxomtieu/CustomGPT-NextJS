@@ -57,6 +57,7 @@ export const apiService = {
         folder_structure_criteria: folder_structure_criteria,
         criterias_list: criteriasList,
         project_description: projectDescription,
+        api_key: getCookie("gemini_api_key"),
       }),
     });
   },
@@ -66,6 +67,7 @@ export const apiService = {
         `${ApiDomain}/grade-code/project-description-generation`,
         {
           selected_files: selectedFiles,
+          api_key: getCookie("gemini_api_key"),
         },
         {
           headers: {
