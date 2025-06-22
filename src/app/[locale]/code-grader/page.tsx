@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -18,12 +18,38 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { GradedAssignment, gradedAssignmentService } from "@/services/gradedAssignmentService";
+import {
+  GradedAssignment,
+  gradedAssignmentService,
+} from "@/services/gradedAssignmentService";
+import { useGrading } from "@/hooks/use-grading";
 
 export default function CodeGraderHistoryPage() {
   const [assignments, setAssignments] = useState<GradedAssignment[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const { gradeResult }  = useGrading({
+    selectedFiles: [],
+    projectDescription: "",
+  });
+
+  // Handler functions
+  const handleExtensionChange = useCallback((value: string[]) => {
+    // Implementation needed
+  }, []);
+
+  const handleFileSelection = useCallback((files: string[]) => {
+    // Implementation needed
+  }, []);
+
+  const handleFetchFileTree = useCallback(() => {
+    // Implementation needed
+  }, []);
+
+  const handleGenerateDescription = useCallback(() => {
+    // Implementation needed
+  }, []);
 
   const fetchAssignments = async () => {
     try {
@@ -70,7 +96,7 @@ export default function CodeGraderHistoryPage() {
           New Grading
         </Button>
       </div>
-      
+
       {assignments.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 mb-4">No graded assignments found</p>
@@ -131,11 +157,13 @@ export default function CodeGraderHistoryPage() {
                       Files ({assignment.selected_files.length})
                     </p>
                     <div className="text-xs text-muted-foreground">
-                      {assignment.selected_files.slice(0, 2).map((file, index) => (
-                        <div key={index} className="truncate">
-                          {file.split('/').pop()}
-                        </div>
-                      ))}
+                      {assignment.selected_files
+                        .slice(0, 2)
+                        .map((file, index) => (
+                          <div key={index} className="truncate">
+                            {file.split("/").pop()}
+                          </div>
+                        ))}
                       {assignment.selected_files.length > 2 && (
                         <div className="text-muted-foreground/60">
                           +{assignment.selected_files.length - 2} more
@@ -143,17 +171,21 @@ export default function CodeGraderHistoryPage() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div>
                     <p className="text-xs font-medium text-foreground/80 mb-1">
                       Criteria ({assignment.criterias_list.length})
                     </p>
                     <div className="text-xs text-muted-foreground">
-                      {assignment.criterias_list.slice(0, 1).map((criteria, index) => (
-                        <div key={index} className="truncate">
-                          {criteria.length > 40 ? criteria.substring(0, 40) + '...' : criteria}
-                        </div>
-                      ))}
+                      {assignment.criterias_list
+                        .slice(0, 1)
+                        .map((criteria, index) => (
+                          <div key={index} className="truncate">
+                            {criteria.length > 40
+                              ? criteria.substring(0, 40) + "..."
+                              : criteria}
+                          </div>
+                        ))}
                       {assignment.criterias_list.length > 1 && (
                         <div className="text-muted-foreground/60">
                           +{assignment.criterias_list.length - 1} more

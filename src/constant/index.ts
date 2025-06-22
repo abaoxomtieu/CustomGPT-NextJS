@@ -9,7 +9,7 @@ import { StatusConfig } from "../../types/type";
 export const ApiDomain = "https://ai.ftes.vn/api";
 
 export const DEFAULT_REPO_URL =
-  "https://github.com/lmhdev/web-dev-tech-assessment";
+  "https://github.com/abaoxomtieu/mediapipe-facemesh-batchsize";
 
 export const EXTENSION_OPTIONS = [
   { label: "Markdown", value: ".md" },
@@ -89,57 +89,62 @@ export const DEFAULT_CRITERIA_FE = [
     Large or Binary Files
     `,
 ];
+// export const DEFAULT_CRITERIA_BE = [
+//   `Project Setup & Environment
+// * Proper Folder Structure
+//   - Organized project structure (e.g., controllers/, services/, utils/,...)
+//   - Separation of concerns:
+//       +  Aspect: Modularity, maintainability, reusability, clarity, testing.
+//       +  Example: Pattern, API design.
+// * Environment Variables Handling: Sensitive keys or configurations are handled via .env (not hardcoded).
+// * Package Management:
+//   - Should not include node_modules/, .venv/, venv/, env/, dist/, build/ folders
+//   - Rate 0 or Fail if contains environment-related folders
+// * Git Configuration:
+//   - Should have proper .gitignore
+//   - Should ignore all environment-related folders
+// `,
+
+//   `Code Quality & Best Practices:
+// * Consistent Coding Style: Use a Style Guide: Use a Style Guide: Follow a style guide like Airbnb's or Google's JavaScript Style Guide.
+// Follows a consistent coding style (Prettier, ESLint)
+// * No Unnecessary Code: No console.logs, unused imports, or commented-out code.`,
+
+//   `API Design:
+// * API Design: RESTful Principles: Follow RESTful principles for designing APIs, using appropriate HTTP methods (GET, POST, PUT, DELETE).
+// The request and response must match with requirement from customer.
+// * Database: For this assessment, the current approach should involve splitting into three tables: teachers, students, and teacher_student.
+//           The table for notifications is optional.
+//           Should implement migrations and seed the database.
+//           Adopting a code-first approach is advantageous.
+// * Logic: Must match with requirements. It's essential to address both happy cases and edge cases
+// * Input Validation: Use any libraries (e.g., Joi, express-validator, class-validator, class-transformer) to validate incoming data to prevent security vulnerabilities (e.g., SQL injection, XSS).
+// * Error Handling: Handles API errors properly (try/catch, centralized error handling,...).Prevents app crashes with proper error messages. Use Promises or Async/Await: Handle asynchronous code effectively with Promises or async/await syntax to avoid callback hell.
+// * Use DTOs: Use DTOs to define the structure of the data being sent to and from the API
+// * Logging: Use a Logging Library: Implement logging using libraries like Winston or Bunyan to capture logs at various levels (info, error, debug).`,
+
+//   `Testing & Debugging & Deploy:
+// *Has test cases using Jest.
+// *Test coverage > 80%
+// *Use docker or any publicly accessible hosting environment
+// `,
+
+//   `Documentation & Git Usage:
+// * API Documentation: Use tools like Swagger or Postman to document your APIs for easier consumption by clients.
+// * README.md: Clear setup and run instructions.
+//   Project structure overview.
+//   Lists dependencies and tools used.
+//   Explains assumptions or key design choices.
+//   Includes screenshots of API result, error handling screen, and test coverage result.
+//   Can refer some samples from success case`,
+//   `* Git Configuration:
+//   - Should have proper .gitignore
+//   - Should ignore all environment-related folders`,
+// ];
 export const DEFAULT_CRITERIA_BE = [
-  `Project Setup & Environment
-* Proper Folder Structure
-  - Organized project structure (e.g., controllers/, services/, utils/,...)
-  - Separation of concerns:
-      +  Aspect: Modularity, maintainability, reusability, clarity, testing.
-      +  Example: Pattern, API design.
-* Environment Variables Handling: Sensitive keys or configurations are handled via .env (not hardcoded).
-* Package Management: 
-  - Should not include node_modules/, .venv/, venv/, env/, dist/, build/ folders
-  - Rate 0 or Fail if contains environment-related folders
-* Git Configuration:
-  - Should have proper .gitignore
-  - Should ignore all environment-related folders
-`,
-
-  `Code Quality & Best Practices:
-* Consistent Coding Style: Use a Style Guide: Use a Style Guide: Follow a style guide like Airbnb's or Google's JavaScript Style Guide.
-Follows a consistent coding style (Prettier, ESLint)
-* No Unnecessary Code: No console.logs, unused imports, or commented-out code.`,
-
-  `API Design:
-* API Design: RESTful Principles: Follow RESTful principles for designing APIs, using appropriate HTTP methods (GET, POST, PUT, DELETE).
-The request and response must match with requirement from customer.
-* Database: For this assessment, the current approach should involve splitting into three tables: teachers, students, and teacher_student. 
-          The table for notifications is optional.
-          Should implement migrations and seed the database.
-          Adopting a code-first approach is advantageous.
-* Logic: Must match with requirements. It's essential to address both happy cases and edge cases
-* Input Validation: Use any libraries (e.g., Joi, express-validator, class-validator, class-transformer) to validate incoming data to prevent security vulnerabilities (e.g., SQL injection, XSS).
-* Error Handling: Handles API errors properly (try/catch, centralized error handling,...).Prevents app crashes with proper error messages. Use Promises or Async/Await: Handle asynchronous code effectively with Promises or async/await syntax to avoid callback hell.
-* Use DTOs: Use DTOs to define the structure of the data being sent to and from the API
-* Logging: Use a Logging Library: Implement logging using libraries like Winston or Bunyan to capture logs at various levels (info, error, debug).`,
-
-  `Testing & Debugging & Deploy:
-*Has test cases using Jest.
-*Test coverage > 80%
-*Use docker or any publicly accessible hosting environment
-`,
-
-  `Documentation & Git Usage:
-* API Documentation: Use tools like Swagger or Postman to document your APIs for easier consumption by clients.
-* README.md: Clear setup and run instructions. 
-  Project structure overview. 
-  Lists dependencies and tools used. 
-  Explains assumptions or key design choices. 
-  Includes screenshots of API result, error handling screen, and test coverage result.
-  Can refer some samples from success case`,
-  `* Git Configuration:
-  - Should have proper .gitignore
-  - Should ignore all environment-related folders`,
+  "Project setup good",
+  "Code quality good",
+  "Readme ok",
 ];
 export const statusConfig: StatusConfig = {
   1: {

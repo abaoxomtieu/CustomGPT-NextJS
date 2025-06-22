@@ -31,8 +31,13 @@ export interface TreeNode {
     [key: number]: Status;
   }
   export interface GradeResponse {
-    type: "noti" | "final" | "folder_structure";
+    type: "final" | "folder_structure" | "criteria_result" | "error";
     output: string | GradingResult[];
-    percentage: number;
+    grade_folder_structure?: string;
+    criteria_index?: number;
+    total_criteria?: number;
+    result?: GradingResult;
+    partial_results?: GradingResult[];
   }
+  
   

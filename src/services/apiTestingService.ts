@@ -23,15 +23,20 @@ export interface TestAPIRequest {
 }
 
 export const apiTestingService = {
-  generateTestCases: async (data: GenerateTestCasesRequest): Promise<TestCase[]> => {
-    const response = await fetch(`${ApiDomain}/api-testing/generate-test-cases`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getCookie("token")}`,
-      },
-      body: JSON.stringify(data),
-    });
+  generateTestCases: async (
+    data: GenerateTestCasesRequest
+  ): Promise<TestCase[]> => {
+    const response = await fetch(
+      `${ApiDomain}/api-testing/generate-test-cases`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);
@@ -56,4 +61,4 @@ export const apiTestingService = {
 
     return response.json();
   },
-}; 
+};

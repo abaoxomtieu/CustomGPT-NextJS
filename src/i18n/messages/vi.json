@@ -57,6 +57,7 @@
     "profile": "Quản lý thông tin",
     "code_grader": "Đánh giá code",
     "api_testing": "Kiểm thử API",
+    "code_evaluation": "Đánh giá code",
     "language": {
       "title": "Ngôn ngữ",
       "en": "Tiếng Anh",
@@ -316,5 +317,13 @@
         "description": "Giao diện thân thiện, trực quan"
       }
     }
+  },
+  "gradeCode": {
+    "file_tree": "Cây tệp",
+    "selected": "Đã chọn",
+    "no_files_to_display": "Không có tệp nào để hiển thị.",
+    "clone_repo_first": "Clone repo trước.",
+    "selected_files": "Tệp đã chọn",
+    "no_files_selected": "Không có tệp nào được chọn"
   }
 }

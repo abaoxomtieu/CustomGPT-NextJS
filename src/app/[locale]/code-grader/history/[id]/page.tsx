@@ -91,7 +91,7 @@ export default function GradedAssignmentDetail() {
               open={isFolderStructureModalVisible}
               onOpenChange={setIsFolderStructureModalVisible}
             >
-              <DialogContent className="overflow-y-auto">
+              <DialogContent className="overflow-y-auto max-h-[60vh]">
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2 text-lg">
                     <FolderOpen className="text-blue-500" />

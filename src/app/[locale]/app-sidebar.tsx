@@ -88,14 +88,21 @@ export function AppSidebar() {
       icon: Award,
     },
     {
-      title: t("code_grader"),
+      title: t("code_evaluation"),
       url: "/code-grader",
       icon: Code,
-    },
-    {
-      title: t("api_testing"),
-      url: "/api-testing",
-      icon: TestTube,
+      items: [
+        {
+          title: t("code_grader"),
+          url: "/code-grader",
+          icon: Code,
+        },
+        {
+          title: t("api_testing"),
+          url: "/api-testing",
+          icon: TestTube,
+        },
+      ],
     },
     {
       title: t("profile"),

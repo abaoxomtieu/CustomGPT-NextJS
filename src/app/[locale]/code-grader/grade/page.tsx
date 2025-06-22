@@ -52,10 +52,8 @@ const GradePage = () => {
     folderCriteria,
     setFolderCriteria,
     gradeLoading,
-    gradeError,
     gradeResult,
     gradeFolderStructureResult,
-    percentage,
     gradeCode,
     loadFrontendCriteria,
     loadBackendCriteria,
@@ -85,22 +83,16 @@ const GradePage = () => {
     });
   }, [generateProjectDescription, selectedFiles]);
 
-  const error = treeError || gradeError;
+  const error = treeError;
 
-  // Progress toast
+  // Debug: Monitor gradeFolderStructureResult changes
   useEffect(() => {
-    if (gradeLoading && percentage > 0) {
-      toast.loading("Grading in progress...", {
-        id: "grading-progress",
-      });
-      <Progress value={percentage} />;
-    } else if (!gradeLoading && percentage === 100) {
-      toast.success("Grading completed!", {
-        id: "grading-progress",
-      });
-    }
-    // eslint-disable-next-line
-  }, [percentage, gradeLoading]);
+    console.log(
+      "gradeFolderStructureResult changed:",
+      gradeFolderStructureResult
+    );
+    console.log("Should show button:", !!gradeFolderStructureResult);
+  }, [gradeFolderStructureResult]);
 
   // Back to top button (simple implementation)
   const handleBackTop = () => {
@@ -168,7 +160,7 @@ const GradePage = () => {
               open={isFolderStructureModalVisible}
               onOpenChange={setIsFolderStructureModalVisible}
             >
-              <DialogContent className="overflow-y-auto">
+              <DialogContent className="overflow-y-auto max-h-[70vh] max-w-[80vw]">
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2 text-lg">
                     <FolderOpen className="text-blue-500" />
@@ -223,4 +215,4 @@ const GradePage = () => {
   );
 };
 
-export default GradePage; 
+export default GradePage;

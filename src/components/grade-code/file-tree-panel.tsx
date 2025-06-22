@@ -15,7 +15,7 @@ import {
 import { Eye, FileText, X } from "lucide-react";
 import FileTree from "./file-tree";
 import type { TreeNode } from "../../../types/type";
-
+import { useTranslations } from "next-intl";
 interface FileTreePanelProps {
   fileTreeData: TreeNode[];
   selectedFiles: string[];
@@ -28,16 +28,15 @@ export default function FileTreePanel({
   onFileSelection,
 }: FileTreePanelProps) {
   const [isFilesDrawerOpen, setIsFilesDrawerOpen] = useState(false);
-
+  const t = useTranslations("gradeCode");
   const showSelectedFiles = () => setIsFilesDrawerOpen(true);
-  const closeFilesDrawer = () => setIsFilesDrawerOpen(false);
 
   return (
     <>
       <Card className="shadow-sm hover:shadow-md transition-shadow h-[500px] flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between py-2.5 px-3 flex-shrink-0">
           <CardTitle className="text-sm font-medium text-foreground">
-            File Tree
+            {t("file_tree")}
           </CardTitle>
           {selectedFiles.length > 0 && (
             <Button
@@ -47,7 +46,7 @@ export default function FileTreePanel({
               onClick={showSelectedFiles}
             >
               <Eye className="w-3 h-3" />
-              <span className="hidden sm:inline">Selected</span>
+              <span className="hidden sm:inline">{t("selected")}</span>
               <Badge
                 variant="secondary"
                 className="bg-foreground text-background px-1.5 py-0 text-xs h-4 min-w-[16px] flex items-center justify-center"
@@ -63,12 +62,12 @@ export default function FileTreePanel({
           ) : (
             <div className="h-full flex items-center justify-center text-muted-foreground">
               <p className="text-xs text-center px-4">
-                No files to display.
+                {t("no_files_to_display")}
                 <br />
                 <span className="hidden sm:inline">
-                  Clone a repository first.
+                  {t("clone_repo_first")}
                 </span>
-                <span className="sm:hidden">Clone repo first.</span>
+                <span className="sm:hidden">{t("clone_repo_first")}</span>
               </p>
             </div>
           )}
@@ -81,7 +80,7 @@ export default function FileTreePanel({
             <div className="flex items-center justify-between">
               <DrawerTitle className="flex items-center gap-2 text-base text-foreground">
                 <FileText className="w-4 h-4" />
-                Selected Files
+                {t("selected_files")}
                 <Badge
                   variant="secondary"
                   className="bg-foreground/10 text-foreground px-2 py-0.5 text-xs"
@@ -119,7 +118,7 @@ export default function FileTreePanel({
             ) : (
               <div className="flex items-center justify-center py-8">
                 <p className="text-muted-foreground text-sm">
-                  No files selected
+                  {t("no_files_selected")}
                 </p>
               </div>
             )}

@@ -57,6 +57,7 @@
     "profile": "Profile",
     "code_grader": "Grade Code",
     "api_testing": "API Testing",
+    "code_evaluation": "Code Evaluation",
     "language": {
       "title": "Language",
       "en": "English",
@@ -316,5 +317,13 @@
         "description": "Friendly, intuitive interface"
       }
     }
+  },
+  "gradeCode": {
+    "file_tree": "File Tree",
+    "selected": "Selected",
+    "no_files_to_display": "No files to display.",
+    "clone_repo_first": "Clone a repository first.",
+    "selected_files": "Selected Files",
+    "no_files_selected": "No files selected"
   }
 }

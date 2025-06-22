@@ -16,11 +16,11 @@ export interface GradedAssignment {
 }
 
 class GradedAssignmentService {
-  private baseUrl = `${ApiDomain}/graded-assignments/`;
+  private baseUrl = `${ApiDomain}/graded-assignments`;
 
   async getAllAssignments(): Promise<GradedAssignment[]> {
     try {
-      const response = await axios.get<GradedAssignment[]>(this.baseUrl , {
+      const response = await axios.get<GradedAssignment[]>(`${this.baseUrl}/`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("token")}`,
