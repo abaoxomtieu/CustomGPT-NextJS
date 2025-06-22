@@ -15,6 +15,18 @@ export const apiService = {
       });
       return { data: response.data.file_tree, error: null };
     } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 413) {
+          return { 
+            data: null, 
+            error: "Repository is too large (exceeds 2MB limit). Please use a smaller repository." 
+          };
+        }
+        return { 
+          data: null, 
+          error: err.response?.data?.detail || "Failed to fetch file tree data" 
+        };
+      }
       return { data: null, error: "Failed to fetch file tree data" };
     }
   },
