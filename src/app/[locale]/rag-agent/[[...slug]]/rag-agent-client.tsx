@@ -254,10 +254,7 @@ export default function RagAgentClient({
     }
   }, [urlBotId, chatbotDetails?.id]);
 
-  // Auto-scroll to bottom
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, streamingMessage, thinkingText]);
+
 
   // Auth loading (replace Spin with a simple loader)
   if (isAuthLoading) {

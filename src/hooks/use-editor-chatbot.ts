@@ -123,14 +123,7 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
     localStorage.setItem(storageKey, JSON.stringify(messages));
   }, [messages, botId]);
 
-  // Auto scroll
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, streamingMessage, thinkingText, toolsMessage]);
 
   // Thinking text rotation
   useEffect(() => {
