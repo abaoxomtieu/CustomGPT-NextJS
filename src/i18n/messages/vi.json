@@ -140,7 +140,9 @@
       "select": "Chọn mô hình AI",
       "placeholder": "Chọn mô hình AI"
     },
-    "clearChat": "Xoá hội thoại",
+    "clearChat": "Xóa cuộc trò chuyện",
+    "clear": "Xóa",
+    "settings": "Cài đặt",
     "tabs": {
       "create": "Tạo chatbot",
       "update": "Tạo và cập nhật",

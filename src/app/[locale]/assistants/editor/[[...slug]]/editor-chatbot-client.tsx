@@ -54,11 +54,11 @@ import { useTranslations } from "next-intl";
 // Styles
 const styles = {
   header:
-    "flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-0",
+    "flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-2 md:py-0",
   headerContainer:
-    "max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center px-4 gap-2 md:gap-0",
-  headerLeft: "flex items-center gap-2 md:gap-3",
-  headerRight: "flex items-center gap-2 w-full md:w-auto",
+    "max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center px-3 md:px-4 gap-2 md:gap-0",
+  headerLeft: "flex items-center gap-2 md:gap-3 flex-1 min-w-0",
+  headerRight: "flex items-center gap-1 md:gap-2 flex-shrink-0 w-full md:w-auto justify-end",
   mainContent: "flex-1 flex flex-col md:flex-row overflow-hidden",
   leftSection:
     "w-full md:w-1/2 transition-all duration-300 ease-in-out overflow-hidden",
@@ -69,7 +69,7 @@ const styles = {
     "w-fit data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-sm",
   chatContainer: "h-[calc(100%-40px)] overflow-y-auto flex flex-col",
   chatInput:
-    "flex-none p-2 md:p-4 border-t border-border bg-background/80 backdrop-blur-sm",
+    "flex-none p-0 md:p-4 border-t border-border bg-background/80 backdrop-blur-sm",
   emptyState: "text-center py-6 md:py-10",
   emptyStateCard:
     "bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border",
@@ -421,21 +421,21 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               <span className="hidden md:inline">{t("back")}</span>
             </Button>
             <Bot
-              className="w-5 h-5 md:w-6 md:h-6 text-primary"
+              className="w-4 h-4 md:w-6 md:h-6 text-primary flex-shrink-0"
               aria-hidden="true"
             />
-            <div>
-              <h2 className="text-lg md:text-xl font-semibold text-card-foreground">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-sm md:text-xl font-semibold text-card-foreground truncate">
                 {notFounded ? t("title.create") : t("title.update")}
               </h2>
-              <p className="text-xs md:text-sm text-muted-foreground">
+              <p className="text-xs md:text-sm text-muted-foreground hidden md:block">
                 {notFounded ? t("subtitle.create") : t("subtitle.update")}
               </p>
             </div>
             <Popover>
               <PopoverTrigger asChild>
                 <Badge
-                  className={`ml-2 text-xs md:text-sm ${
+                  className={`hidden md:flex ml-2 text-xs md:text-sm ${
                     geminiApiKey
                       ? "bg-green-500/10 text-green-500"
                       : "bg-yellow-500/10 text-yellow-500"
@@ -477,7 +477,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
           <div className={styles.headerRight}>
             <Select value={modelName} onValueChange={setModelName}>
               <SelectTrigger
-                className="w-full md:w-[180px] bg-background border-border text-sm"
+                className="hidden md:flex w-full md:w-[180px] bg-background border-border text-sm"
                 aria-label={t("model.select")}
               >
                 <SelectValue placeholder={t("model.placeholder")} />
@@ -494,13 +494,66 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                 ))}
               </SelectContent>
             </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                  aria-label={t("settings")}
+                >
+                  <Brain className="w-4 h-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="bg-card border-border w-64" align="end">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground">
+                      {t("model.select")}
+                    </label>
+                    <Select value={modelName} onValueChange={setModelName}>
+                      <SelectTrigger className="w-full mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover text-popover-foreground">
+                        {modelOptions.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div 
+                    className="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-secondary/50"
+                    onClick={() => router.push("/profile")}
+                  >
+                    <KeyRound className={`w-4 h-4 ${
+                      geminiApiKey ? "text-green-600" : "text-yellow-600"
+                    }`} />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">
+                        {t("geminiKey.status")}
+                      </p>
+                      <p className={`text-xs ${
+                        geminiApiKey ? "text-green-600" : "text-yellow-600"
+                      }`}>
+                        {geminiApiKey ? t("geminiKey.set") : t("geminiKey.notSet")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
             <Button
               variant="destructive"
               onClick={() => setClearModalVisible(true)}
-              className="text-sm whitespace-nowrap"
+              className="text-xs md:text-sm whitespace-nowrap px-2 md:px-4"
               aria-label={t("clearChat")}
             >
-              <Trash2 className="mr-2 w-4 h-4" /> {t("clearChat")}
+              <Trash2 className="mr-1 md:mr-2 w-3 h-3 md:w-4 md:h-4" /> 
+              <span className="hidden sm:inline">{t("clearChat")}</span>
+              <span className="sm:hidden">{t("clear")}</span>
             </Button>
           </div>
         </div>
@@ -571,7 +624,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               </div>
 
               <div className={styles.chatInput}>
-                <div className="w-full max-w-none">
+                <div className="w-full max-w-none px-3 md:px-0">
                   <ChatInput
                     input={input}
                     loading={loading}

@@ -141,6 +141,8 @@
       "placeholder": "Select AI model"
     },
     "clearChat": "Clear conversation",
+    "clear": "Clear",
+    "settings": "Settings",
     "tabs": {
       "create": "Create chatbot",
       "update": "Create and update",

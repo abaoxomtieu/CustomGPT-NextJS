@@ -430,6 +430,42 @@ export default function RagAgentClient({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        {/* Model selection on mobile */}
+        <div className="md:hidden">
+          <DropdownMenuItem asChild>
+            <div className="px-2 py-1">
+              <Brain className="w-4 h-4 mr-2" />
+              <Select value={modelName} onValueChange={setModelName}>
+                <SelectTrigger className="w-full border-0 p-0 h-auto bg-transparent focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-popover text-popover-foreground border-border shadow-lg">
+                  {modelOptions.map((opt) => (
+                    <SelectItem value={opt.value} key={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+        </div>
+        {/* API Key status on mobile */}
+        <div className="md:hidden">
+          <DropdownMenuItem asChild>
+            <div 
+              className="flex items-center px-2 py-1 cursor-pointer"
+              onClick={() => router.push("/profile")}
+            >
+              <KeyRound className="w-4 h-4 mr-2" />
+              <span className={geminiApiKey ? "text-green-600" : "text-yellow-600"}>
+                {geminiApiKey ? t("geminiKeySet") : t("geminiKeyNotSet")}
+              </span>
+            </div>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+        </div>
         <DropdownMenuItem onClick={() => setIsDocumentDialogOpen(true)}>
           <FileText className="w-4 h-4 mr-2" /> {t("manageDocuments")}
         </DropdownMenuItem>
@@ -540,23 +576,23 @@ export default function RagAgentClient({
       {/* Main Content */}
       <div className="flex flex-col w-full">
         {/* Header */}
-        <div className="flex-none glass-header py-3 md:py-4">
-          <div className="flex justify-between items-center px-4 md:px-6">
-            <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex-none glass-header py-2 md:py-4">
+          <div className="flex justify-between items-center px-3 md:px-6">
+            <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => router.push("/assistants")}
-                className="text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-colors duration-200"
+                className="text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-colors duration-200 flex-shrink-0"
               >
                 <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
-              <Avatar className="bg-primary/10 w-8 h-8 md:w-10 md:h-10 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-200">
+              <Avatar className="bg-primary/10 w-7 h-7 md:w-10 md:h-10 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-200 flex-shrink-0">
                 <AvatarFallback className="text-primary">
-                  <Bot className="w-4 h-4 md:w-5 md:h-5" />
+                  <Bot className="w-3 h-3 md:w-5 md:h-5" />
                 </AvatarFallback>
               </Avatar>
-              <div className="fade-in">
+              <div className="fade-in min-w-0 flex-1">
                 {loadingChatbot ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="animate-spin w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
@@ -566,24 +602,25 @@ export default function RagAgentClient({
                   </div>
                 ) : (
                   <>
-                    <h1 className="text-base md:text-xl font-semibold text-card-foreground">
+                    <h1 className="text-sm md:text-xl font-semibold text-card-foreground truncate">
                       {chatbotDetails?.name || t("assistantDefaultName")}
                     </h1>
-                    <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">
+                    <p className="text-xs md:text-sm text-muted-foreground line-clamp-1 hidden md:block">
                       {chatbotDetails?.description}
                     </p>
                   </>
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+              {/* Login status - smaller on mobile */}
               {!isLogin && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Badge
                         variant="secondary"
-                        className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs transition-colors duration-200"
+                        className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs md:text-xs transition-colors duration-200 px-1 py-0.5 md:px-2 md:py-1"
                         onClick={() => router.push("/login")}
                       >
                         {t("notLoggedIn")}
@@ -595,10 +632,12 @@ export default function RagAgentClient({
                   </Tooltip>
                 </TooltipProvider>
               )}
+              
+              {/* API Key badge - hidden on mobile */}
               <Popover>
                 <PopoverTrigger asChild>
                   <Badge
-                    className={`ml-2 text-xs transition-colors duration-200 ${
+                    className={`hidden md:flex ml-2 text-xs transition-colors duration-200 ${
                       geminiApiKey
                         ? "bg-green-500/10 text-green-500 hover:bg-green-500/20"
                         : "bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20"
@@ -627,9 +666,13 @@ export default function RagAgentClient({
                   )}
                 </PopoverContent>
               </Popover>
+              
+              {/* Dropdown menu */}
               {headerDropdown}
+              
+              {/* Model Select - hidden on mobile */}
               <Select value={modelName} onValueChange={setModelName}>
-                <SelectTrigger className="w-32 md:w-44 bg-background border-border hover:border-primary/50 transition-colors duration-200">
+                <SelectTrigger className="hidden md:flex w-32 md:w-44 bg-background border-border hover:border-primary/50 transition-colors duration-200">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-popover text-popover-foreground border-border shadow-lg">
@@ -665,19 +708,21 @@ export default function RagAgentClient({
 
         {/* Chat Input */}
         <div className="flex-none border-t border-border bg-background/95 backdrop-blur-sm">
-          <ChatInput
-            input={input}
-            loading={loading}
-            botId={botId}
-            onInputChange={setInput}
-            onSend={handleSend}
-            onKeyPress={handleKeyPress}
-            inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
-            selectedFiles={selectedFiles}
-            onSelectedFilesChange={setSelectedFiles}
-            reasoning={reasoning}
-            onReasoningChange={setReasoning}
-          />
+          <div className="px-3 md:px-6">
+            <ChatInput
+              input={input}
+              loading={loading}
+              botId={botId}
+              onInputChange={setInput}
+              onSend={handleSend}
+              onKeyPress={handleKeyPress}
+              inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
+              selectedFiles={selectedFiles}
+              onSelectedFilesChange={setSelectedFiles}
+              reasoning={reasoning}
+              onReasoningChange={setReasoning}
+            />
+          </div>
         </div>
       </div>
 
