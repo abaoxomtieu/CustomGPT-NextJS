@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { GradedAssignment, gradedAssignmentService } from "@/services/gradedAssignmentService";
 import GradingResultView from "@/components/grade-code/grading-result";
 import {
@@ -18,6 +19,7 @@ import { marked } from "marked";
 import { FolderOpen } from "lucide-react";
 
 export default function GradedAssignmentDetail() {
+  const t = useTranslations("codeGrader.history");
   const [assignment, setAssignment] = useState<GradedAssignment | null>(null);
   const [loading, setLoading] = useState(true);
   const [isFolderStructureModalVisible, setIsFolderStructureModalVisible] = useState(false);
@@ -27,7 +29,7 @@ export default function GradedAssignmentDetail() {
   useEffect(() => {
     const fetchAssignment = async () => {
       if (!params.id) {
-        toast.error("Invalid assignment ID");
+        toast.error(t("invalidAssignmentId"));
         setLoading(false);
         return;
       }
@@ -36,7 +38,7 @@ export default function GradedAssignmentDetail() {
         const data = await gradedAssignmentService.getAssignmentById(params.id as string);
         setAssignment(data);
       } catch (error) {
-        toast.error("Failed to load assignment details");
+        toast.error(t("loadError"));
       } finally {
         setLoading(false);
       }
@@ -56,8 +58,8 @@ export default function GradedAssignmentDetail() {
   if (!assignment) {
     return (
       <div className="container mx-auto py-8 text-center">
-        <h1 className="text-2xl font-bold mb-4">Assignment Not Found</h1>
-        <Button onClick={() => router.back()}>Go Back</Button>
+        <h1 className="text-2xl font-bold mb-4">{t("assignmentNotFound")}</h1>
+        <Button onClick={() => router.back()}>{t("goBack")}</Button>
       </div>
     );
   }
@@ -71,7 +73,7 @@ export default function GradedAssignmentDetail() {
           onClick={() => router.push("/code-grader")}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to History
+          {t("backToHistory")}
         </Button>
 
         <h1 className="text-3xl font-bold mb-8">{assignment.project_name}</h1>
@@ -84,7 +86,7 @@ export default function GradedAssignmentDetail() {
               className="mb-4 flex items-center gap-2"
             >
               <FolderOpen className="w-4 h-4 text-blue-500" />
-              View Folder Structure Evaluation
+              {t("viewFolderStructure")}
             </Button>
 
             <Dialog
@@ -96,7 +98,7 @@ export default function GradedAssignmentDetail() {
                   <DialogTitle className="flex items-center gap-2 text-lg">
                     <FolderOpen className="text-blue-500" />
                     <span className="font-semibold">
-                      Folder Structure Evaluation
+                      {t("folderStructureEvaluation")}
                     </span>
                   </DialogTitle>
                 </DialogHeader>
@@ -112,7 +114,7 @@ export default function GradedAssignmentDetail() {
                     variant="secondary"
                     onClick={() => setIsFolderStructureModalVisible(false)}
                   >
-                    Close
+                    {t("close")}
                   </Button>
                 </DialogFooter>
               </DialogContent>

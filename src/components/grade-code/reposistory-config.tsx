@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CloudDownload } from "lucide-react";
 import { EXTENSION_OPTIONS } from "@/constant";
+import { useTranslations } from "next-intl";
 
 interface RepositoryConfigProps {
   repoUrl: string;
@@ -23,6 +24,7 @@ export default function RepositoryConfig({
   onExtensionChange,
   onFetchFiles,
 }: RepositoryConfigProps) {
+  const t = useTranslations("codeGrader.repositoryConfig");
   // Handler for multi-select (simulate multi-select if needed)
   const handleSelectChange = (value: string) => {
     let newSelected: string[];
@@ -40,13 +42,13 @@ export default function RepositoryConfig({
         <Input
           value={repoUrl}
           onChange={(e) => onRepoUrlChange(e.target.value)}
-          placeholder="Enter GitHub repository URL"
+          placeholder={t("placeholder")}
           className="rounded-lg text-sm h-8"
           disabled={loading}
         />
         <div>
           <div className="mb-2 text-sm font-medium text-foreground">
-            File extensions:
+            {t("fileExtensions")}
           </div>
           <div className="flex flex-wrap gap-1.5">
             {EXTENSION_OPTIONS.map((opt, index) => (
@@ -74,7 +76,7 @@ export default function RepositoryConfig({
           disabled={loading}
         >
           <CloudDownload className="mr-2 w-3.5 h-3.5" />
-          {loading ? "Cloning..." : "Clone Repository"}
+          {loading ? t("cloning") : t("cloneButton")}
         </Button>
       </CardContent>
     </Card>

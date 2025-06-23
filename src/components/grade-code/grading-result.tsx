@@ -42,6 +42,7 @@ import { statusConfig } from "../../constant";
 import { toast } from "sonner";
 import { GradingResult } from "../../../types/type";
 import { apiService } from "@/services/grade-code-service";
+import { useTranslations } from "next-intl";
 
 interface GradingResultViewProps {
   results: GradingResult[];
@@ -54,6 +55,7 @@ export default function GradingResultView({
   gradeFolderStructureResult,
   setResults,
 }: GradingResultViewProps) {
+  const t = useTranslations("codeGrader.gradingResult");
   const [localResults, setLocalResults] = useState<GradingResult[]>(results);
   const [gradeOverall, setGradeOverall] = useState<Record<string, string>>({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -116,7 +118,7 @@ export default function GradingResultView({
       setLocalResults(updatedResults);
       setResults?.(updatedResults);
 
-      toast.success("File removed successfully!");
+      toast.success(t("messages.fileRemoved"));
     }
   };
 
@@ -129,7 +131,7 @@ export default function GradingResultView({
         !localResults[criteriaIndex] ||
         !localResults[criteriaIndex].analyze_code_result
       ) {
-        toast.error("No results available to grade");
+        toast.error(t("messages.noResults"));
         return;
       }
 
@@ -141,9 +143,9 @@ export default function GradingResultView({
         [criteriaIndex]: response.data,
       }));
 
-      toast.success("Overall grading completed successfully!");
+      toast.success(t("messages.gradeSuccess"));
     } catch (error) {
-      toast.error("Failed to grade overall results");
+      toast.error(t("messages.gradeError"));
     } finally {
       setLoadingGrade((prev) => ({ ...prev, [criteriaIndex]: false }));
     }
@@ -155,7 +157,7 @@ export default function GradingResultView({
     if (gradeFolderStructureResult) {
       const folderStructureData = [
         {
-          Section: "Folder Structure Evaluation",
+          Section: t("export.folderStructureSection"),
           Content: gradeFolderStructureResult
             .replace(/\*\*/g, "")
             .replace(/#/g, "")
@@ -169,7 +171,7 @@ export default function GradingResultView({
       XLSX.utils.book_append_sheet(
         workbook,
         folderStructureSheet,
-        "Folder Structure"
+        t("export.folderStructureSheet")
       );
     }
     localResults.forEach((currentResults, index) => {
@@ -183,31 +185,30 @@ export default function GradingResultView({
           .replace(/\*\*/g, "");
 
         return {
-          "File Name": fileName,
-          Rating: ratingText,
-          "Rating Value": String(item.rating),
-          Comments: item.comment,
-          Evaluation: plainTextEval,
+          [t("export.fileName")]: fileName,
+          [t("export.rating")]: ratingText,
+          [t("export.ratingValue")]: String(item.rating),
+          [t("export.comments")]: item.comment,
+          [t("export.evaluation")]: plainTextEval,
         };
       });
       data.push({
-        "File Name": "",
-        Rating: "",
-        "Rating Value": "",
-        Comments: "",
-        Evaluation: "",
+        [t("export.fileName")]: "",
+        [t("export.rating")]: "",
+        [t("export.ratingValue")]: "",
+        [t("export.comments")]: "",
+        [t("export.evaluation")]: "",
       });
-
       if (gradeOverall[index]) {
         const overallGradeRow = {
-          "File Name": "Overall Grade",
-          Rating: "",
-          "Rating Value": "",
-          Comments: gradeOverall[index]
+          [t("export.fileName")]: t("export.overallGrade"),
+          [t("export.rating")]: "",
+          [t("export.ratingValue")]: "",
+          [t("export.comments")]: gradeOverall[index]
             .replace(/\*\*/g, "")
             .replace(/#/g, "")
             .replace(/<[^>]*>?/gm, ""),
-          Evaluation: "",
+          [t("export.evaluation")]: "",
         };
         data.push(overallGradeRow);
       }
@@ -223,7 +224,7 @@ export default function GradingResultView({
       XLSX.utils.book_append_sheet(
         workbook,
         worksheet,
-        `Criteria ${index + 1}`
+        t("export.criteriaSheet", { index: index + 1 })
       );
     });
 
@@ -271,7 +272,7 @@ export default function GradingResultView({
               variant="secondary"
               onClick={() => handleViewDetails(item)}
             >
-              View Details
+              {t("table.viewDetails")}
             </Button>
             <Button
               size="sm"
@@ -292,9 +293,9 @@ export default function GradingResultView({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>File Name</TableHead>
-              <TableHead>Rating</TableHead>
-              <TableHead>Action</TableHead>
+              <TableHead>{t("table.fileName")}</TableHead>
+              <TableHead>{t("table.rating")}</TableHead>
+              <TableHead>{t("table.action")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -311,12 +312,12 @@ export default function GradingResultView({
           }
         >
           {loadingGrade[index] && <Loader2 className="w-4 h-4 animate-spin" />}
-          Grade Overall Result
+          {t("gradeOverallButton")}
         </Button>
         {gradeOverall[index] && (
           <div className="border rounded-lg bg-background p-6 shadow-sm mt-6 overflow-x-auto">
             <h4 className="text-xl font-semibold text-blue-600 mb-4">
-              Overall Grade Analysis
+              {t("overallAnalysisTitle")}
             </h4>
             <div
               className="prose max-w-none"
@@ -331,7 +332,7 @@ export default function GradingResultView({
   return (
     <div className="mt-6">
       <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-        <FolderOpen className="w-5 h-5 text-primary" /> Grading Results
+        <FolderOpen className="w-5 h-5 text-primary" /> {t("title")}
       </h3>
 
       {localResults.length > 0 ? (
@@ -343,7 +344,7 @@ export default function GradingResultView({
               className="flex items-center gap-2"
             >
               <Download className="w-4 h-4" />
-              Export to Excel
+              {t("exportButton")}
             </Button>
           </div>
           <Tabs
@@ -354,7 +355,7 @@ export default function GradingResultView({
             <TabsList>
               {localResults.map((_, idx) => (
                 <TabsTrigger value={idx.toString()} key={idx}>
-                  Criteria {idx + 1}
+                  {t("criteriaTab", { index: idx + 1 })}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -378,7 +379,7 @@ export default function GradingResultView({
                   <div className="bg-background p-4 rounded-lg shadow-sm border flex flex-col">
                     <div className="flex items-center gap-2 mb-3 flex-shrink-0">
                       <MessageSquare className="text-green-500 w-5 h-5" />
-                      <h3 className="font-semibold text-lg">Comments</h3>
+                      <h3 className="font-semibold text-lg">{t("modal.comments")}</h3>
                     </div>
                     <div
                       className="prose prose-sm max-w-none overflow-y-auto flex-1 text-sm"
@@ -391,7 +392,7 @@ export default function GradingResultView({
                   <div className="bg-background p-4 rounded-lg shadow-sm border flex flex-col">
                     <div className="flex items-center gap-2 mb-3 flex-shrink-0">
                       <CheckCircle2 className="text-blue-500 w-5 h-5" />
-                      <h3 className="font-semibold text-lg">Evaluation</h3>
+                      <h3 className="font-semibold text-lg">{t("modal.evaluation")}</h3>
                     </div>
                     <div
                       className="prose prose-sm max-w-none overflow-y-auto flex-1 text-sm"
@@ -407,7 +408,7 @@ export default function GradingResultView({
                     <div className="flex items-center justify-between mb-3 flex-shrink-0">
                       <div className="flex items-center gap-2">
                         <Code className="text-purple-500 w-5 h-5" />
-                        <h3 className="font-semibold text-lg">Source Code</h3>
+                        <h3 className="font-semibold text-lg">{t("modal.sourceCode")}</h3>
                       </div>
                       <Button
                         variant="ghost"
@@ -417,7 +418,7 @@ export default function GradingResultView({
                       >
                         <Maximize2 className="w-4 h-4" />
                         <span className="ml-1 hidden sm:inline">
-                          Fullscreen
+                          {t("modal.fullscreen")}
                         </span>
                       </Button>
                     </div>
@@ -443,7 +444,7 @@ export default function GradingResultView({
                   className="bg-blue-500 hover:bg-blue-600 flex items-center gap-2"
                 >
                   <Code className="w-4 h-4" />
-                  View Source Code
+                  {t("modal.viewSourceCode")}
                 </Button>
                 <Button
                   variant="destructive"
@@ -461,10 +462,10 @@ export default function GradingResultView({
                   }}
                 >
                   <Trash2 className="w-4 h-4" />
-                  Remove File
+                  {t("modal.removeFile")}
                 </Button>
                 <DialogClose asChild>
-                  <Button variant="secondary">Close</Button>
+                  <Button variant="secondary">{t("modal.close")}</Button>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
@@ -497,14 +498,14 @@ export default function GradingResultView({
               </div>
               <DialogFooter className="px-6 py-4 border-t">
                 <DialogClose asChild>
-                  <Button variant="secondary">Close</Button>
+                  <Button variant="secondary">{t("modal.close")}</Button>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         </>
       ) : (
-        <p>No grading results available.</p>
+        <p>{t("noResults")}</p>
       )}
     </div>
   );

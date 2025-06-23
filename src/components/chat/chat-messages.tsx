@@ -39,6 +39,8 @@ interface ChatMessagesProps {
   messagesEndRef: React.RefObject<HTMLDivElement>;
   onRecommendationClick: (recommendation: string) => void;
   renderChatbotDetails: boolean;
+  shouldScrollToEnd?: boolean;
+  onScrolledToEnd?: () => void;
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({
@@ -51,9 +53,18 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   messagesEndRef,
   onRecommendationClick,
   renderChatbotDetails,
+  shouldScrollToEnd,
+  onScrolledToEnd,
 }) => {
   const [isDocumentsOpen, setIsDocumentsOpen] = React.useState(false);
   const t = useTranslations("chatMessages");
+
+  React.useEffect(() => {
+    if (shouldScrollToEnd && messagesEndRef?.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      onScrolledToEnd && onScrolledToEnd();
+    }
+  }, [shouldScrollToEnd, messagesEndRef, onScrolledToEnd]);
 
   return (
     <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4">

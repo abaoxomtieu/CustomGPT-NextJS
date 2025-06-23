@@ -12,6 +12,8 @@ import {
   Languages,
   Code,
   TestTube,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 import {
@@ -33,7 +35,7 @@ import { deleteCookie } from "@/helpers/Cookies";
 import useAppState from "@/context/state";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import Image from "next/image";
-import { ModeToggle } from "@/components/mode-toggle";
+import { useTheme } from "next-themes";
 import {
   Collapsible,
   CollapsibleContent,
@@ -42,12 +44,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 // Menu items, chỉnh lại icon cho mục con của Chatbot
 
 export function AppSidebar() {
@@ -58,6 +55,7 @@ export function AppSidebar() {
   const pathname = usePathname();
   const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
   const { state, toggleSidebar } = useSidebar();
+  const { theme, setTheme } = useTheme();
   const t = useTranslations("sidebar");
   const data = [
     {
@@ -127,6 +125,22 @@ export function AppSidebar() {
       ...prev,
       [title]: !prev[title],
     }));
+  };
+
+  const toggleLanguage = () => {
+    const newLocale = locale === "en" ? "vi" : "en";
+    const newPath = `/${newLocale}${pathname.replace(/^\/[a-z]{2}/, "")}`;
+    router.push(newPath);
+  };
+
+  const toggleTheme = () => {
+    if (theme === "light") {
+      setTheme("dark");
+    } else if (theme === "dark") {
+      setTheme("light");
+    } else {
+      setTheme("light"); // Default to light if system
+    }
   };
 
   // Check if current page should show mobile navigation
@@ -261,39 +275,32 @@ export function AppSidebar() {
             </SidebarGroup>
           </SidebarContent>
           <SidebarFooter className="flex flex-col items-center gap-3 p-4 border-t border-primary/10 bg-gradient-to-t from-primary/5 to-transparent">
-            <ModeToggle />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full flex justify-between items-center gap-2 hover:bg-primary/10 transition-colors duration-200 border-primary/20"
-                >
-                  <div className="flex items-center gap-2">
-                    <Languages className="w-4 h-4" />
-                    <span>{t("language.title")}</span>
-                  </div>
-                  <ChevronDown className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuItem
-                  onClick={() =>
-                    router.push(`/en${pathname.replace(/^\/[a-z]{2}/, "")}`)
-                  }
-                  className={locale === "en" ? "bg-primary/10" : ""}
-                >
-                  {t("language.en")}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    router.push(`/vi${pathname.replace(/^\/[a-z]{2}/, "")}`)
-                  }
-                  className={locale === "vi" ? "bg-primary/10" : ""}
-                >
-                  {t("language.vi")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="outline"
+              onClick={toggleTheme}
+              className="w-full flex justify-center items-center gap-2 hover:bg-primary/10 transition-colors duration-200 border-primary/20"
+            >
+              {theme === "dark" ? (
+                <Moon className="w-4 h-4" />
+              ) : (
+                <Sun className="w-4 h-4" />
+              )}
+              <span className="font-medium">
+                {theme === "dark" ? "Dark" : "Light"} →{" "}
+                {theme === "dark" ? "Light" : "Dark"}
+              </span>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={toggleLanguage}
+              className="w-full flex justify-center items-center gap-2 hover:bg-primary/10 transition-colors duration-200 border-primary/20"
+            >
+              <Languages className="w-4 h-4" />
+              <span className="font-medium">
+                {locale === "en" ? "EN" : "VI"} →{" "}
+                {locale === "en" ? "VI" : "EN"}
+              </span>
+            </Button>
             {isLogin && (
               <Button
                 variant="outline"
@@ -305,7 +312,7 @@ export function AppSidebar() {
                   setIslogin(false);
                 }}
               >
-                Đăng xuất
+                {t("logout")}
                 <LogOut className="w-4 h-4 ml-1" />
               </Button>
             )}
@@ -349,36 +356,32 @@ export function AppSidebar() {
                   <span className="text-xs mt-1">{item.title}</span>
                 </Link>
               ))}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="flex flex-col items-center p-2 text-primary/70 hover:text-primary transition-colors duration-200"
-                >
-                  <Languages className="w-6 h-6" />
-                  <span className="text-xs mt-1">{t("language.title")}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuItem
-                  onClick={() =>
-                    router.push(`/en${pathname.replace(/^\/[a-z]{2}/, "")}`)
-                  }
-                  className={locale === "en" ? "bg-primary/10" : ""}
-                >
-                  {t("language.en")}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    router.push(`/vi${pathname.replace(/^\/[a-z]{2}/, "")}`)
-                  }
-                  className={locale === "vi" ? "bg-primary/10" : ""}
-                >
-                  {t("language.vi")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="flex flex-col items-center p-2 text-primary/70 hover:text-primary transition-colors duration-200"
+            >
+              {theme === "dark" ? (
+                <Moon className="w-6 h-6" />
+              ) : (
+                <Sun className="w-6 h-6" />
+              )}
+              <span className="text-xs mt-1">
+                {theme === "dark" ? "Dark" : "Light"}
+              </span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+              className="flex flex-col items-center p-2 text-primary/70 hover:text-primary transition-colors duration-200"
+            >
+              <Languages className="w-6 h-6" />
+              <span className="text-xs mt-1">
+                {locale === "en" ? "EN" : "VI"}
+              </span>
+            </Button>
             {isLogin ? (
               <Button
                 variant="ghost"

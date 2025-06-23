@@ -19,10 +19,19 @@ import {
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Upload, Pencil, Trash2, RotateCcw, X, Loader2 } from "lucide-react";
+import {
+  Plus,
+  Upload,
+  Pencil,
+  Trash2,
+  RotateCcw,
+  X,
+  Loader2,
+} from "lucide-react";
 import DocumentUpload from "./document-upload";
 import { DocumentVectorStore } from "../../../types/document";
 import { documentService } from "@/services/documentService";
+import { useTranslations } from "next-intl";
 
 interface DocumentManagementDialogProps {
   botId: string;
@@ -35,6 +44,7 @@ export default function DocumentManagementDialog({
   isOpen,
   onClose,
 }: DocumentManagementDialogProps) {
+  const t = useTranslations("documentManagement");
   const [documents, setDocuments] = useState<DocumentVectorStore[]>([]);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -54,7 +64,7 @@ export default function DocumentManagementDialog({
       const data = await documentService.fetchDocuments(botId);
       setDocuments(data);
     } catch {
-      toast.error("Lỗi tải danh sách tài liệu");
+      toast.error(t("toast.loadError"));
     } finally {
       setLoading(false);
     }
@@ -73,7 +83,7 @@ export default function DocumentManagementDialog({
   const handleAddOrEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) {
-      toast.error("Nội dung không được để trống");
+      toast.error(t("toast.emptyContent"));
       return;
     }
 
@@ -89,7 +99,7 @@ export default function DocumentManagementDialog({
           updatedDocument,
           editingDocument.id
         );
-        toast.success("Cập nhật tài liệu thành công");
+        toast.success(t("toast.updateSuccess"));
       } else {
         // Add
         const metadata = { bot_id: botId };
@@ -103,7 +113,7 @@ export default function DocumentManagementDialog({
           [documentToAdd],
           [documentToAdd.id]
         );
-        toast.success("Thêm tài liệu thành công");
+        toast.success(t("toast.addSuccess"));
       }
       setIsDialogOpen(false);
       setEditingDocument(null);
@@ -111,7 +121,7 @@ export default function DocumentManagementDialog({
       fetchDocuments();
     } catch {
       toast.error(
-        editingDocument ? "Lỗi cập nhật tài liệu" : "Lỗi thêm tài liệu"
+        editingDocument ? t("toast.updateError") : t("toast.addError")
       );
     }
   };
@@ -120,11 +130,11 @@ export default function DocumentManagementDialog({
   const handleDelete = async (ids: string[]) => {
     try {
       await documentService.deleteDocuments(botId, ids);
-      toast.success("Đã xóa tài liệu");
+      toast.success(t("toast.deleteSuccess"));
       setDocuments((prev) => prev.filter((doc) => !ids.includes(doc.id)));
       setSelectedIds([]);
     } catch {
-      toast.error("Lỗi khi xóa tài liệu");
+      toast.error(t("toast.deleteError"));
     }
   };
 
@@ -139,14 +149,18 @@ export default function DocumentManagementDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       {!isOpen && !onClose && (
         <DialogTrigger asChild>
-          <Button variant="outline" className="text-sm md:text-base">Quản lý tài liệu</Button>
+          <Button variant="outline" className="text-sm md:text-base">
+            {t("manageDocuments")}
+          </Button>
         </DialogTrigger>
       )}
       <DialogContent className="max-h-[90vh] flex flex-col p-3 md:p-5 !max-w-[95vw] md:!max-w-2/3">
         <DialogHeader className="flex-shrink-0">
-          <DialogTitle className="text-lg md:text-xl">Quản lý tài liệu</DialogTitle>
+          <DialogTitle className="text-lg md:text-xl">
+            {t("manageDocuments")}
+          </DialogTitle>
           <DialogDescription className="text-sm md:text-base">
-            Thêm, chỉnh sửa, xóa và upload tài liệu cho chatbot.
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -160,7 +174,7 @@ export default function DocumentManagementDialog({
             disabled={loading}
             className="text-sm md:text-base"
           >
-            <Plus className="w-4 h-4 mr-1 md:mr-2" /> Thêm tài liệu
+            <Plus className="w-4 h-4 mr-1 md:mr-2" /> {t("addDocument")}
           </Button>
           <Button
             variant="secondary"
@@ -168,28 +182,44 @@ export default function DocumentManagementDialog({
             disabled={loading}
             className="text-sm md:text-base"
           >
-            <Upload className="w-4 h-4 mr-1 md:mr-2" /> Upload file
+            <Upload className="w-4 h-4 mr-1 md:mr-2" /> {t("uploadFile")}
           </Button>
-          <Button variant="outline" onClick={fetchDocuments} disabled={loading} className="text-sm md:text-base">
+          <Button
+            variant="outline"
+            onClick={fetchDocuments}
+            disabled={loading}
+            className="text-sm md:text-base"
+          >
             {loading ? (
               <Loader2 className="w-4 h-4 mr-1 md:mr-2 animate-spin" />
             ) : (
               <RotateCcw className="w-4 h-4 mr-1 md:mr-2" />
             )}
-            {loading ? "Đang tải..." : "Tải lại"}
+            {loading ? t("loading") : t("reload")}
           </Button>
           {selectedIds.length > 0 && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="destructive" disabled={loading} className="text-sm md:text-base">
-                  <Trash2 className="w-4 h-4 mr-1 md:mr-2" /> Xóa đã chọn
+                <Button
+                  variant="destructive"
+                  disabled={loading}
+                  className="text-sm md:text-base"
+                >
+                  <Trash2 className="w-4 h-4 mr-1 md:mr-2" />{" "}
+                  {t("deleteSelected")}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent side="bottom" align="start" className="p-0 w-56 md:w-64">
+              <PopoverContent
+                side="bottom"
+                align="start"
+                className="p-0 w-56 md:w-64"
+              >
                 <Alert variant="destructive" className="p-3 md:p-4">
-                  <AlertTitle className="text-sm md:text-base">Bạn chắc chắn muốn xóa?</AlertTitle>
+                  <AlertTitle className="text-sm md:text-base">
+                    {t("confirmDeleteTitle")}
+                  </AlertTitle>
                   <AlertDescription className="text-xs md:text-sm">
-                    Xóa tất cả tài liệu được chọn khỏi hệ thống.
+                    {t("confirmDeleteSelectedDesc")}
                   </AlertDescription>
                   <div className="flex justify-end gap-2 mt-3 md:mt-4">
                     <Button
@@ -202,7 +232,7 @@ export default function DocumentManagementDialog({
                       {loading ? (
                         <Loader2 className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2 animate-spin" />
                       ) : null}
-                      Xác nhận
+                      {t("confirm")}
                     </Button>
                   </div>
                 </Alert>
@@ -217,7 +247,9 @@ export default function DocumentManagementDialog({
             <div className="flex items-center justify-center h-24 md:h-32">
               <div className="flex flex-col items-center gap-2">
                 <Loader2 className="w-6 h-6 md:w-8 md:h-8 animate-spin text-primary" />
-                <p className="text-sm md:text-base text-muted-foreground">Đang tải dữ liệu...</p>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  {t("loadingData")}
+                </p>
               </div>
             </div>
           ) : (
@@ -246,13 +278,13 @@ export default function DocumentManagementDialog({
                         />
                       </th>
                       <th className="p-1 md:p-2 text-left font-medium text-foreground">
-                        ID
+                        {t("table.id")}
                       </th>
                       <th className="p-1 md:p-2 text-left font-medium text-foreground">
-                        Nội dung
+                        {t("table.content")}
                       </th>
                       <th className="p-1 md:p-2 text-left font-medium text-foreground">
-                        Hành động
+                        {t("table.action")}
                       </th>
                     </tr>
                   </thead>
@@ -263,7 +295,7 @@ export default function DocumentManagementDialog({
                           colSpan={4}
                           className="p-4 md:p-8 text-center text-muted-foreground text-xs md:text-sm"
                         >
-                          Không có tài liệu nào
+                          {t("table.noDocuments")}
                         </td>
                       </tr>
                     ) : (
@@ -311,7 +343,9 @@ export default function DocumentManagementDialog({
                                   {doc.page_content}
                                 </div>
                                 <div className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">
-                                  {doc.page_content.length} ký tự
+                                  {t("table.charCount", {
+                                    count: doc.page_content.length,
+                                  })}
                                 </div>
                               </div>
                             </td>
@@ -321,7 +355,7 @@ export default function DocumentManagementDialog({
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => showEditDialog(doc)}
-                                  title="Chỉnh sửa"
+                                  title={t("edit")}
                                   disabled={loading}
                                   className="h-7 w-7 md:h-8 md:w-8 p-0"
                                 >
@@ -332,7 +366,7 @@ export default function DocumentManagementDialog({
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      title="Xóa"
+                                      title={t("delete")}
                                       disabled={loading}
                                       className="h-7 w-7 md:h-8 md:w-8 p-0"
                                     >
@@ -349,11 +383,10 @@ export default function DocumentManagementDialog({
                                       className="p-3 md:p-4"
                                     >
                                       <AlertTitle className="text-sm md:text-base">
-                                        Bạn chắc chắn muốn xóa?
+                                        {t("confirmDeleteTitle")}
                                       </AlertTitle>
                                       <AlertDescription className="text-xs md:text-sm">
-                                        Hành động này sẽ xóa tài liệu khỏi hệ
-                                        thống.
+                                        {t("confirmDeleteDesc")}
                                       </AlertDescription>
                                       <div className="flex justify-end gap-2 mt-3 md:mt-4">
                                         <Button
@@ -366,7 +399,7 @@ export default function DocumentManagementDialog({
                                           {loading ? (
                                             <Loader2 className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2 animate-spin" />
                                           ) : null}
-                                          Xác nhận
+                                          {t("confirm")}
                                         </Button>
                                       </div>
                                     </Alert>
@@ -385,13 +418,14 @@ export default function DocumentManagementDialog({
               {documents.length > 0 && (
                 <div className="flex flex-col md:flex-row items-center justify-between gap-2 mt-3 md:mt-4 px-1 md:px-2">
                   <div className="text-xs md:text-sm text-muted-foreground">
-                    Hiển thị{" "}
-                    {Math.min(
-                      (currentPage - 1) * pageSize + 1,
-                      documents.length
-                    )}{" "}
-                    - {Math.min(currentPage * pageSize, documents.length)} của{" "}
-                    {documents.length} tài liệu
+                    {t("pagination.displaying", {
+                      from: Math.min(
+                        (currentPage - 1) * pageSize + 1,
+                        documents.length
+                      ),
+                      to: Math.min(currentPage * pageSize, documents.length),
+                      total: documents.length,
+                    })}
                   </div>
                   <div className="flex items-center gap-1 md:gap-2">
                     <Button
@@ -401,22 +435,25 @@ export default function DocumentManagementDialog({
                       disabled={currentPage === 1 || loading}
                       className="text-xs md:text-sm h-7 md:h-8"
                     >
-                      Trước
+                      {t("pagination.prev")}
                     </Button>
                     <span className="text-xs md:text-sm text-foreground">
-                      Trang {currentPage} /{" "}
-                      {Math.ceil(documents.length / pageSize)}
+                      {t("pagination.page", {
+                        current: currentPage,
+                        total: Math.ceil(documents.length / pageSize),
+                      })}
                     </span>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setCurrentPage(currentPage + 1)}
                       disabled={
-                        currentPage >= Math.ceil(documents.length / pageSize) || loading
+                        currentPage >= Math.ceil(documents.length / pageSize) ||
+                        loading
                       }
                       className="text-xs md:text-sm h-7 md:h-8"
                     >
-                      Sau
+                      {t("pagination.next")}
                     </Button>
                   </div>
                 </div>
@@ -430,7 +467,7 @@ export default function DocumentManagementDialog({
           <DialogContent className="max-w-[95vw] md:max-w-2xl">
             <DialogHeader>
               <DialogTitle className="text-lg md:text-xl">
-                {editingDocument ? "Chỉnh sửa tài liệu" : "Thêm tài liệu"}
+                {editingDocument ? t("editDocument") : t("addDocument")}
               </DialogTitle>
             </DialogHeader>
             <form
@@ -439,7 +476,9 @@ export default function DocumentManagementDialog({
               autoComplete="off"
             >
               <div>
-                <label className="block mb-1 md:mb-2 font-medium text-sm md:text-base">Nội dung</label>
+                <label className="block mb-1 md:mb-2 font-medium text-sm md:text-base">
+                  {t("content")}
+                </label>
                 <Textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
@@ -449,7 +488,7 @@ export default function DocumentManagementDialog({
               </div>
               <div className="flex gap-2 justify-end">
                 <Button type="submit" className="text-sm md:text-base">
-                  {editingDocument ? "Lưu" : "Tạo mới"}
+                  {editingDocument ? t("save") : t("create")}
                 </Button>
                 <Button
                   type="button"
@@ -461,7 +500,7 @@ export default function DocumentManagementDialog({
                   }}
                   className="text-sm md:text-base"
                 >
-                  Hủy
+                  {t("cancel")}
                 </Button>
               </div>
             </form>

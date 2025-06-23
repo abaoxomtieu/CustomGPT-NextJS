@@ -60,6 +60,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useTranslations } from "next-intl";
 
 // ==== BẮT ĐẦU: Nhận params qua props ====
 const modelOptions = [
@@ -67,74 +68,52 @@ const modelOptions = [
   { label: "Gemini 2.0 Flash", value: "gemini-2.0-flash" },
 ];
 
-const thinkingTexts = [
-  "Đang phân tích câu hỏi của bạn...",
-  "Đang tìm kiếm thông tin phù hợp...",
-  "Đang xử lý dữ liệu...",
-  "Đang suy nghĩ về câu trả lời...",
-  "Đang tổng hợp thông tin...",
-  "Đang chuẩn bị phản hồi...",
-];
-
-// Add these styles at the top of the file after imports
 const styles = `
   .chat-container {
     background: linear-gradient(to bottom, var(--background), var(--background)/95);
   }
-
   .glass-header {
     background: rgba(var(--card), 0.8);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(var(--border), 0.1);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
-
   .glass-sidebar {
     background: rgba(var(--card), 0.8);
     backdrop-filter: blur(10px);
     border-right: 1px solid rgba(var(--border), 0.1);
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
   }
-
   .message-bubble {
     transition: all 0.2s ease;
   }
-
   .message-bubble:hover {
     transform: translateY(-1px);
   }
-
   .thinking-bubble {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-
   .fade-in {
     animation: fadeIn 0.3s ease-in-out;
   }
-
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
   .slide-in {
     animation: slideIn 0.3s ease-out;
   }
-
   @keyframes slideIn {
     from { transform: translateX(-100%); }
     to { transform: translateX(0); }
   }
-
   .hover-lift {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-
   .hover-lift:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -146,6 +125,7 @@ export default function RagAgentClient({
 }: {
   params: { slug: string[] };
 }) {
+  const t = useTranslations("ragAgent");
   // Xử lý params từ dynamic route [...slug]
   const slugArray = Array.isArray(params.slug)
     ? params.slug
@@ -179,6 +159,7 @@ export default function RagAgentClient({
   >(urlConversationId as string);
   const [isMobileConversationOpen, setIsMobileConversationOpen] =
     useState(false);
+  const [shouldScrollToEnd, setShouldScrollToEnd] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -214,10 +195,10 @@ export default function RagAgentClient({
   useEffect(() => {
     if (loading && !streamingMessage) {
       let index = 0;
-      setThinkingText(thinkingTexts[0]);
+      setThinkingText(t.raw("thinkingTexts")[0]);
       thinkingIntervalRef.current = setInterval(() => {
-        index = (index + 1) % thinkingTexts.length;
-        setThinkingText(thinkingTexts[index]);
+        index = (index + 1) % t.raw("thinkingTexts").length;
+        setThinkingText(t.raw("thinkingTexts")[index]);
       }, 2000);
     } else {
       if (thinkingIntervalRef.current) {
@@ -244,7 +225,7 @@ export default function RagAgentClient({
           const chatbot = await fetchChatbotDetail(urlBotId as string);
           setChatbotDetails(chatbot);
         } catch (error) {
-          toast.error("Lỗi khi tải thông tin chatbot");
+          toast.error(t("errorLoadChatbot"));
         } finally {
           setLoadingChatbot(false);
         }
@@ -253,8 +234,6 @@ export default function RagAgentClient({
       fetchDetails();
     }
   }, [urlBotId, chatbotDetails?.id]);
-
-
 
   // Auth loading (replace Spin with a simple loader)
   if (isAuthLoading) {
@@ -342,7 +321,7 @@ export default function RagAgentClient({
   // send message
   const handleSend = async (files: File[]) => {
     if (!isAuthLoading && !isLogin) {
-      toast.warning("Bạn cần đăng nhập để sử dụng tính năng này.");
+      toast.warning(t("loginRequired"));
       router.push("/login");
       return;
     }
@@ -352,15 +331,12 @@ export default function RagAgentClient({
       if (allowFirstRequest) {
         setAllowFirstRequest(false);
       } else {
-        toast.warning(
-          "Bạn chưa thiết lập gemini apikey, đến trang Profile để thiết lập gemini apikey",
-          {
-            action: {
-              label: "Thiết lập ngay",
-              onClick: () => router.push("/profile"),
-            },
-          }
-        );
+        toast.warning(t("notSetupGemini"), {
+          action: {
+            label: t("setupNow"),
+            onClick: () => router.push("/profile"),
+          },
+        });
         return;
       }
     }
@@ -419,6 +395,7 @@ export default function RagAgentClient({
       reasoning: reasoning,
     };
     await handleStreamingChat(payload);
+    setShouldScrollToEnd(true);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -445,17 +422,17 @@ export default function RagAgentClient({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setIsDocumentDialogOpen(true)}>
-          <FileText className="w-4 h-4 mr-2" /> Quản lý tài liệu
+          <FileText className="w-4 h-4 mr-2" /> {t("manageDocuments")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={openEditDialog}>
-          <Edit className="w-4 h-4 mr-2" /> Chỉnh sửa
+          <Edit className="w-4 h-4 mr-2" /> {t("edit")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setIsApiDocsOpen(true)}>
-          <TerminalSquare className="w-4 h-4 mr-2" /> Tài liệu API
+          <TerminalSquare className="w-4 h-4 mr-2" /> {t("apiDocs")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={clearMessages}>
-          <Trash2 className="w-4 h-4 mr-2" /> Xóa lịch sử chat
+          <Trash2 className="w-4 h-4 mr-2" /> {t("clearChat")}
         </DropdownMenuItem>
         <DropdownMenuItem
           className="text-red-600"
@@ -463,12 +440,9 @@ export default function RagAgentClient({
             toast(
               <div>
                 <div className="mb-2 font-semibold text-red-700">
-                  Xác nhận xóa tất cả dữ liệu
+                  {t("confirmDeleteAll")}
                 </div>
-                <div className="text-sm mb-4">
-                  Hành động này sẽ xóa tất cả cuộc trò chuyện và không thể hoàn
-                  tác.
-                </div>
+                <div className="text-sm mb-4">{t("deleteAllDesc")}</div>
                 <Button
                   variant="destructive"
                   onClick={() => {
@@ -476,14 +450,14 @@ export default function RagAgentClient({
                     toast.dismiss();
                   }}
                 >
-                  Xác nhận
+                  {t("confirm")}
                 </Button>
               </div>,
               { duration: 9999 }
             )
           }
         >
-          <Trash2 className="w-4 h-4 mr-2" /> Xóa tất cả đoạn hội thoại
+          <Trash2 className="w-4 h-4 mr-2" /> {t("deleteAllConversations")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -503,7 +477,9 @@ export default function RagAgentClient({
       {loadingChatbot && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <Loader2 className="w-10 h-10 animate-spin text-primary" />
-          <span className="ml-4 text-lg text-foreground">Đang tải...</span>
+          <span className="ml-4 text-lg text-foreground">
+            {t("loadingText")}
+          </span>
         </div>
       )}
       {/* Sidebar */}
@@ -570,13 +546,13 @@ export default function RagAgentClient({
                   <div className="flex items-center gap-2">
                     <Loader2 className="animate-spin w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
                     <span className="text-sm md:text-base text-muted-foreground">
-                      Đang tải
+                      {t("loading")}
                     </span>
                   </div>
                 ) : (
                   <>
                     <h1 className="text-base md:text-xl font-semibold text-card-foreground">
-                      {chatbotDetails?.name || "Trợ lý AI"}
+                      {chatbotDetails?.name || t("assistantDefaultName")}
                     </h1>
                     <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">
                       {chatbotDetails?.description}
@@ -595,11 +571,11 @@ export default function RagAgentClient({
                         className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs transition-colors duration-200"
                         onClick={() => router.push("/login")}
                       >
-                        Chưa đăng nhập
+                        {t("notLoggedIn")}
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent className="bg-popover text-popover-foreground">
-                      Đăng nhập để sử dụng đầy đủ tính năng
+                      {t("loginToUse")}
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -614,15 +590,15 @@ export default function RagAgentClient({
                     } cursor-pointer`}
                   >
                     <KeyRound className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-                    {geminiApiKey ? "Đã thiết lập" : "Chưa thiết lập"}
+                    {geminiApiKey ? t("geminiKeySet") : t("geminiKeyNotSet")}
                   </Badge>
                 </PopoverTrigger>
                 <PopoverContent className="bg-popover text-popover-foreground border-border shadow-lg">
                   {geminiApiKey ? (
-                    "Bạn đã thiết lập Gemini API Key, có thể sử dụng đầy đủ tính năng AI Gemini."
+                    t("geminiKeyTooltipSet")
                   ) : (
                     <span>
-                      Bạn chưa thiết lập Gemini API Key.
+                      {t("geminiKeyTooltipNotSet")}
                       <br />
                       <Button
                         size="sm"
@@ -630,7 +606,7 @@ export default function RagAgentClient({
                         className="text-primary hover:text-primary/80 transition-colors duration-200"
                         onClick={() => router.push("/profile")}
                       >
-                        Thiết lập ngay
+                        {t("setupNow")}
                       </Button>
                     </span>
                   )}
@@ -667,18 +643,10 @@ export default function RagAgentClient({
             }
             thinkingMessage={reasoning ? thinkingText : ""}
             renderChatbotDetails={true}
+            shouldScrollToEnd={shouldScrollToEnd}
+            onScrolledToEnd={() => setShouldScrollToEnd(false)}
           />
         </div>
-
-        {/* Thinking Text with Animation */}
-        {/* {thinkingText && (
-          <div className="fixed bottom-24 right-4 z-50">
-            <div className="flex items-center space-x-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border thinking-bubble">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-              <span className="text-sm">{thinkingText}</span>
-            </div>
-          </div>
-        )} */}
 
         {/* Chat Input */}
         <div className="flex-none border-t border-border bg-background/95 backdrop-blur-sm">

@@ -19,6 +19,7 @@ import { useFileTree } from "@/hooks/use-file-tree";
 import { useGrading } from "@/hooks/use-grading";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import RepositoryConfig from "@/components/grade-code/reposistory-config";
 import FileTreePanel from "@/components/grade-code/file-tree-panel";
 import GradingPanel from "@/components/grade-code/grading-panel";
@@ -26,6 +27,7 @@ import GradingResultView from "@/components/grade-code/grading-result";
 import ErrorNotification from "@/components/grade-code/error-notification";
 
 const GradePage = () => {
+  const t = useTranslations("codeGrader.grade");
   const [isFolderStructureModalVisible, setIsFolderStructureModalVisible] =
     useState(false);
   const [repoUrl, setRepoUrl] = useState(DEFAULT_REPO_URL);
@@ -153,7 +155,7 @@ const GradePage = () => {
               className="mb-4 flex items-center gap-2"
             >
               <FolderOpen className="w-4 h-4 text-blue-500" />
-              View Folder Structure Evaluation
+              {t("viewFolderStructure")}
             </Button>
 
             <Dialog
@@ -165,7 +167,7 @@ const GradePage = () => {
                   <DialogTitle className="flex items-center gap-2 text-lg">
                     <FolderOpen className="text-blue-500" />
                     <span className="font-semibold">
-                      Folder Structure Evaluation
+                      {t("folderStructureEvaluation")}
                     </span>
                   </DialogTitle>
                 </DialogHeader>
@@ -181,7 +183,7 @@ const GradePage = () => {
                     variant="secondary"
                     onClick={() => setIsFolderStructureModalVisible(false)}
                   >
-                    Close
+                    {t("close")}
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -209,7 +211,7 @@ const GradePage = () => {
         className="fixed top-4 right-4 flex items-center gap-2 shadow-lg"
       >
         <History className="w-4 h-4" />
-        <span className="hidden sm:inline">View History</span>
+        <span className="hidden sm:inline">{t("viewHistory")}</span>
       </Button>
     </div>
   );

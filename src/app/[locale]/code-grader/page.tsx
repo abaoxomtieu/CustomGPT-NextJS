@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { Loader2, Trash2, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +26,7 @@ import {
 import { useGrading } from "@/hooks/use-grading";
 
 export default function CodeGraderHistoryPage() {
+  const t = useTranslations("codeGrader");
   const [assignments, setAssignments] = useState<GradedAssignment[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -56,7 +58,7 @@ export default function CodeGraderHistoryPage() {
       const data = await gradedAssignmentService.getAllAssignments();
       setAssignments(data);
     } catch (error) {
-      toast.error("Failed to load assignments");
+      toast.error(t("messages.loadError"));
     } finally {
       setLoading(false);
     }
@@ -66,9 +68,9 @@ export default function CodeGraderHistoryPage() {
     try {
       await gradedAssignmentService.deleteAssignment(id);
       setAssignments(assignments.filter((assignment) => assignment.id !== id));
-      toast.success("Assignment deleted successfully");
+      toast.success(t("messages.deleteSuccess"));
     } catch (error) {
-      toast.error("Failed to delete assignment");
+      toast.error(t("messages.deleteError"));
     }
   };
 
@@ -87,25 +89,25 @@ export default function CodeGraderHistoryPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Graded Assignments History</h1>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
         <Button
           onClick={() => router.push("/code-grader/grade")}
           className="flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          New Grading
+          {t("newGrading")}
         </Button>
       </div>
 
       {assignments.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500 mb-4">No graded assignments found</p>
+          <p className="text-gray-500 mb-4">{t("noAssignmentsFound")}</p>
           <Button
             onClick={() => router.push("/code-grader/grade")}
             className="flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            Create First Assignment
+            {t("createFirstAssignment")}
           </Button>
         </div>
       ) : (
@@ -128,19 +130,18 @@ export default function CodeGraderHistoryPage() {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Assignment</AlertDialogTitle>
+                        <AlertDialogTitle>{t("deleteAssignment")}</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Are you sure you want to delete this assignment? This
-                          action cannot be undone.
+                          {t("deleteConfirm")}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => deleteAssignment(assignment.id)}
                           className="bg-red-500 hover:bg-red-600"
                         >
-                          Delete
+                          {t("delete")}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -154,7 +155,7 @@ export default function CodeGraderHistoryPage() {
                 <div className="space-y-2">
                   <div>
                     <p className="text-xs font-medium text-foreground/80 mb-1">
-                      Files ({assignment.selected_files.length})
+                      {t("files")} ({assignment.selected_files.length})
                     </p>
                     <div className="text-xs text-muted-foreground">
                       {assignment.selected_files
@@ -166,7 +167,7 @@ export default function CodeGraderHistoryPage() {
                         ))}
                       {assignment.selected_files.length > 2 && (
                         <div className="text-muted-foreground/60">
-                          +{assignment.selected_files.length - 2} more
+                          +{assignment.selected_files.length - 2} {t("more")}
                         </div>
                       )}
                     </div>
@@ -174,7 +175,7 @@ export default function CodeGraderHistoryPage() {
 
                   <div>
                     <p className="text-xs font-medium text-foreground/80 mb-1">
-                      Criteria ({assignment.criterias_list.length})
+                      {t("criteria")} ({assignment.criterias_list.length})
                     </p>
                     <div className="text-xs text-muted-foreground">
                       {assignment.criterias_list
@@ -188,7 +189,7 @@ export default function CodeGraderHistoryPage() {
                         ))}
                       {assignment.criterias_list.length > 1 && (
                         <div className="text-muted-foreground/60">
-                          +{assignment.criterias_list.length - 1} more
+                          +{assignment.criterias_list.length - 1} {t("more")}
                         </div>
                       )}
                     </div>
@@ -202,7 +203,7 @@ export default function CodeGraderHistoryPage() {
                       router.push(`/code-grader/history/${assignment.id}`)
                     }
                   >
-                    View Details
+                    {t("viewDetails")}
                   </Button>
                 </div>
               </CardContent>

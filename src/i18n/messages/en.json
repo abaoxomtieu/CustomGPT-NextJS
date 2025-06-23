@@ -58,6 +58,7 @@
     "code_grader": "Grade Code",
     "api_testing": "API Testing",
     "code_evaluation": "Code Evaluation",
+    "logout": "Logout",
     "language": {
       "title": "Language",
       "en": "English",
@@ -325,5 +326,295 @@
     "clone_repo_first": "Clone a repository first.",
     "selected_files": "Selected Files",
     "no_files_selected": "No files selected"
+  },
+  "codeGrader": {
+    "title": "Graded Assignments History",
+    "newGrading": "New Grading",
+    "createFirstAssignment": "Create First Assignment",
+    "noAssignmentsFound": "No graded assignments found",
+    "viewDetails": "View Details",
+    "deleteAssignment": "Delete Assignment",
+    "deleteConfirm": "Are you sure you want to delete this assignment? This action cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "files": "Files",
+    "criteria": "Criteria",
+    "more": "more",
+    "messages": {
+      "loadError": "Failed to load assignments",
+      "deleteSuccess": "Assignment deleted successfully",
+      "deleteError": "Failed to delete assignment"
+    },
+    "grade": {
+      "viewFolderStructure": "View Folder Structure Evaluation",
+      "folderStructureEvaluation": "Folder Structure Evaluation",
+      "close": "Close",
+      "viewHistory": "View History"
+    },
+    "history": {
+      "backToHistory": "Back to History",
+      "assignmentNotFound": "Assignment Not Found",
+      "goBack": "Go Back",
+      "invalidAssignmentId": "Invalid assignment ID",
+      "loadError": "Failed to load assignment details",
+      "viewFolderStructure": "View Folder Structure Evaluation",
+      "folderStructureEvaluation": "Folder Structure Evaluation",
+      "close": "Close"
+    },
+    "repositoryConfig": {
+      "placeholder": "Enter GitHub repository URL",
+      "fileExtensions": "File extensions:",
+      "cloning": "Cloning...",
+      "cloneButton": "Clone Repository"
+    },
+    "gradingPanel": {
+      "title": "Grading Criteria",
+      "criteriaCount": "{count} criteria",
+      "feCriteria": "FE Criteria",
+      "beCriteria": "BE Criteria",
+      "projectDescriptionPlaceholder": "Enter project description (optional)",
+      "generate": "Generate",
+      "grading": "Grading...",
+      "gradeButton": "Grade Selected Files"
+    },
+    "criteriaInput": {
+      "folderStructureTitle": "Folder Structure Criteria:",
+      "folderStructurePlaceholder": "Enter folder criteria",
+      "otherTitle": "Other Criteria:",
+      "otherPlaceholder": "Enter criteria {index}",
+      "dialogTitleFolder": "Edit Folder Structure Criteria",
+      "dialogTitleOther": "Edit Other Criteria #{index}",
+      "dialogPlaceholderFolder": "Enter folder structure criteria",
+      "dialogPlaceholderOther": "Enter other criteria",
+      "cancel": "Cancel",
+      "save": "Save Changes"
+    },
+    "gradingResult": {
+      "messages": {
+        "fileRemoved": "File removed successfully!",
+        "noResults": "No results available to grade",
+        "gradeSuccess": "Overall grading completed successfully!",
+        "gradeError": "Failed to grade overall results"
+      },
+      "export": {
+        "folderStructureSection": "Folder Structure Evaluation",
+        "folderStructureSheet": "Folder Structure",
+        "fileName": "File Name",
+        "rating": "Rating",
+        "ratingValue": "Rating Value",
+        "comments": "Comments",
+        "evaluation": "Evaluation",
+        "overallGrade": "Overall Grade",
+        "criteriaSheet": "Criteria {index}"
+      },
+      "table": {
+        "fileName": "File Name",
+        "rating": "Rating",
+        "action": "Action",
+        "viewDetails": "View Details"
+      },
+      "gradeOverallButton": "Grade Overall Result",
+      "overallAnalysisTitle": "Overall Grade Analysis",
+      "title": "Grading Results",
+      "exportButton": "Export to Excel",
+      "criteriaTab": "Criteria {index}",
+      "modal": {
+        "comments": "Comments",
+        "evaluation": "Evaluation",
+        "sourceCode": "Source Code",
+        "fullscreen": "Fullscreen",
+        "viewSourceCode": "View Source Code",
+        "removeFile": "Remove File",
+        "close": "Close"
+      },
+      "noResults": "No grading results available."
+    }
+  },
+  "apiTesting": {
+    "title": "API Test Case Generator",
+    "addApi": "Add API",
+    "addFirstApi": "Add First API",
+    "noApisAdded": "No APIs added yet",
+    "table": {
+      "method": "Method",
+      "endpoint": "API Endpoint",
+      "baseUrl": "Base URL",
+      "description": "Description",
+      "fieldDescription": "Field Description",
+      "action": "Action",
+      "exampleTestCases": "Example Test Cases"
+    },
+    "placeholders": {
+      "endpoint": "/api/...",
+      "baseUrl": "https://api.example.com",
+      "description": "Describe what this API does...",
+      "fieldDescription": "Describe the fields and their types..."
+    },
+    "buttons": {
+      "generate": "Generate",
+      "testApi": "Test API",
+      "detail": "Detail",
+      "results": "Results"
+    },
+    "testCases": {
+      "count": "{count} test case",
+      "countPlural": "{count} test cases",
+      "none": "No test cases generated yet",
+      "passed": "{passed}/{total} passed"
+    },
+    "dialogs": {
+      "testCaseDetails": {
+        "title": "Test Case Details",
+        "testCase": "Test Case",
+        "description": "Description:",
+        "expectedOutput": "Expected Output:"
+      },
+      "testResults": {
+        "title": "Test Results",
+        "summary": "Test Summary",
+        "summaryDescription": "{passed} out of {total} tests passed",
+        "successRate": "Success Rate",
+        "testDescription": "Test Description:",
+        "actualResponse": "Actual API Response:",
+        "evaluationReason": "Evaluation Reason:",
+        "passed": "PASSED",
+        "failed": "FAILED"
+      }
+    },
+    "status": {
+      "pass": "Pass",
+      "fail": "Fail"
+    },
+    "messages": {
+      "fillRequiredFields": "Please fill in all required fields",
+      "generateSuccess": "Test cases generated successfully",
+      "generateError": "Failed to generate test cases",
+      "testSuccess": "API testing completed! {passed}/{total} tests passed",
+      "testError": "Failed to test API",
+      "provideBaseUrlAndTestCases": "Please provide base URL and ensure test cases are generated"
+    }
+  },
+  "ragAgent": {
+    "loading": "Loading...",
+    "errorLoadChatbot": "Failed to load chatbot information",
+    "loginRequired": "You need to login to use this feature.",
+    "notSetupGemini": "You have not set up Gemini API Key, go to Profile to set up Gemini API Key",
+    "setupNow": "Setup now",
+    "manageDocuments": "Manage Documents",
+    "edit": "Edit",
+    "apiDocs": "API Docs",
+    "clearChat": "Clear chat history",
+    "confirmDeleteAll": "Confirm delete all data",
+    "deleteAllDesc": "This action will delete all conversations and cannot be undone.",
+    "confirm": "Confirm",
+    "deleteAllConversations": "Delete all conversations",
+    "loadingText": "Loading...",
+    "loadingShort": "Loading",
+    "notLoggedIn": "Not logged in",
+    "loginToUse": "Login to use all features",
+    "geminiKeySet": "Set up",
+    "geminiKeyNotSet": "Not set up",
+    "geminiKeyTooltipSet": "You have set up Gemini API Key, you can use all Gemini AI features.",
+    "geminiKeyTooltipNotSet": "You have not set up Gemini API Key.",
+    "assistantDefaultName": "AI Assistant",
+    "thinkingTexts": [
+      "Analyzing your question...",
+      "Searching for relevant information...",
+      "Processing data...",
+      "Thinking about the answer...",
+      "Summarizing information...",
+      "Preparing response..."
+    ]
+  },
+  "documentManagement": {
+    "manageDocuments": "Manage Documents",
+    "description": "Add, edit, delete, and upload documents for the chatbot.",
+    "addDocument": "Add Document",
+    "editDocument": "Edit Document",
+    "uploadFile": "Upload File",
+    "reload": "Reload",
+    "loading": "Loading...",
+    "loadingData": "Loading data...",
+    "deleteSelected": "Delete Selected",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "save": "Save",
+    "create": "Create",
+    "cancel": "Cancel",
+    "content": "Content",
+    "table": {
+      "id": "ID",
+      "content": "Content",
+      "action": "Action",
+      "noDocuments": "No documents available",
+      "charCount": "{count} characters"
+    },
+    "pagination": {
+      "displaying": "Displaying {from} - {to} of {total} documents",
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {current} / {total}"
+    },
+    "confirmDeleteTitle": "Are you sure you want to delete?",
+    "confirmDeleteDesc": "This action will delete the document from the system.",
+    "confirmDeleteSelectedDesc": "Delete all selected documents from the system.",
+    "toast": {
+      "loadError": "Failed to load document list",
+      "emptyContent": "Content cannot be empty",
+      "updateSuccess": "Document updated successfully",
+      "addSuccess": "Document added successfully",
+      "updateError": "Failed to update document",
+      "addError": "Failed to add document",
+      "deleteSuccess": "Document deleted successfully",
+      "deleteError": "Failed to delete document"
+    }
+  },
+  "apiDocs": {
+    "title": "API Integration Guide",
+    "description": "Refer to the detailed guide to integrate the chatbot into your website/app.",
+    "noApiKey": "No API key",
+    "yourToken": "your_token",
+    "alert": {
+      "title": "API Integration",
+      "description": "Use this API to integrate the chatbot into your website or application."
+    },
+    "endpoint": "API Endpoint",
+    "method": "Method",
+    "headers": "Headers",
+    "formData": "Request Data (FormData)",
+    "params": "Parameters",
+    "paramsQuery": "User message (string)",
+    "paramsBotId": "Unique chatbot ID",
+    "paramsConversationId": "(Optional) To maintain conversation context",
+    "paramsModelName": "gemini-2.5-flash-preview-05-20 or gemini-2.0-flash",
+    "paramsApiKey": "Your API key (current: {currentApiKey})",
+    "paramsAttachs": "Array of attached files (if any)",
+    "responseFormat": "Response Format",
+    "responseFormatDesc": "API returns streaming as Server-Sent Events (SSE). Each response is a JSON:",
+    "finalResponse": "Final response:",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "close": "Close",
+    "alertWarning": {
+      "title": "Note",
+      "description": "Make sure to handle errors properly when integrating the API into your system."
+    },
+    "example": {
+      "title": "Implementation Example",
+      "fetchTab": "Fetch API",
+      "curlTab": "cURL",
+      "fetchComment": "Example using fetch",
+      "tokenComment": "Get token from cookie",
+      "apiKeyComment": "Your API key from cookie",
+      "attachComment": "Add attachment file if any",
+      "handleResponse": "Handle streaming response",
+      "handleStreaming": "Handle streaming message",
+      "handleFinal": "Handle final response",
+      "query": "Your message here",
+      "conversationId": "optional_conversation_id",
+      "streamingContent": "Streaming message content...",
+      "finalResponseContent": "Complete response message"
+    }
   }
 }

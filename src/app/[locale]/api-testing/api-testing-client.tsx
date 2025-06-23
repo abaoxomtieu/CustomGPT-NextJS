@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +29,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Sparkles, Eye, Play, FileText } from "lucide-react";
+import {
+  Loader2,
+  Plus,
+  Trash2,
+  Sparkles,
+  Eye,
+  Play,
+  FileText,
+} from "lucide-react";
 import {
   apiTestingService,
   GenerateTestCasesRequest,
@@ -73,6 +82,7 @@ function TestCaseDetailsDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const t = useTranslations("apiTesting");
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
@@ -82,7 +92,7 @@ function TestCaseDetailsDialog({
           className="flex items-center gap-2 "
         >
           <Eye className="w-4 h-4" />
-          Detail
+          {t("buttons.detail")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[80vh] rounded-3xl">
@@ -91,7 +101,11 @@ function TestCaseDetailsDialog({
             <span className="font-bold">{method}</span>
             <span className="text-muted-foreground">{apiEndpoint}</span>
             <span className="text-sm text-muted-foreground">
-              ({testCases.length} test cases)
+              (
+              {testCases.length === 1
+                ? t("testCases.count", { count: testCases.length })
+                : t("testCases.countPlural", { count: testCases.length })}
+              )
             </span>
           </DialogTitle>
         </DialogHeader>
@@ -101,7 +115,7 @@ function TestCaseDetailsDialog({
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <h3 className="font-semibold text-lg">
-                    Test Case {index + 1}
+                    {t("dialogs.testCaseDetails.testCase")} {index + 1}
                   </h3>
                   <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded">
                     #{index + 1}
@@ -109,7 +123,7 @@ function TestCaseDetailsDialog({
                 </div>
                 <div>
                   <h4 className="font-medium text-sm text-muted-foreground mb-1">
-                    Description:
+                    {t("dialogs.testCaseDetails.description")}
                   </h4>
                   <p className="text-sm bg-muted/50 p-3 rounded-lg">
                     {testCase.test_case_description}
@@ -117,7 +131,7 @@ function TestCaseDetailsDialog({
                 </div>
                 <div>
                   <h4 className="font-medium text-sm text-muted-foreground mb-1">
-                    Expected Output:
+                    {t("dialogs.testCaseDetails.expectedOutput")}
                   </h4>
                   <div className="bg-background border p-3 rounded-lg">
                     <pre className="text-sm font-mono whitespace-pre-wrap">
@@ -128,7 +142,9 @@ function TestCaseDetailsDialog({
                             : "text-red-600"
                         }
                       >
-                        {testCase.expected_output ? "Pass" : "Fail"}
+                        {testCase.expected_output
+                          ? t("status.pass")
+                          : t("status.fail")}
                       </span>
                     </pre>
                   </div>
@@ -156,18 +172,15 @@ function TestResultDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const t = useTranslations("apiTesting");
   const successRate = (testResult.passed / testResult.total) * 100;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="flex items-center gap-2"
-        >
+        <Button variant="outline" size="sm" className="flex items-center gap-2">
           <FileText className="w-4 h-4" />
-          Results
+          {t("buttons.results")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-5xl max-h-[80vh] rounded-3xl">
@@ -176,7 +189,7 @@ function TestResultDialog({
             <span className="font-bold">{method}</span>
             <span className="text-muted-foreground">{apiEndpoint}</span>
             <span className="text-sm text-muted-foreground">
-              - Test Results
+              - {t("dialogs.testResults.title")}
             </span>
           </DialogTitle>
         </DialogHeader>
@@ -185,16 +198,31 @@ function TestResultDialog({
           <Card className="p-4 bg-muted/30">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-lg">Test Summary</h3>
+                <h3 className="font-semibold text-lg">
+                  {t("dialogs.testResults.summary")}
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  {testResult.passed} out of {testResult.total} tests passed
+                  {t("dialogs.testResults.summaryDescription", {
+                    passed: testResult.passed,
+                    total: testResult.total,
+                  })}
                 </p>
               </div>
               <div className="text-right">
-                <div className={`text-2xl font-bold ${successRate >= 70 ? 'text-green-600' : successRate >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
+                <div
+                  className={`text-2xl font-bold ${
+                    successRate >= 70
+                      ? "text-green-600"
+                      : successRate >= 50
+                      ? "text-yellow-600"
+                      : "text-red-600"
+                  }`}
+                >
                   {successRate.toFixed(1)}%
                 </div>
-                <p className="text-sm text-muted-foreground">Success Rate</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("dialogs.testResults.successRate")}
+                </p>
               </div>
             </div>
           </Card>
@@ -206,20 +234,24 @@ function TestResultDialog({
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
                     <h3 className="font-semibold text-lg">
-                      Test Case {index + 1}
+                      {t("dialogs.testCaseDetails.testCase")} {index + 1}
                     </h3>
-                    <span className={`text-sm px-2 py-1 rounded ${
-                      result.reason.toLowerCase().includes('pass') 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {result.reason.toLowerCase().includes('pass') ? 'PASSED' : 'FAILED'}
+                    <span
+                      className={`text-sm px-2 py-1 rounded ${
+                        result.reason.toLowerCase().includes("pass")
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {result.reason.toLowerCase().includes("pass")
+                        ? t("dialogs.testResults.passed")
+                        : t("dialogs.testResults.failed")}
                     </span>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium text-sm text-muted-foreground mb-1">
-                      Test Description:
+                      {t("dialogs.testResults.testDescription")}
                     </h4>
                     <p className="text-sm bg-muted/50 p-3 rounded-lg">
                       {result.test_case_description}
@@ -228,7 +260,7 @@ function TestResultDialog({
 
                   <div>
                     <h4 className="font-medium text-sm text-muted-foreground mb-1">
-                      Actual API Response:
+                      {t("dialogs.testResults.actualResponse")}
                     </h4>
                     <div className="bg-background border p-3 rounded-lg">
                       <pre className="text-sm font-mono whitespace-pre-wrap max-h-32 overflow-y-auto">
@@ -239,7 +271,7 @@ function TestResultDialog({
 
                   <div>
                     <h4 className="font-medium text-sm text-muted-foreground mb-1">
-                      Evaluation Reason:
+                      {t("dialogs.testResults.evaluationReason")}
                     </h4>
                     <p className="text-sm bg-muted/50 p-3 rounded-lg">
                       {result.reason}
@@ -256,6 +288,7 @@ function TestResultDialog({
 }
 
 export default function ApiTestingClient() {
+  const t = useTranslations("apiTesting");
   const [rows, setRows] = useState<ApiTestRow[]>([
     {
       id: "1",
@@ -270,7 +303,9 @@ export default function ApiTestingClient() {
     },
   ]);
   const [openDialogId, setOpenDialogId] = useState<string | null>(null);
-  const [openResultDialogId, setOpenResultDialogId] = useState<string | null>(null);
+  const [openResultDialogId, setOpenResultDialogId] = useState<string | null>(
+    null
+  );
 
   const addRow = () => {
     const newRow: ApiTestRow = {
@@ -308,7 +343,7 @@ export default function ApiTestingClient() {
 
     // Validate inputs
     if (!row.api_endpoint || !row.method || !row.api_description) {
-      toast.error("Please fill in all required fields");
+      toast.error(t("messages.fillRequiredFields"));
       return;
     }
 
@@ -335,9 +370,9 @@ export default function ApiTestingClient() {
         )
       );
 
-      toast.success("Test cases generated successfully");
+      toast.success(t("messages.generateSuccess"));
     } catch (error) {
-      toast.error("Failed to generate test cases");
+      toast.error(t("messages.generateError"));
       console.error(error);
 
       // Reset loading state on error
@@ -353,7 +388,7 @@ export default function ApiTestingClient() {
 
     // Validate inputs
     if (!row.baseUrl || !row.api_endpoint || !row.testCases.length) {
-      toast.error("Please provide base URL and ensure test cases are generated");
+      toast.error(t("messages.provideBaseUrlAndTestCases"));
       return;
     }
 
@@ -374,21 +409,24 @@ export default function ApiTestingClient() {
 
       const result = await apiTestingService.testApi(data);
       console.log("Test API result:", result);
-      
+
       // Store test results
       setRows((prevRows) =>
-        prevRows.map((r) => 
-          r.id === id 
-            ? { ...r, isTesting: false, testResult: result } 
-            : r
+        prevRows.map((r) =>
+          r.id === id ? { ...r, isTesting: false, testResult: result } : r
         )
       );
-      
-      toast.success(`API testing completed! ${result.passed}/${result.total} tests passed`);
+
+      toast.success(
+        t("messages.testSuccess", {
+          passed: result.passed,
+          total: result.total,
+        })
+      );
     } catch (error) {
-      toast.error("Failed to test API");
+      toast.error(t("messages.testError"));
       console.error(error);
-      
+
       // Reset testing state on error
       setRows((prevRows) =>
         prevRows.map((r) => (r.id === id ? { ...r, isTesting: false } : r))
@@ -401,16 +439,14 @@ export default function ApiTestingClient() {
       <Card className="">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="text-2xl font-bold">
-              API Test Case Generator
-            </CardTitle>
+            <CardTitle className="text-2xl font-bold">{t("title")}</CardTitle>
             <Button
               onClick={addRow}
               size="sm"
               className="flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
-              Add API
+              {t("addApi")}
             </Button>
           </div>
         </CardHeader>
@@ -419,13 +455,25 @@ export default function ApiTestingClient() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">Method</TableHead>
-                  <TableHead className="w-[200px]">API Endpoint</TableHead>
-                  <TableHead className="w-[150px]">Base URL</TableHead>
-                  <TableHead className="w-[250px]">Description</TableHead>
-                  <TableHead className="w-[300px]">Field Description</TableHead>
-                  <TableHead className="w-[200px]">Action</TableHead>
-                  <TableHead>Example Test Cases</TableHead>
+                  <TableHead className="w-[100px]">
+                    {t("table.method")}
+                  </TableHead>
+                  <TableHead className="w-[200px]">
+                    {t("table.endpoint")}
+                  </TableHead>
+                  <TableHead className="w-[150px]">
+                    {t("table.baseUrl")}
+                  </TableHead>
+                  <TableHead className="w-[250px]">
+                    {t("table.description")}
+                  </TableHead>
+                  <TableHead className="w-[300px]">
+                    {t("table.fieldDescription")}
+                  </TableHead>
+                  <TableHead className="w-[200px]">
+                    {t("table.action")}
+                  </TableHead>
+                  <TableHead>{t("table.exampleTestCases")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -456,7 +504,7 @@ export default function ApiTestingClient() {
                         onChange={(e) =>
                           updateRow(row.id, "api_endpoint", e.target.value)
                         }
-                        placeholder="/api/..."
+                        placeholder={t("placeholders.endpoint")}
                         className="w-full min-h-[40px]"
                       />
                     </TableCell>
@@ -466,7 +514,7 @@ export default function ApiTestingClient() {
                         onChange={(e) =>
                           updateRow(row.id, "baseUrl", e.target.value)
                         }
-                        placeholder="https://api.example.com"
+                        placeholder={t("placeholders.baseUrl")}
                         className="w-full min-h-[40px]"
                       />
                     </TableCell>
@@ -476,7 +524,7 @@ export default function ApiTestingClient() {
                         onChange={(e) =>
                           updateRow(row.id, "api_description", e.target.value)
                         }
-                        placeholder="Describe what this API does..."
+                        placeholder={t("placeholders.description")}
                         className="w-full min-h-[40px]"
                       />
                     </TableCell>
@@ -486,7 +534,7 @@ export default function ApiTestingClient() {
                         onChange={(e) =>
                           updateRow(row.id, "field_description", e.target.value)
                         }
-                        placeholder="Describe the fields and their types..."
+                        placeholder={t("placeholders.fieldDescription")}
                         className="w-full min-h-[40px]"
                       />
                     </TableCell>
@@ -504,7 +552,7 @@ export default function ApiTestingClient() {
                             ) : (
                               <Sparkles className="w-4 h-4" />
                             )}
-                            Generate
+                            {t("buttons.generate")}
                           </Button>
                           <Button
                             onClick={() => deleteRow(row.id)}
@@ -527,7 +575,7 @@ export default function ApiTestingClient() {
                             ) : (
                               <Play className="w-4 h-4" />
                             )}
-                            Test API
+                            {t("buttons.testApi")}
                           </Button>
                         )}
                       </div>
@@ -537,18 +585,28 @@ export default function ApiTestingClient() {
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium">
-                              {row.testCases.length} test case
-                              {row.testCases.length !== 1 ? "s" : ""}
+                              {row.testCases.length === 1
+                                ? t("testCases.count", {
+                                    count: row.testCases.length,
+                                  })
+                                : t("testCases.countPlural", {
+                                    count: row.testCases.length,
+                                  })}
                             </span>
                             {row.testResult && (
-                              <span className={`text-xs px-2 py-1 rounded ${
-                                row.testResult.passed === row.testResult.total 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : row.testResult.passed > 0 
-                                    ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-red-100 text-red-800'
-                              }`}>
-                                {row.testResult.passed}/{row.testResult.total} passed
+                              <span
+                                className={`text-xs px-2 py-1 rounded ${
+                                  row.testResult.passed === row.testResult.total
+                                    ? "bg-green-100 text-green-800"
+                                    : row.testResult.passed > 0
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-red-100 text-red-800"
+                                }`}
+                              >
+                                {t("testCases.passed", {
+                                  passed: row.testResult.passed,
+                                  total: row.testResult.total,
+                                })}
                               </span>
                             )}
                           </div>
@@ -577,7 +635,7 @@ export default function ApiTestingClient() {
                         </div>
                       ) : (
                         <p className="text-sm text-muted-foreground">
-                          No test cases generated yet
+                          {t("testCases.none")}
                         </p>
                       )}
                     </TableCell>
@@ -589,10 +647,10 @@ export default function ApiTestingClient() {
 
           {rows.length === 0 && (
             <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">No APIs added yet</p>
+              <p className="text-muted-foreground mb-4">{t("noApisAdded")}</p>
               <Button onClick={addRow} className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
-                Add First API
+                {t("addFirstApi")}
               </Button>
             </div>
           )}

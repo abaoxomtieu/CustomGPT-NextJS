@@ -318,6 +318,8 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     setRagReasoning,
   } = useEditorChatbot(botId, notFounded);
 
+  const [shouldScrollToEnd, setShouldScrollToEnd] = React.useState(false);
+
   useEffect(() => {
     if (!notFounded) {
       fetchChatbotDetail(botId)
@@ -376,6 +378,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
       return;
     }
     await handleSend(files);
+    setShouldScrollToEnd(true);
   };
 
   const handleRagSendWrapper = async (files: File[]) => {
@@ -559,6 +562,8 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                         }
                         thinkingMessage={toolsMessage}
                         renderChatbotDetails={false}
+                        shouldScrollToEnd={shouldScrollToEnd}
+                        onScrolledToEnd={() => setShouldScrollToEnd(false)}
                       />
                     </motion.div>
                   )}

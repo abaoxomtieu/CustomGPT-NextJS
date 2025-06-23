@@ -58,6 +58,7 @@
     "code_grader": "Đánh giá code",
     "api_testing": "Kiểm thử API",
     "code_evaluation": "Đánh giá code",
+    "logout": "Đăng xuất",
     "language": {
       "title": "Ngôn ngữ",
       "en": "Tiếng Anh",
@@ -319,11 +320,301 @@
     }
   },
   "gradeCode": {
-    "file_tree": "Cây tệp",
+    "file_tree": "Cây thư mục",
     "selected": "Đã chọn",
     "no_files_to_display": "Không có tệp nào để hiển thị.",
     "clone_repo_first": "Clone repo trước.",
     "selected_files": "Tệp đã chọn",
     "no_files_selected": "Không có tệp nào được chọn"
+  },
+  "codeGrader": {
+    "title": "Lịch sử bài tập đã chấm điểm",
+    "newGrading": "Chấm điểm mới",
+    "createFirstAssignment": "Tạo bài tập đầu tiên",
+    "noAssignmentsFound": "Không tìm thấy bài tập đã chấm điểm",
+    "viewDetails": "Xem chi tiết",
+    "deleteAssignment": "Xóa bài tập",
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa bài tập này không? Hành động này không thể hoàn tác.",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "files": "Tệp",
+    "criteria": "Tiêu chí",
+    "more": "thêm",
+    "messages": {
+      "loadError": "Lỗi khi tải danh sách bài tập",
+      "deleteSuccess": "Xóa bài tập thành công",
+      "deleteError": "Lỗi khi xóa bài tập"
+    },
+    "grade": {
+      "viewFolderStructure": "Xem đánh giá cấu trúc thư mục",
+      "folderStructureEvaluation": "Đánh giá cấu trúc thư mục",
+      "close": "Đóng",
+      "viewHistory": "Xem lịch sử"
+    },
+    "history": {
+      "backToHistory": "Quay lại lịch sử",
+      "assignmentNotFound": "Không tìm thấy bài tập",
+      "goBack": "Quay lại",
+      "invalidAssignmentId": "ID bài tập không hợp lệ",
+      "loadError": "Lỗi khi tải chi tiết bài tập",
+      "viewFolderStructure": "Xem đánh giá cấu trúc thư mục",
+      "folderStructureEvaluation": "Đánh giá cấu trúc thư mục",
+      "close": "Đóng"
+    },
+    "repositoryConfig": {
+      "placeholder": "Nhập URL kho lưu trữ GitHub",
+      "fileExtensions": "Các tệp hỗ trợ:",
+      "cloning": "Đang sao chép...",
+      "cloneButton": "Sao chép kho lưu trữ"
+    },
+    "gradingPanel": {
+      "title": "Tiêu chí chấm điểm",
+      "criteriaCount": "{count} tiêu chí",
+      "feCriteria": "Tiêu chí FE",
+      "beCriteria": "Tiêu chí BE",
+      "projectDescriptionPlaceholder": "Nhập mô tả dự án (tùy chọn)",
+      "generate": "Tạo",
+      "grading": "Đang chấm điểm...",
+      "gradeButton": "Chấm điểm các tệp đã chọn"
+    },
+    "criteriaInput": {
+      "folderStructureTitle": "Tiêu chí cấu trúc thư mục:",
+      "folderStructurePlaceholder": "Nhập tiêu chí thư mục",
+      "otherTitle": "Tiêu chí khác:",
+      "otherPlaceholder": "Nhập tiêu chí {index}",
+      "dialogTitleFolder": "Chỉnh sửa tiêu chí cấu trúc thư mục",
+      "dialogTitleOther": "Chỉnh sửa tiêu chí khác #{index}",
+      "dialogPlaceholderFolder": "Nhập tiêu chí cấu trúc thư mục",
+      "dialogPlaceholderOther": "Nhập tiêu chí khác",
+      "cancel": "Hủy",
+      "save": "Lưu thay đổi"
+    },
+    "gradingResult": {
+      "messages": {
+        "fileRemoved": "Đã xóa tệp thành công!",
+        "noResults": "Không có kết quả để chấm điểm",
+        "gradeSuccess": "Chấm điểm tổng thể hoàn tất thành công!",
+        "gradeError": "Không thể chấm điểm kết quả tổng thể"
+      },
+      "export": {
+        "folderStructureSection": "Đánh giá cấu trúc thư mục",
+        "folderStructureSheet": "Cấu trúc thư mục",
+        "fileName": "Tên tệp",
+        "rating": "Đánh giá",
+        "ratingValue": "Giá trị đánh giá",
+        "comments": "Bình luận",
+        "evaluation": "Đánh giá",
+        "overallGrade": "Điểm tổng thể",
+        "criteriaSheet": "Tiêu chí {index}"
+      },
+      "table": {
+        "fileName": "Tên tệp",
+        "rating": "Đánh giá",
+        "action": "Hành động",
+        "viewDetails": "Xem chi tiết"
+      },
+      "gradeOverallButton": "Chấm điểm kết quả tổng thể",
+      "overallAnalysisTitle": "Phân tích điểm tổng thể",
+      "title": "Kết quả chấm điểm",
+      "exportButton": "Xuất ra Excel",
+      "criteriaTab": "Tiêu chí {index}",
+      "modal": {
+        "comments": "Bình luận",
+        "evaluation": "Đánh giá",
+        "sourceCode": "Mã nguồn",
+        "fullscreen": "Toàn màn hình",
+        "viewSourceCode": "Xem mã nguồn",
+        "removeFile": "Xóa tệp",
+        "close": "Đóng"
+      },
+      "noResults": "Không có kết quả chấm điểm."
+    }
+  },
+  "apiTesting": {
+    "title": "Trình Tạo Test Case API",
+    "addApi": "Thêm API",
+    "addFirstApi": "Thêm API Đầu Tiên",
+    "noApisAdded": "Chưa có API nào được thêm",
+    "table": {
+      "method": "Phương thức",
+      "endpoint": "API Endpoint",
+      "baseUrl": "Base URL",
+      "description": "Mô tả",
+      "fieldDescription": "Mô tả trường",
+      "action": "Hành động",
+      "exampleTestCases": "Ví dụ Test Cases"
+    },
+    "placeholders": {
+      "endpoint": "/api/...",
+      "baseUrl": "https://api.example.com",
+      "description": "Mô tả API này làm gì...",
+      "fieldDescription": "Mô tả các trường và kiểu dữ liệu..."
+    },
+    "buttons": {
+      "generate": "Tạo",
+      "testApi": "Test API",
+      "detail": "Chi tiết",
+      "results": "Kết quả"
+    },
+    "testCases": {
+      "count": "{count} test case",
+      "countPlural": "{count} test cases",
+      "none": "Chưa tạo test case nào",
+      "passed": "{passed}/{total} đã pass"
+    },
+    "dialogs": {
+      "testCaseDetails": {
+        "title": "Chi tiết Test Case",
+        "testCase": "Test Case",
+        "description": "Mô tả:",
+        "expectedOutput": "Kết quả mong đợi:"
+      },
+      "testResults": {
+        "title": "Kết quả Test",
+        "summary": "Tóm tắt Test",
+        "summaryDescription": "{passed} trong tổng số {total} test đã pass",
+        "successRate": "Tỷ lệ thành công",
+        "testDescription": "Mô tả Test:",
+        "actualResponse": "Phản hồi API thực tế:",
+        "evaluationReason": "Lý do đánh giá:",
+        "passed": "ĐÃ PASS",
+        "failed": "ĐÃ FAIL"
+      }
+    },
+    "status": {
+      "pass": "Pass",
+      "fail": "Fail"
+    },
+    "messages": {
+      "fillRequiredFields": "Vui lòng điền đầy đủ các trường bắt buộc",
+      "generateSuccess": "Tạo test cases thành công",
+      "generateError": "Lỗi khi tạo test cases",
+      "testSuccess": "Test API hoàn thành! {passed}/{total} test đã pass",
+      "testError": "Lỗi khi test API",
+      "provideBaseUrlAndTestCases": "Vui lòng cung cấp base URL và đảm bảo test cases đã được tạo"
+    }
+  },
+  "ragAgent": {
+    "loading": "Đang tải...",
+    "errorLoadChatbot": "Lỗi khi tải thông tin chatbot",
+    "loginRequired": "Bạn cần đăng nhập để sử dụng tính năng này.",
+    "notSetupGemini": "Bạn chưa thiết lập Gemini API Key, đến trang Profile để thiết lập Gemini API Key",
+    "setupNow": "Thiết lập ngay",
+    "manageDocuments": "Quản lý tài liệu",
+    "edit": "Chỉnh sửa",
+    "apiDocs": "Tài liệu API",
+    "clearChat": "Xóa lịch sử chat",
+    "confirmDeleteAll": "Xác nhận xóa tất cả dữ liệu",
+    "deleteAllDesc": "Hành động này sẽ xóa tất cả cuộc trò chuyện và không thể hoàn tác.",
+    "confirm": "Xác nhận",
+    "deleteAllConversations": "Xóa tất cả đoạn hội thoại",
+    "loadingText": "Đang tải...",
+    "loadingShort": "Đang tải",
+    "notLoggedIn": "Chưa đăng nhập",
+    "loginToUse": "Đăng nhập để sử dụng đầy đủ tính năng",
+    "geminiKeySet": "Đã thiết lập",
+    "geminiKeyNotSet": "Chưa thiết lập",
+    "geminiKeyTooltipSet": "Bạn đã thiết lập Gemini API Key, có thể sử dụng đầy đủ tính năng AI Gemini.",
+    "geminiKeyTooltipNotSet": "Bạn chưa thiết lập Gemini API Key.",
+    "assistantDefaultName": "Trợ lý AI",
+    "thinkingTexts": [
+      "Đang phân tích câu hỏi của bạn...",
+      "Đang tìm kiếm thông tin phù hợp...",
+      "Đang xử lý dữ liệu...",
+      "Đang suy nghĩ về câu trả lời...",
+      "Đang tổng hợp thông tin...",
+      "Đang chuẩn bị phản hồi..."
+    ]
+  },
+  "documentManagement": {
+    "manageDocuments": "Quản lý tài liệu",
+    "description": "Thêm, chỉnh sửa, xóa và upload tài liệu cho chatbot.",
+    "addDocument": "Thêm tài liệu",
+    "editDocument": "Chỉnh sửa tài liệu",
+    "uploadFile": "Upload file",
+    "reload": "Tải lại",
+    "loading": "Đang tải...",
+    "loadingData": "Đang tải dữ liệu...",
+    "deleteSelected": "Xóa đã chọn",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "confirm": "Xác nhận",
+    "save": "Lưu",
+    "create": "Tạo mới",
+    "cancel": "Hủy",
+    "content": "Nội dung",
+    "table": {
+      "id": "ID",
+      "content": "Nội dung",
+      "action": "Hành động",
+      "noDocuments": "Không có tài liệu nào",
+      "charCount": "{count} ký tự"
+    },
+    "pagination": {
+      "displaying": "Hiển thị {from} - {to} của {total} tài liệu",
+      "prev": "Trước",
+      "next": "Sau",
+      "page": "Trang {current} / {total}"
+    },
+    "confirmDeleteTitle": "Bạn chắc chắn muốn xóa?",
+    "confirmDeleteDesc": "Hành động này sẽ xóa tài liệu khỏi hệ thống.",
+    "confirmDeleteSelectedDesc": "Xóa tất cả tài liệu được chọn khỏi hệ thống.",
+    "toast": {
+      "loadError": "Lỗi tải danh sách tài liệu",
+      "emptyContent": "Nội dung không được để trống",
+      "updateSuccess": "Cập nhật tài liệu thành công",
+      "addSuccess": "Thêm tài liệu thành công",
+      "updateError": "Lỗi cập nhật tài liệu",
+      "addError": "Lỗi thêm tài liệu",
+      "deleteSuccess": "Đã xóa tài liệu",
+      "deleteError": "Lỗi khi xóa tài liệu"
+    }
+  },
+  "apiDocs": {
+    "title": "Hướng Dẫn Tích Hợp API",
+    "description": "Tham khảo hướng dẫn chi tiết để tích hợp chatbot vào website/app của bạn.",
+    "noApiKey": "Chưa có API key",
+    "yourToken": "your_token",
+    "alert": {
+      "title": "Tích Hợp API",
+      "description": "Sử dụng API này để tích hợp chatbot vào website hoặc ứng dụng của bạn."
+    },
+    "endpoint": "Điểm cuối API",
+    "method": "Phương thức",
+    "headers": "Headers",
+    "formData": "Dữ liệu gửi đi (FormData)",
+    "params": "Tham số",
+    "paramsQuery": "Tin nhắn của người dùng (chuỗi)",
+    "paramsBotId": "ID duy nhất của chatbot",
+    "paramsConversationId": "(Tùy chọn) Để duy trì ngữ cảnh hội thoại",
+    "paramsModelName": "gemini-2.5-flash-preview-05-20 hoặc gemini-2.0-flash",
+    "paramsApiKey": "API key của bạn (hiện tại: {currentApiKey})",
+    "paramsAttachs": "Mảng file đính kèm (nếu có)",
+    "responseFormat": "Định dạng phản hồi",
+    "responseFormatDesc": "API trả về streaming dạng Server-Sent Events (SSE). Mỗi phản hồi là một JSON:",
+    "finalResponse": "Phản hồi cuối cùng:",
+    "copy": "Copy",
+    "copied": "Đã copy!",
+    "close": "Đóng",
+    "alertWarning": {
+      "title": "Lưu ý",
+      "description": "Đảm bảo xử lý lỗi phù hợp khi tích hợp API vào hệ thống của bạn."
+    },
+    "example": {
+      "title": "Ví dụ triển khai",
+      "fetchTab": "Fetch API",
+      "curlTab": "cURL",
+      "fetchComment": "Ví dụ sử dụng fetch",
+      "tokenComment": "Lấy token từ cookie",
+      "apiKeyComment": "API key của bạn từ cookie",
+      "attachComment": "Thêm file đính kèm nếu có",
+      "handleResponse": "Xử lý phản hồi streaming",
+      "handleStreaming": "Xử lý tin nhắn streaming",
+      "handleFinal": "Xử lý phản hồi cuối cùng",
+      "query": "Tin nhắn của bạn ở đây",
+      "conversationId": "id_cuộc_hội_thoại_tùy_chọn",
+      "streamingContent": "Nội dung tin nhắn streaming...",
+      "finalResponseContent": "Tin nhắn phản hồi hoàn chỉnh"
+    }
   }
 }

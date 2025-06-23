@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import CriteriaInput from "./criteria-input";
+import { useTranslations } from "next-intl";
 
 interface GradingPanelProps {
   criteria: string[];
@@ -37,14 +38,17 @@ export default function GradingPanel({
   isGradeDisabled,
   gradeLoading,
 }: GradingPanelProps) {
+  const t = useTranslations("codeGrader.gradingPanel");
   return (
     <Card className="shadow-sm hover:shadow-md transition-shadow h-[500px] flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between py-2.5 px-3 flex-shrink-0">
         <CardTitle className="text-sm font-medium">
           <div className="flex flex-col">
-            <span>Grading Criteria</span>
+            <span>{t("title")}</span>
             <span className="text-xs text-foreground/50 font-normal">
-              {criteria.filter(c => c.trim() !== '').length} criteria
+              {t("criteriaCount", {
+                count: criteria.filter((c) => c.trim() !== "").length,
+              })}
             </span>
           </div>
         </CardTitle>
@@ -56,7 +60,7 @@ export default function GradingPanel({
             type="button"
             className="h-7 text-xs"
           >
-            FE Criteria
+            {t("feCriteria")}
           </Button>
           <Button
             variant="outline"
@@ -65,17 +69,17 @@ export default function GradingPanel({
             type="button"
             className="h-7 text-xs"
           >
-            BE Criteria
+            {t("beCriteria")}
           </Button>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-3 flex-1 flex flex-col overflow-hidden">
         <div className="flex gap-2 mb-3 flex-shrink-0">
           <Textarea
             value={projectDescription}
             onChange={(e) => setProjectDescription(e.target.value)}
-            placeholder="Enter project description (optional)"
+            placeholder={t("projectDescriptionPlaceholder")}
             className="rounded-lg text-sm"
             rows={3}
           />
@@ -85,10 +89,10 @@ export default function GradingPanel({
             type="button"
             className="h-7 text-xs whitespace-nowrap"
           >
-            Generate
+            {t("generate")}
           </Button>
         </div>
-        
+
         <div className="flex-1 overflow-y-auto mb-3">
           <CriteriaInput
             criterias={criteria}
@@ -97,7 +101,7 @@ export default function GradingPanel({
             setCriterias={setCriteria}
           />
         </div>
-        
+
         <div className="pt-3 border-t border-foreground/10 flex-shrink-0">
           <Button
             type="button"
@@ -109,10 +113,10 @@ export default function GradingPanel({
             {gradeLoading ? (
               <span className="flex items-center gap-2">
                 <Loader2 className="animate-spin w-3.5 h-3.5" />
-                Grading...
+                {t("grading")}
               </span>
             ) : (
-              "Grade Selected Files"
+              t("gradeButton")
             )}
           </Button>
         </div>
