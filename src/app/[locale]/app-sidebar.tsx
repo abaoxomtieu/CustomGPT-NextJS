@@ -44,6 +44,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Menu items, chỉnh lại icon cho mục con của Chatbot
 
@@ -57,6 +58,7 @@ export function AppSidebar() {
   const { state, toggleSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
   const t = useTranslations("sidebar");
+  const isMobile = useIsMobile();
   const data = [
     {
       title: t("home"),
@@ -197,6 +199,9 @@ export function AppSidebar() {
                           item.title === "Home" || item.title === "Chatbot"
                         );
                       }
+                      if (isMobile && item.title === t("code_evaluation")) {
+                        return false;
+                      }
                       return true;
                     })
                     .map((item) =>
@@ -222,24 +227,31 @@ export function AppSidebar() {
                             </CollapsibleTrigger>
                             <CollapsibleContent>
                               <ul className="ml-6 flex flex-col gap-1 mt-1">
-                                {item.items.map((subItem) => (
-                                  <SidebarMenuItem key={subItem.title}>
-                                    <SidebarMenuButton
-                                      asChild
-                                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary/10 transition-all duration-200"
-                                    >
-                                      <Link
-                                        href={subItem.url}
-                                        className="flex items-center gap-2 w-full"
+                                {item.items
+                                  .filter((subItem) =>
+                                    isMobile &&
+                                    subItem.title === t("create_chatbot")
+                                      ? false
+                                      : true
+                                  )
+                                  .map((subItem) => (
+                                    <SidebarMenuItem key={subItem.title}>
+                                      <SidebarMenuButton
+                                        asChild
+                                        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary/10 transition-all duration-200"
                                       >
-                                        <subItem.icon className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors duration-200" />
-                                        <span className="text-sm text-primary/70 group-hover:text-primary transition-colors duration-200">
-                                          {subItem.title}
-                                        </span>
-                                      </Link>
-                                    </SidebarMenuButton>
-                                  </SidebarMenuItem>
-                                ))}
+                                        <Link
+                                          href={subItem.url}
+                                          className="flex items-center gap-2 w-full"
+                                        >
+                                          <subItem.icon className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors duration-200" />
+                                          <span className="text-sm text-primary/70 group-hover:text-primary transition-colors duration-200">
+                                            {subItem.title}
+                                          </span>
+                                        </Link>
+                                      </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                  ))}
                               </ul>
                             </CollapsibleContent>
                           </Collapsible>
@@ -275,21 +287,23 @@ export function AppSidebar() {
             </SidebarGroup>
           </SidebarContent>
           <SidebarFooter className="flex flex-col items-center gap-3 p-4 border-t border-primary/10 bg-gradient-to-t from-primary/5 to-transparent">
-            <Button
-              variant="outline"
-              onClick={toggleTheme}
-              className="w-full flex justify-center items-center gap-2 hover:bg-primary/10 transition-colors duration-200 border-primary/20"
-            >
-              {theme === "dark" ? (
-                <Moon className="w-4 h-4" />
-              ) : (
-                <Sun className="w-4 h-4" />
-              )}
-              <span className="font-medium">
-                {theme === "dark" ? "Dark" : "Light"} →{" "}
-                {theme === "dark" ? "Light" : "Dark"}
-              </span>
-            </Button>
+            {!isMobile && (
+              <Button
+                variant="outline"
+                onClick={toggleTheme}
+                className="w-full flex justify-center items-center gap-2 hover:bg-primary/10 transition-colors duration-200 border-primary/20"
+              >
+                {theme === "dark" ? (
+                  <Moon className="w-4 h-4" />
+                ) : (
+                  <Sun className="w-4 h-4" />
+                )}
+                <span className="font-medium">
+                  {theme === "dark" ? "Dark" : "Light"} →{" "}
+                  {theme === "dark" ? "Light" : "Dark"}
+                </span>
+              </Button>
+            )}
             <Button
               variant="outline"
               onClick={toggleLanguage}
@@ -344,6 +358,9 @@ export function AppSidebar() {
                 if (!isLogin) {
                   return item.title === "Home" || item.title === "Chatbot";
                 }
+                if (isMobile && item.title === t("code_evaluation")) {
+                  return false;
+                }
                 return true;
               })
               .map((item) => (
@@ -356,21 +373,22 @@ export function AppSidebar() {
                   <span className="text-xs mt-1">{item.title}</span>
                 </Link>
               ))}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="flex flex-col items-center p-2 text-primary/70 hover:text-primary transition-colors duration-200"
-            >
-              {theme === "dark" ? (
-                <Moon className="w-6 h-6" />
-              ) : (
-                <Sun className="w-6 h-6" />
-              )}
-              <span className="text-xs mt-1">
-                {theme === "dark" ? "Dark" : "Light"}
-              </span>
-            </Button>
+            {!isMobile && (
+              <Button
+                variant="outline"
+                onClick={toggleTheme}
+                className="flex flex-col items-center p-2 text-primary/70 hover:text-primary transition-colors duration-200"
+              >
+                {theme === "dark" ? (
+                  <Moon className="w-6 h-6" />
+                ) : (
+                  <Sun className="w-6 h-6" />
+                )}
+                <span className="text-xs mt-1">
+                  {theme === "dark" ? "Dark" : "Light"}
+                </span>
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"

@@ -61,6 +61,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useTranslations } from "next-intl";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // ==== BẮT ĐẦU: Nhận params qua props ====
 const modelOptions = [
@@ -190,6 +191,8 @@ export default function RagAgentClient({
   });
 
   const geminiApiKey = getCookie("gemini_api_key");
+  const isMobile = useIsMobile();
+  const [zoomAnim, setZoomAnim] = useState(false);
 
   // Thinking text rotation effect
   useEffect(() => {
@@ -371,6 +374,12 @@ export default function RagAgentClient({
     // Clear input ngay lập tức để UX tốt hơn
     setInput("");
     setSelectedFiles([]);
+    // Blur input and trigger zoom animation on mobile
+    if (isMobile && inputRef.current) {
+      inputRef.current.blur();
+      setZoomAnim(true);
+      setTimeout(() => setZoomAnim(false), 350); // match animation duration
+    }
     // Nếu cần tạo conversation mới, update URL trước khi gửi tin nhắn
     if (shouldCreateNewConversation) {
       const newUrl = `/rag-agent/${botId}/${usedConversationId}`;
@@ -472,8 +481,14 @@ export default function RagAgentClient({
   }
 
   return (
-    <div className="flex h-screen relative w-full chat-container">
+    <div className={`flex h-screen relative w-full chat-container ${zoomAnim ? "zoom-anim" : ""}`}>
       <style>{styles}</style>
+      <style>{`.zoom-anim > .flex-col { animation: zoomInOut 0.35s cubic-bezier(0.4,0,0.2,1); }
+@keyframes zoomInOut {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}`}</style>
       {loadingChatbot && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <Loader2 className="w-10 h-10 animate-spin text-primary" />
