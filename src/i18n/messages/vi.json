@@ -58,6 +58,7 @@
     "code_grader": "Đánh giá code",
     "api_testing": "Kiểm thử API",
     "code_evaluation": "Đánh giá code",
+    "image_generation": "Tạo ảnh",
     "logout": "Đăng xuất",
     "language": {
       "title": "Ngôn ngữ",
@@ -617,6 +618,73 @@
       "conversationId": "id_cuộc_hội_thoại_tùy_chọn",
       "streamingContent": "Nội dung tin nhắn streaming...",
       "finalResponseContent": "Tin nhắn phản hồi hoàn chỉnh"
+    }
+  },
+  "imageGeneration": {
+    "title": "Tạo Hình Ảnh AI",
+    "subtitle": "Tạo ra những hình ảnh tuyệt đẹp bằng AI. Nhập mô tả văn bản hoặc tải lên hình ảnh để tạo hình ảnh từ hình ảnh.",
+    "loginRequired": {
+      "title": "Yêu Cầu Đăng Nhập",
+      "description": "Vui lòng đăng nhập để sử dụng tính năng tạo hình ảnh AI"
+    },
+    "form": {
+      "promptLabel": "Mô Tả Văn Bản *",
+      "promptPlaceholder": "Mô tả hình ảnh bạn muốn tạo... (ví dụ: 'Hoàng hôn đẹp trên núi với màu sắc rực rỡ')",
+      "expandPrompt": "Mở Rộng",
+      "promptModalTitle": "Viết Mô Tả Chi Tiết",
+      "closeModal": "Đóng",
+      "suggestPrompt": "Gợi Ý",
+      "generatingPrompt": "Đang gợi ý...",
+      "referenceImageLabel": "Hình Ảnh Tham Khảo (Tùy Chọn)",
+      "uploadText": "Nhấp để tải lên hình ảnh tham khảo",
+      "uploadSubtext": "PNG, JPG tối đa 10MB",
+      "generateButton": "Tạo Hình Ảnh",
+      "generating": "Đang tạo...",
+      "clearButton": "Xóa"
+    },
+    "result": {
+      "title": "Hình Ảnh Đã Tạo",
+      "previewButton": "Xem Trước",
+      "previewTitle": "Xem Trước Hình Ảnh",
+      "downloadButton": "Tải Xuống Hình Ảnh",
+      "needMoreDetails": "Cần Thêm Chi Tiết",
+      "tryAgainTip": "💡 Hãy thử thêm chi tiết cụ thể hơn vào mô tả ở trên",
+      "generatingText": "Đang tạo hình ảnh của bạn...",
+      "placeholderText": "Hình ảnh đã tạo sẽ xuất hiện ở đây"
+    },
+    "tips": {
+      "title": "💡 Mẹo Để Có Kết Quả Tốt Hơn",
+      "goodPrompts": {
+        "title": "Viết Mô Tả Tốt:",
+        "tip1": "Hãy cụ thể và mô tả chi tiết",
+        "tip2": "Bao gồm từ khóa phong cách (thực tế, hoạt hình, tranh sơn dầu)",
+        "tip3": "Đề cập đến ánh sáng và tâm trạng",
+        "tip4": "Chỉ định màu sắc và bố cục"
+      },
+      "referenceImages": {
+        "title": "Sử Dụng Hình Ảnh Tham Khảo:",
+        "tip1": "Tải lên hình ảnh tham khảo chất lượng cao",
+        "tip2": "Sử dụng hình ảnh phù hợp với phong cách mong muốn",
+        "tip3": "Mô tả cách bạn muốn chỉnh sửa hình ảnh tham khảo",
+        "tip4": "Kết hợp mô tả văn bản với hình ảnh để có kết quả tốt nhất"
+      }
+    },
+    "errors": {
+      "enterPrompt": "Vui lòng nhập mô tả",
+      "loginRequired": "Vui lòng đăng nhập để tạo hình ảnh",
+      "fileSizeLimit": "Kích thước tệp phải nhỏ hơn 10MB",
+      "invalidFileType": "Vui lòng chọn tệp hình ảnh hợp lệ",
+      "serverError": "Lỗi máy chủ. Vui lòng thử lại sau.",
+      "generateFailed": "Không thể tạo hình ảnh. Vui lòng thử lại.",
+      "promptGenerationFailed": "Không thể tạo gợi ý mô tả. Vui lòng thử lại.",
+      "apiKeyRequired": "Cần có API key. Vui lòng thiết lập Gemini API key trong cài đặt hồ sơ.",
+      "setupApiKey": "Thiết Lập API Key",
+      "unexpectedFormat": "Định dạng phản hồi không mong đợi. Vui lòng thử lại.",
+      "moreDetails": "Vui lòng cung cấp thêm chi tiết: {message}"
+    },
+    "success": {
+      "imageGenerated": "Tạo hình ảnh thành công!",
+      "promptGenerated": "Tạo gợi ý mô tả thành công!"
     }
   }
 }

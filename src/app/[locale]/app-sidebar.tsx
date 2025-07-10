@@ -14,6 +14,7 @@ import {
   TestTube,
   Sun,
   Moon,
+  ImageIcon,
 } from "lucide-react";
 
 import {
@@ -103,6 +104,11 @@ export function AppSidebar() {
           icon: TestTube,
         },
       ],
+    },
+    {
+      title: t("image_generation"),
+      url: "/image-gen",
+      icon: ImageIcon,
     },
     {
       title: t("profile"),

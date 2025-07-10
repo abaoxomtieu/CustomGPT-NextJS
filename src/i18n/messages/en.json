@@ -58,6 +58,7 @@
     "code_grader": "Grade Code",
     "api_testing": "API Testing",
     "code_evaluation": "Code Evaluation",
+    "image_generation": "Image Generation",
     "logout": "Logout",
     "language": {
       "title": "Language",
@@ -617,6 +618,73 @@
       "conversationId": "optional_conversation_id",
       "streamingContent": "Streaming message content...",
       "finalResponseContent": "Complete response message"
+    }
+  },
+  "imageGeneration": {
+    "title": "AI Image Generator",
+    "subtitle": "Generate stunning images using AI. Enter a text prompt or upload an image for image-to-image generation.",
+    "loginRequired": {
+      "title": "Login Required",
+      "description": "Please login to access the AI image generation feature"
+    },
+    "form": {
+      "promptLabel": "Text Prompt *",
+      "promptPlaceholder": "Describe the image you want to generate... (e.g., 'A beautiful sunset over mountains with vibrant colors')",
+      "expandPrompt": "Expand",
+      "promptModalTitle": "Write Your Detailed Prompt",
+      "closeModal": "Close",
+      "suggestPrompt": "Suggest Prompt by AI",
+      "generatingPrompt": "Suggesting...",
+      "referenceImageLabel": "Reference Image (Optional)",
+      "uploadText": "Click to upload reference image",
+      "uploadSubtext": "PNG, JPG up to 10MB",
+      "generateButton": "Generate Image",
+      "generating": "Generating...",
+      "clearButton": "Clear"
+    },
+    "result": {
+      "title": "Generated Image",
+      "previewButton": "Preview",
+      "previewTitle": "Image Preview",
+      "downloadButton": "Download Image",
+      "needMoreDetails": "Need More Details",
+      "tryAgainTip": "💡 Try adding more specific details to your prompt above",
+      "generatingText": "Generating your image...",
+      "placeholderText": "Generated image will appear here"
+    },
+    "tips": {
+      "title": "💡 Tips for Better Results",
+      "goodPrompts": {
+        "title": "Writing Good Prompts:",
+        "tip1": "Be specific and descriptive",
+        "tip2": "Include style keywords (realistic, cartoon, oil painting)",
+        "tip3": "Mention lighting and mood",
+        "tip4": "Specify colors and composition"
+      },
+      "referenceImages": {
+        "title": "Using Reference Images:",
+        "tip1": "Upload high-quality reference images",
+        "tip2": "Use images that match your desired style",
+        "tip3": "Describe how you want to modify the reference",
+        "tip4": "Combine text prompts with images for best results"
+      }
+    },
+    "errors": {
+      "enterPrompt": "Please enter a prompt",
+      "loginRequired": "Please login to generate images",
+      "fileSizeLimit": "File size should be less than 10MB",
+      "invalidFileType": "Please select a valid image file",
+      "serverError": "Server error. Please try again later.",
+      "generateFailed": "Failed to generate image. Please try again.",
+      "promptGenerationFailed": "Failed to generate prompt suggestion. Please try again.",
+      "apiKeyRequired": "API key is required. Please set up your Gemini API key in profile settings.",
+      "setupApiKey": "Setup API Key",
+      "unexpectedFormat": "Unexpected response format. Please try again.",
+      "moreDetails": "Please provide more details: {message}"
+    },
+    "success": {
+      "imageGenerated": "Image generated successfully!",
+      "promptGenerated": "Prompt suggestion generated successfully!"
     }
   }
 }

@@ -17,6 +17,7 @@ export const generateImage = async (
   try {
     const formData = new FormData();
     formData.append("prompt", prompt);
+    formData.append("api_key", getCookie("gemini_api_key") || "");
 
     if (image) {
       formData.append("image", image);
