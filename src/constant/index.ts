@@ -5,7 +5,7 @@
 
 import { StatusConfig } from "../../types/type";
 
-// export const ApiDomain = "http://localhost:3002";
+// export const ApiDomain = "http://localhost:7860";
 export const ApiDomain = "https://ai.ftes.vn/api";
 
 export const DEFAULT_REPO_URL =
