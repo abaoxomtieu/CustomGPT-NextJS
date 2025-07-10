@@ -202,7 +202,9 @@ export function AppSidebar() {
                     .filter((item) => {
                       if (!isLogin) {
                         return (
-                          item.title === "Home" || item.title === "Chatbot"
+                          item.title === t("home") || 
+                          item.title === t("chatbot") ||
+                          item.title === t("image_generation")
                         );
                       }
                       if (isMobile && item.title === t("code_evaluation")) {
@@ -362,7 +364,9 @@ export function AppSidebar() {
             {data
               .filter((item) => {
                 if (!isLogin) {
-                  return item.title === "Home" || item.title === "Chatbot";
+                  return item.title === t("home") || 
+                         item.title === t("chatbot") ||
+                         item.title === t("image_generation");
                 }
                 if (isMobile && item.title === t("code_evaluation")) {
                   return false;
