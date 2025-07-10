@@ -196,7 +196,7 @@ export default function ImageGenClient() {
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
           {/* Input Panel */}
-          <Card className="order-2 xl:order-1">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
                 <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -353,7 +353,7 @@ export default function ImageGenClient() {
           </Card>
 
           {/* Result Panel */}
-          <Card className="order-1 xl:order-2">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
                 <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
