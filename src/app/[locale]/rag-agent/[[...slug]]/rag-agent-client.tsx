@@ -43,6 +43,7 @@ import {
   sendStreamingRagAgentMessage,
 } from "@/services/ragAgentService";
 import { fetchChatbotDetail, Chatbot } from "@/services/chatbotService";
+import { useChatbotDetail } from "@/hooks/use-query-chatbots";
 import ApiDocs from "@/components/chat/api-docs";
 import { getCookie } from "@/helpers/Cookies";
 import {
@@ -218,25 +219,32 @@ export default function RagAgentClient({
     };
   }, [loading, streamingMessage]);
 
+  // Sử dụng query hook để fetch chatbot details
+  const { 
+    data: chatbotDetailsFromQuery, 
+    isLoading: isLoadingChatbotFromQuery, 
+    error: chatbotDetailsError 
+  } = useChatbotDetail(urlBotId);
+
   useEffect(() => {
-    if (urlBotId && (!chatbotDetails || chatbotDetails.id !== urlBotId)) {
+    if (urlBotId) {
       setBotId(urlBotId as string);
-
-      const fetchDetails = async () => {
-        try {
-          setLoadingChatbot(true);
-          const chatbot = await fetchChatbotDetail(urlBotId as string);
-          setChatbotDetails(chatbot);
-        } catch (error) {
-          toast.error(t("errorLoadChatbot"));
-        } finally {
-          setLoadingChatbot(false);
-        }
-      };
-
-      fetchDetails();
     }
-  }, [urlBotId, chatbotDetails?.id]);
+  }, [urlBotId]);
+
+  useEffect(() => {
+    if (chatbotDetailsFromQuery) {
+      setChatbotDetails(chatbotDetailsFromQuery);
+      setLoadingChatbot(false);
+    }
+    if (chatbotDetailsError) {
+      toast.error(t("errorLoadChatbot"));
+      setLoadingChatbot(false);
+    }
+    if (isLoadingChatbotFromQuery) {
+      setLoadingChatbot(true);
+    }
+  }, [chatbotDetailsFromQuery, chatbotDetailsError, isLoadingChatbotFromQuery, t]);
 
   // Auth loading (replace Spin with a simple loader)
   if (isAuthLoading) {

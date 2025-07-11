@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  fetchChatbots,
-  deleteChatbot,
-  Chatbot,
-  fetchPublicChatbots,
-} from "@/services/chatbotService";
+import React, { useState } from "react";
+import { deleteChatbot, Chatbot } from "@/services/chatbotService";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  useChatbots,
+  usePublicChatbots,
+  useInvalidateChatbots,
+} from "@/hooks/use-query-chatbots";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -20,7 +20,15 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Bot, Globe, MessageCircle, Plus, Trash, Home, Edit } from "lucide-react";
+import {
+  Bot,
+  Globe,
+  MessageCircle,
+  Plus,
+  Trash,
+  Home,
+  Edit,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BackToTopButton from "@/components/back-to-top";
@@ -28,64 +36,36 @@ import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
 const ChatbotListClient: React.FC = () => {
-  const [chatbots, setChatbots] = useState<Chatbot[]>([]);
-  const [publicChatbots, setPublicChatbots] = useState<Chatbot[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [publicLoading, setPublicLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("my-chatbots");
-  const [hasLoadedMyChatbots, setHasLoadedMyChatbots] = useState(false);
-  const [hasLoadedPublicChatbots, setHasLoadedPublicChatbots] = useState(false);
 
   const { isLogin } = useAuth();
   const router = useRouter();
   const t = useTranslations("chatbotList");
+  const { invalidateList, invalidatePublic } = useInvalidateChatbots();
 
-  const loadChatbots = async () => {
-    if (!isLogin || hasLoadedMyChatbots) return;
-    
-    try {
-      setLoading(true);
-      const data = await fetchChatbots();
-      setChatbots(data);
-      setHasLoadedMyChatbots(true);
-    } catch (error) {
+  // Sử dụng react-query hooks
+  const {
+    data: chatbots = [],
+    isLoading: loading,
+    error: chatbotsError,
+  } = useChatbots();
+
+  const {
+    data: publicChatbots = [],
+    isLoading: publicLoading,
+    error: publicChatbotsError,
+  } = usePublicChatbots();
+
+  // Error handling với toast notifications
+  React.useEffect(() => {
+    if (chatbotsError) {
       toast.error(t("errors.loadError"));
-    } finally {
-      setLoading(false);
     }
-  };
-
-  const loadPublicChatbots = async () => {
-    if (hasLoadedPublicChatbots) return;
-    
-    try {
-      setPublicLoading(true);
-      const data = await fetchPublicChatbots();
-      setPublicChatbots(data);
-      setHasLoadedPublicChatbots(true);
-    } catch (error) {
+    if (publicChatbotsError) {
       toast.error(t("errors.loadPublicError"));
-    } finally {
-      setPublicLoading(false);
     }
-  };
-
-  // Load data based on active tab
-  useEffect(() => {
-    if (activeTab === "my-chatbots" && isLogin) {
-      loadChatbots();
-    } else if (activeTab === "public-chatbots") {
-      loadPublicChatbots();
-    }
-  }, [activeTab, isLogin]);
-
-  // Load my chatbots by default when component mounts and user is logged in
-  useEffect(() => {
-    if (isLogin && activeTab === "my-chatbots") {
-      loadChatbots();
-    }
-  }, [isLogin]);
+  }, [chatbotsError, publicChatbotsError, t]);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -122,7 +102,9 @@ const ChatbotListClient: React.FC = () => {
     try {
       await deleteChatbot(botId);
       toast.success(t("errors.deleteSuccess"));
-      setChatbots(chatbots.filter((bot) => bot.id !== botId));
+      // Invalidate queries để refetch data mới
+      invalidateList();
+      invalidatePublic();
     } catch (error) {
       toast.error(t("errors.deleteError"));
     }
@@ -187,7 +169,9 @@ const ChatbotListClient: React.FC = () => {
       <CardHeader className="p-3 md:p-4">
         <CardTitle>
           <div className="text-base md:text-lg font-semibold flex items-center justify-between text-card-foreground">
-            <span className="line-clamp-1 group-hover:text-primary transition-colors duration-200">{bot.name}</span>
+            <span className="line-clamp-1 group-hover:text-primary transition-colors duration-200">
+              {bot.name}
+            </span>
             <div className="flex items-center gap-1 md:gap-2">
               {!isPublic && (
                 <Button
@@ -207,9 +191,7 @@ const ChatbotListClient: React.FC = () => {
                 size="icon"
                 className="hover:bg-destructive/20 border-none size-7 md:size-8 transition-all duration-200"
                 onClick={(e) => {
-                  if (
-                    window.confirm(t("deleteConfirm"))
-                  ) {
+                  if (window.confirm(t("deleteConfirm"))) {
                     handleDeleteClick(e, bot.id);
                   }
                 }}
@@ -225,10 +207,12 @@ const ChatbotListClient: React.FC = () => {
             "text-xs md:text-sm font-semibold flex items-center gap-1"
           )}
         >
-          <div className={cn(
-            "size-2 rounded-full",
-            bot.public ? "bg-green-500" : "bg-red-500"
-          )} />
+          <div
+            className={cn(
+              "size-2 rounded-full",
+              bot.public ? "bg-green-500" : "bg-red-500"
+            )}
+          />
           {bot.public ? t("public") : t("private")}
         </CardDescription>
         {bot.tools && bot.tools.length > 0 && (
@@ -239,7 +223,9 @@ const ChatbotListClient: React.FC = () => {
         )}
       </CardHeader>
       <CardContent className="p-3 md:p-4 pt-0 flex-grow">
-        <p className="line-clamp-3 text-xs md:text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors duration-200">{bot.prompt}</p>
+        <p className="line-clamp-3 text-xs md:text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors duration-200">
+          {bot.prompt}
+        </p>
       </CardContent>
       <CardFooter className="p-3 md:p-4 pt-0 mt-auto">
         <Button
@@ -295,7 +281,11 @@ const ChatbotListClient: React.FC = () => {
         )}
       </div>
       {/* Chatbot List */}
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="bg-background/80 backdrop-blur-sm rounded-xl shadow-lg border border-primary/10">
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="bg-background/80 backdrop-blur-sm rounded-xl shadow-lg border border-primary/10"
+      >
         <TabsList className="w-full bg-background/80 border-b border-primary/10">
           <TabsTrigger
             value="my-chatbots"

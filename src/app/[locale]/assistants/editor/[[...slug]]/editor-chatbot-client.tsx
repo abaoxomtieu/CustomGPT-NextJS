@@ -41,6 +41,7 @@ import ChatMessages from "@/components/chat/chat-messages";
 import ToolMessage from "@/components/chat/tool-message";
 import ApiDocs from "@/components/chat/api-docs";
 import { useEditorChatbot } from "@/hooks/use-editor-chatbot";
+import { useChatbotDetail } from "@/hooks/use-query-chatbots";
 import { fetchChatbotDetail } from "@/services/chatbotService";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -320,17 +321,17 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
 
   const [shouldScrollToEnd, setShouldScrollToEnd] = React.useState(false);
 
+  // Sử dụng query hook để fetch chatbot details  
+  const { data: chatbotDetailsFromQuery, error: chatbotDetailsError } = useChatbotDetail(notFounded ? undefined : botId);
+  
   useEffect(() => {
-    if (!notFounded) {
-      fetchChatbotDetail(botId)
-        .then((data) => {
-          setChatbotData(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching chatbot details:", error);
-        });
+    if (chatbotDetailsFromQuery && !notFounded) {
+      setChatbotData(chatbotDetailsFromQuery);
     }
-  }, []);
+    if (chatbotDetailsError) {
+      console.error("Error fetching chatbot details:", chatbotDetailsError);
+    }
+  }, [chatbotDetailsFromQuery, chatbotDetailsError, notFounded, setChatbotData]);
 
   useEffect(() => {
     if (!isLoading && !isLogin) {

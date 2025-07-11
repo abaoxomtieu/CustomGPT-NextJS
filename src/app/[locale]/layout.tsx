@@ -5,6 +5,7 @@ import { AppSidebar } from "./app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { QueryProvider } from "@/providers/query-provider";
 import "./globals.css";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
@@ -97,21 +98,23 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable}`} suppressHydrationWarning>
         <NextIntlClientProvider>
-          <GoogleOAuthProvider clientId="486285301849-fjcp1e941fdrhkpj0ufjom8mqu8r0chv.apps.googleusercontent.com">
-            <SidebarProvider defaultOpen={true}>
-              <Toaster />
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="light"
-                enableSystem
-                disableTransitionOnChange
-              >
-                <AppSidebar />
+          <QueryProvider>
+            <GoogleOAuthProvider clientId="486285301849-fjcp1e941fdrhkpj0ufjom8mqu8r0chv.apps.googleusercontent.com">
+              <SidebarProvider defaultOpen={true}>
+                <Toaster />
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="light"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  <AppSidebar />
 
-                <div className="w-full">{children}</div>
-              </ThemeProvider>
-            </SidebarProvider>
-          </GoogleOAuthProvider>
+                  <div className="w-full">{children}</div>
+                </ThemeProvider>
+              </SidebarProvider>
+            </GoogleOAuthProvider>
+          </QueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>

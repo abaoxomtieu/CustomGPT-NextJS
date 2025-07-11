@@ -5,26 +5,31 @@ import axios, { AxiosError } from "axios";
 export const apiService = {
   fetchFileTree: async (repoUrl: string, extensions: string[]) => {
     try {
-      const response = await axios.post(`${ApiDomain}/grade-code/get-file-tree`,{
-        url: repoUrl,
-        extensions,
-      }, {
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
+      const response = await axios.post(
+        `${ApiDomain}/grade-code/get-file-tree`,
+        {
+          url: repoUrl,
+          extensions,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
       return { data: response.data.file_tree, error: null };
     } catch (err) {
       if (err instanceof AxiosError) {
         if (err.response?.status === 413) {
-          return { 
-            data: null, 
-            error: "Repository is too large (exceeds 2MB limit). Please use a smaller repository." 
+          return {
+            data: null,
+            error:
+              "Repository is too large (exceeds 2MB limit). Please use a smaller repository.",
           };
         }
-        return { 
-          data: null, 
-          error: err.response?.data?.detail || "Failed to fetch file tree data" 
+        return {
+          data: null,
+          error: err.response?.data?.detail || "Failed to fetch file tree data",
         };
       }
       return { data: null, error: "Failed to fetch file tree data" };
@@ -37,15 +42,19 @@ export const apiService = {
     projectDescription: string
   ) => {
     try {
-      const response = await axios.post(`${ApiDomain}/grade-code/grade`, {
-        selected_files: selectedFiles,
-        criterias_list: criteriasList,
-        project_description: projectDescription,
-      }, {
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
+      const response = await axios.post(
+        `${ApiDomain}/grade-code/grade`,
+        {
+          selected_files: selectedFiles,
+          criterias_list: criteriasList,
+          project_description: projectDescription,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
       return { data: response.data, error: null };
     } catch (err) {
       return { data: null, error: "Failed to grade code" };
@@ -100,12 +109,15 @@ export const apiService = {
   },
   getCodeContent: async (filePath: string) => {
     try {
-      const response = await axios.get(`${ApiDomain}/grade-code/read-code-content`, {
-        params: { file_path: filePath },
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
-        },
-      });
+      const response = await axios.get(
+        `${ApiDomain}/grade-code/read-code-content`,
+        {
+          params: { file_path: filePath },
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
       return { data: response.data, error: null };
     } catch (error) {
       return {
@@ -119,13 +131,17 @@ export const apiService = {
   },
   overallGrade: async (data: any) => {
     try {
-      const response = await axios.post(`${ApiDomain}/grade-code/grade-overall`, {
-        data: data,
-      }, {
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
+      const response = await axios.post(
+        `${ApiDomain}/grade-code/grade-overall`,
+        {
+          data: data,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
       return { data: response.data, error: null };
     } catch (error) {
       return {

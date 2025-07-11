@@ -1,59 +1,53 @@
 "use client";
 import useAppState from "@/context/state";
 import { getCookie } from "@/helpers/Cookies";
-import { getUserInfo } from "@/services/account";
-import { useEffect, useState, useRef } from "react";
+import { useUserInfo, useInvalidateAuth } from "./use-query-auth";
+import { useEffect } from "react";
 
 export const useAuth = () => {
   const { isLogin, setIslogin, userInfo, setUserInfo } = useAppState();
-  const [isLoading, setIsLoading] = useState(true); // Bắt đầu với true
-  const hasFetched = useRef(false);
+  const { invalidateUserInfo, removeUserInfo } = useInvalidateAuth();
 
-  const fetchUserInfo = async () => {
-    const token = getCookie("token");
+  // Sử dụng react-query để fetch user info
+  const {
+    data: queryUserData,
+    isLoading,
+    error,
+    isSuccess,
+    isError,
+  } = useUserInfo();
 
-    try {
-      setIsLoading(true);
-
-      if (!token) {
-        setIslogin(false);
-        setUserInfo(null);
-        setIsLoading(false);
-        return;
-      }
-      if (isLogin && userInfo) {
-        setIsLoading(false);
-        return;
-      }
-
-      const response = await getUserInfo();
-      if (response.status === 200) {
-        setUserInfo(response.data.user);
-        setIslogin(true);
-      } else {
-        setIslogin(false);
-        setUserInfo(null);
-      }
-    } catch (error) {
-      setIslogin(false);
+  // Sync zustand state với react-query data
+  useEffect(() => {
+    if (isSuccess && queryUserData?.user) {
+      setUserInfo(queryUserData.user);
+      setIslogin(true);
+    } else if (isError || !getCookie("token")) {
       setUserInfo(null);
-    } finally {
-      setIsLoading(false);
+      setIslogin(false);
     }
+  }, [isSuccess, isError, queryUserData, setUserInfo, setIslogin]);
+
+  // Manual fetch function để force refresh (ví dụ sau khi login)
+  const fetchUserInfo = async () => {
+    // Invalidate query để trigger refetch
+    invalidateUserInfo();
   };
 
-  useEffect(() => {
-    if (!hasFetched.current) {
-      fetchUserInfo();
-      hasFetched.current = true;
-    }
-  }, []);
+  // Logout function để clear cache
+  const logout = () => {
+    removeUserInfo();
+    setUserInfo(null);
+    setIslogin(false);
+  };
 
   return {
     isLogin,
-    userInfo,
+    userInfo: userInfo || queryUserData?.user || null,
     fetchUserInfo,
     isLoading,
     setUserInfo,
+    logout,
+    error,
   };
 };
