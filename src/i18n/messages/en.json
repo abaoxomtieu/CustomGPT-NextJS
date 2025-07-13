@@ -527,7 +527,8 @@
       "Thinking about the answer...",
       "Summarizing information...",
       "Preparing response..."
-    ]
+    ],
+    "startConversation": "Start a conversation with the AI assistant"
   },
   "documentManagement": {
     "manageDocuments": "Manage Documents",

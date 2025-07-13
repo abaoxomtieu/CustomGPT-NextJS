@@ -27,12 +27,14 @@ interface UseConversationManagerProps {
   botId: string;
   urlConversationId?: string;
   navigate: (path: string, options?: any) => void;
+  locale: string;
 }
 
 export const useConversationManager = ({
   botId,
   urlConversationId,
   navigate,
+  locale,
 }: UseConversationManagerProps) => {
   const [conversations, setConversations] = useState<ConversationMeta[]>([]);
   const [conversationId, setConversationId] = useState<string>("");
@@ -119,12 +121,12 @@ export const useConversationManager = ({
     setMessages([]);
 
     // Sử dụng window.history thay vì navigate để tránh reload
-    const newUrl = `/rag-agent/${botId}/${newId}`;
-    window.history.pushState(null, '', newUrl);
-    
+    const newUrl = `/${locale}/rag-agent/${botId}/${newId}`;
+    window.history.pushState(null, "", newUrl);
+
     // Dispatch popstate event để Next.js router biết về sự thay đổi
-    window.dispatchEvent(new PopStateEvent('popstate', { state: null }));
-    
+    window.dispatchEvent(new PopStateEvent("popstate", { state: null }));
+
     return newId;
   }, [botId, conversations.length, saveConversations, navigate]);
 
@@ -147,18 +149,12 @@ export const useConversationManager = ({
           setConversationId("");
           setMessages([]);
           // Sử dụng navigate với shallow routing để tránh reload
-          const newUrl = `/rag-agent/${botId}`;
+          const newUrl = `/${locale}/rag-agent/${botId}`;
           navigate(newUrl, { shallow: true });
         }
       }
     },
-    [
-      conversations,
-      conversationId,
-      botId,
-      getChatHistoryKey,
-      saveConversations,
-    ]
+    [conversations, conversationId, botId, getChatHistoryKey, saveConversations]
   );
 
   const selectConversation = useCallback(
@@ -189,8 +185,8 @@ export const useConversationManager = ({
       setMessages(newMessages);
 
       // Sử dụng window.history để tránh reload
-      const newUrl = `/rag-agent/${botId}/${id}`;
-      window.history.replaceState(null, '', newUrl);
+      const newUrl = `/${locale}/rag-agent/${botId}/${id}`;
+      window.history.replaceState(null, "", newUrl);
     },
     [
       conversationId,
@@ -289,7 +285,7 @@ export const useConversationManager = ({
 
   useEffect(() => {
     if (!botId || isInitialized) return;
-    
+
     const savedConversations = loadConversations();
     setConversations(savedConversations);
 
@@ -320,14 +316,14 @@ export const useConversationManager = ({
       setMessages(msgs);
       // Chỉ navigate nếu URL hiện tại không khớp
       const currentPath = window.location.pathname;
-      const expectedPath = `/rag-agent/${botId}/${firstConv.conversation_id}`;
+      const expectedPath = `/${locale}/rag-agent/${botId}/${firstConv.conversation_id}`;
       if (currentPath !== expectedPath) {
         navigate(expectedPath, { shallow: true });
       }
     }
 
     setIsInitialized(true);
-  }, [botId, urlConversationId]); // Loại bỏ isInitialized khỏi dependency array
+  }, [botId, urlConversationId, locale]); // Loại bỏ isInitialized khỏi dependency array
 
   // Add this function before the return statement
   const clearAllStorage = useCallback(() => {

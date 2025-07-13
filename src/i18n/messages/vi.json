@@ -527,7 +527,8 @@
       "Đang suy nghĩ về câu trả lời...",
       "Đang tổng hợp thông tin...",
       "Đang chuẩn bị phản hồi..."
-    ]
+    ],
+    "startConversation": "Bắt đầu cuộc trò chuyện với trợ lý AI"
   },
   "documentManagement": {
     "manageDocuments": "Quản lý tài liệu",

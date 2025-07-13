@@ -55,7 +55,10 @@ export default async function RagAgentPage(props: any) {
   return (
     <main>
       <h1 className="sr-only">RAG Agent - AI FTES</h1>
-      <RagAgentClient params={{ slug: slugArray }} />
+      <RagAgentClient
+        params={{ slug: slugArray }}
+        locale={props.params.locale}
+      />
     </main>
   );
 }

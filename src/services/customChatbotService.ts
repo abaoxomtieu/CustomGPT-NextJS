@@ -70,6 +70,8 @@ export const sendStreamingCustomChatbotMessage = async (
     }
 
     let accumulatedMessage = "";
+    let buffer = "";
+    
     while (true) {
       if (abortSignal?.aborted) {
         reader.cancel();
@@ -80,7 +82,11 @@ export const sendStreamingCustomChatbotMessage = async (
       if (done) break;
 
       const text = new TextDecoder().decode(value);
-      const lines = text.split("\n").filter(Boolean);
+      buffer += text;
+      
+      // Split by double newlines as backend sends \n\n
+      const lines = buffer.split("\n\n");
+      buffer = lines.pop() || ""; // Keep the last incomplete line in buffer
 
       for (const line of lines) {
         if (line.trim()) {
@@ -101,17 +107,20 @@ export const sendStreamingCustomChatbotMessage = async (
                 if (onToolsMessage) {
                   onToolsMessage(data.content as string, data.metadata);
                 }
+                onThinking("");
                 break;
               case "final":
                 const finalData = data.content as { final_response: string; done: boolean };
                 onFinal(finalData);
+                onThinking("");
                 break;
               case "error":
                 onError(data.content as string);
+                onThinking("");
                 break;
             }
           } catch (e) {
-            console.error("Error parsing stream data:", e);
+            console.error("Error parsing stream data:", e, "Line:", line);
             onError("Error parsing stream data");
           }
         }

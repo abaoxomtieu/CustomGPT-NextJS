@@ -227,7 +227,7 @@ export const useEditorChatbot = (botId: string, notFounded: boolean) => {
         setThinkingText(thinking);
       },
       (toolContent: string, metadata: any) => {
-        setToolsMessage((prev) => prev + toolContent);
+        setToolsMessage(toolContent); // Replace, don't accumulate (tools message comes complete)
         setToolsMetadata(metadata);
         setThinkingText(""); // Clear thinking text when tools message appears
       }

@@ -71,8 +71,17 @@ const modelOptions = [
 ];
 
 const styles = `
+  body, html {
+    overflow: hidden;
+    height: 100vh;
+    max-height: 100vh;
+  }
   .chat-container {
     background: linear-gradient(to bottom, var(--background), var(--background)/95);
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    position: relative;
   }
   .glass-header {
     background: rgba(var(--card), 0.8);
@@ -120,12 +129,41 @@ const styles = `
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
+  .smooth-scroll {
+    scroll-behavior: smooth;
+  }
+  .chat-empty-state {
+    animation: welcomeSlide 0.6s ease-out forwards;
+  }
+  @keyframes welcomeSlide {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .input-transition {
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .message-spacer {
+    transition: height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .chat-messages-container {
+    scroll-behavior: smooth;
+  }
+  @media (max-width: 768px) {
+    .chat-container {
+      height: 100vh;
+      height: 100svh; /* Safe viewport height for mobile */
+      max-height: 100vh;
+      max-height: 100svh;
+    }
+  }
 `;
 
 export default function RagAgentClient({
   params,
+  locale,
 }: {
   params: { slug: string[] };
+  locale: string;
 }) {
   const t = useTranslations("ragAgent");
   // Xử lý params từ dynamic route [...slug]
@@ -162,8 +200,11 @@ export default function RagAgentClient({
   const [isMobileConversationOpen, setIsMobileConversationOpen] =
     useState(false);
   const [shouldScrollToEnd, setShouldScrollToEnd] = useState(false);
+  const [shouldScrollToNewMessage, setShouldScrollToNewMessage] =
+    useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const thinkingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -189,11 +230,139 @@ export default function RagAgentClient({
         router.push(path);
       }
     },
+    locale: locale,
   });
 
   const geminiApiKey = getCookie("gemini_api_key");
   const isMobile = useIsMobile();
   const [zoomAnim, setZoomAnim] = useState(false);
+  const hasMessages = messages.length > 0;
+
+  // Prevent body scroll and ensure viewport constraints
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    const originalHeight = document.body.style.height;
+    const originalMaxHeight = document.body.style.maxHeight;
+
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+    document.body.style.maxHeight = '100vh';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.height = originalHeight;
+      document.body.style.maxHeight = originalMaxHeight;
+    };
+  }, []);
+
+  // Scroll to new message position (near header) with space below
+  useEffect(() => {
+    if (shouldScrollToNewMessage && chatContainerRef.current) {
+      const container = chatContainerRef.current;
+      // Find the last user message (most recent one sent)
+      const lastUserMessageIndex = messages.length - 1;
+      const lastUserMessageElement = container.querySelector(
+        `[data-message-index="${lastUserMessageIndex}"]`
+      );
+
+      if (lastUserMessageElement) {
+        const headerHeight = 80; // Approximate header height
+        const offset = 20; // Additional spacing from header
+
+        // Add slight delay to ensure DOM is fully updated
+        setTimeout(() => {
+          const elementRect = lastUserMessageElement.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+
+          // Calculate scroll position to show the last user message near the top
+          const scrollTop =
+            container.scrollTop +
+            elementRect.top -
+            containerRect.top -
+            headerHeight -
+            offset;
+
+          container.scrollTo({
+            top: scrollTop,
+            behavior: "smooth",
+          });
+        }, 50);
+      }
+
+      setShouldScrollToNewMessage(false);
+    }
+  }, [shouldScrollToNewMessage, messages.length]);
+
+  // Auto-scroll when messages change and there's loading/streaming
+  useEffect(() => {
+    if (
+      chatContainerRef.current &&
+      messages.length > 0 &&
+      (loading || streamingMessage)
+    ) {
+      const container = chatContainerRef.current;
+      // Small delay to ensure DOM is updated
+      setTimeout(() => {
+        const lastUserMessageIndex = messages.length - 1;
+        const lastUserMessageElement = container.querySelector(
+          `[data-message-index="${lastUserMessageIndex}"]`
+        );
+
+        if (lastUserMessageElement) {
+          const headerHeight = 80;
+          const offset = 20;
+
+          const elementRect = lastUserMessageElement.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+
+          const scrollTop =
+            container.scrollTop +
+            elementRect.top -
+            containerRect.top -
+            headerHeight -
+            offset;
+
+          container.scrollTo({
+            top: scrollTop,
+            behavior: "smooth",
+          });
+        }
+      }, 100);
+    }
+  }, [messages.length, loading, streamingMessage]);
+
+  // Scroll when streaming starts to maintain user message at top
+  useEffect(() => {
+    if (streamingMessage && chatContainerRef.current && messages.length > 0) {
+      const container = chatContainerRef.current;
+      setTimeout(() => {
+        const lastUserMessageIndex = messages.length - 1;
+        const lastUserMessageElement = container.querySelector(
+          `[data-message-index="${lastUserMessageIndex}"]`
+        );
+
+        if (lastUserMessageElement) {
+          const headerHeight = 80;
+          const offset = 20;
+
+          const elementRect = lastUserMessageElement.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+
+          const scrollTop =
+            container.scrollTop +
+            elementRect.top -
+            containerRect.top -
+            headerHeight -
+            offset;
+
+          container.scrollTo({
+            top: scrollTop,
+            behavior: "smooth",
+          });
+        }
+      }, 200);
+    }
+  }, [streamingMessage]);
 
   // Thinking text rotation effect
   useEffect(() => {
@@ -220,10 +389,10 @@ export default function RagAgentClient({
   }, [loading, streamingMessage]);
 
   // Sử dụng query hook để fetch chatbot details
-  const { 
-    data: chatbotDetailsFromQuery, 
-    isLoading: isLoadingChatbotFromQuery, 
-    error: chatbotDetailsError 
+  const {
+    data: chatbotDetailsFromQuery,
+    isLoading: isLoadingChatbotFromQuery,
+    error: chatbotDetailsError,
   } = useChatbotDetail(urlBotId);
 
   useEffect(() => {
@@ -244,7 +413,12 @@ export default function RagAgentClient({
     if (isLoadingChatbotFromQuery) {
       setLoadingChatbot(true);
     }
-  }, [chatbotDetailsFromQuery, chatbotDetailsError, isLoadingChatbotFromQuery, t]);
+  }, [
+    chatbotDetailsFromQuery,
+    chatbotDetailsError,
+    isLoadingChatbotFromQuery,
+    t,
+  ]);
 
   // Auth loading (replace Spin with a simple loader)
   if (isAuthLoading) {
@@ -412,7 +586,10 @@ export default function RagAgentClient({
       reasoning: reasoning,
     };
     await handleStreamingChat(payload);
-    setShouldScrollToEnd(true);
+    // Trigger scroll to new message position
+    setTimeout(() => {
+      setShouldScrollToNewMessage(true);
+    }, 100);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -462,12 +639,14 @@ export default function RagAgentClient({
         {/* API Key status on mobile */}
         <div className="md:hidden">
           <DropdownMenuItem asChild>
-            <div 
+            <div
               className="flex items-center px-2 py-1 cursor-pointer"
               onClick={() => router.push("/profile")}
             >
               <KeyRound className="w-4 h-4 mr-2" />
-              <span className={geminiApiKey ? "text-green-600" : "text-yellow-600"}>
+              <span
+                className={geminiApiKey ? "text-green-600" : "text-yellow-600"}
+              >
                 {geminiApiKey ? t("geminiKeySet") : t("geminiKeyNotSet")}
               </span>
             </div>
@@ -525,7 +704,11 @@ export default function RagAgentClient({
   }
 
   return (
-    <div className={`flex h-screen relative w-full chat-container ${zoomAnim ? "zoom-anim" : ""}`}>
+    <div
+      className={`flex h-screen relative w-full chat-container overflow-hidden ${
+        zoomAnim ? "zoom-anim" : ""
+      }`}
+    >
       <style>{styles}</style>
       <style>{`.zoom-anim > .flex-col { animation: zoomInOut 0.35s cubic-bezier(0.4,0,0.2,1); }
 @keyframes zoomInOut {
@@ -543,7 +726,7 @@ export default function RagAgentClient({
       )}
       {/* Sidebar */}
       <div
-        className={`fixed md:relative z-30 h-full glass-sidebar transition-all duration-300 ${
+        className={`fixed md:relative z-30 h-full glass-sidebar transition-all duration-300 overflow-hidden ${
           isSidebarCollapsed ? "w-16" : "w-64"
         } ${
           isMobileConversationOpen
@@ -582,7 +765,7 @@ export default function RagAgentClient({
       )}
 
       {/* Main Content */}
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full h-full overflow-hidden">
         {/* Header */}
         <div className="flex-none glass-header py-2 md:py-4">
           <div className="flex justify-between items-center px-3 md:px-6">
@@ -640,7 +823,7 @@ export default function RagAgentClient({
                   </Tooltip>
                 </TooltipProvider>
               )}
-              
+
               {/* API Key badge - hidden on mobile */}
               <Popover>
                 <PopoverTrigger asChild>
@@ -674,10 +857,10 @@ export default function RagAgentClient({
                   )}
                 </PopoverContent>
               </Popover>
-              
+
               {/* Dropdown menu */}
               {headerDropdown}
-              
+
               {/* Model Select - hidden on mobile */}
               <Select value={modelName} onValueChange={setModelName}>
                 <SelectTrigger className="hidden md:flex w-32 md:w-44 bg-background border-border hover:border-primary/50 transition-colors duration-200">
@@ -695,42 +878,94 @@ export default function RagAgentClient({
           </div>
         </div>
 
-        {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto">
-          <ChatMessages
-            messages={messages}
-            streamingMessage={streamingMessage}
-            selectedDocuments={selectedDocuments}
-            loadingChatbot={loadingChatbot}
-            chatbotDetails={chatbotDetails}
-            messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
-            onRecommendationClick={(recommendation: string) =>
-              setInput(recommendation)
-            }
-            thinkingMessage={reasoning ? thinkingText : ""}
-            renderChatbotDetails={true}
-            shouldScrollToEnd={shouldScrollToEnd}
-            onScrolledToEnd={() => setShouldScrollToEnd(false)}
-          />
-        </div>
+        {/* Content Area */}
+        <div className="flex-1 relative overflow-hidden">
+          {hasMessages ? (
+            /* Chat Messages - Normal Layout */
+            <>
+              <div
+                className="h-full overflow-y-auto smooth-scroll"
+                ref={chatContainerRef}
+              >
+                <ChatMessages
+                  messages={messages}
+                  streamingMessage={streamingMessage}
+                  selectedDocuments={selectedDocuments}
+                  loadingChatbot={loadingChatbot}
+                  chatbotDetails={chatbotDetails}
+                  messagesEndRef={
+                    messagesEndRef as React.RefObject<HTMLDivElement>
+                  }
+                  onRecommendationClick={(recommendation: string) =>
+                    setInput(recommendation)
+                  }
+                  thinkingMessage={reasoning ? thinkingText : ""}
+                  renderChatbotDetails={true}
+                  shouldScrollToEnd={shouldScrollToEnd}
+                  onScrolledToEnd={() => setShouldScrollToEnd(false)}
+                  loading={loading}
+                />
+              </div>
 
-        {/* Chat Input */}
-        <div className="flex-none border-t border-border bg-background/95 backdrop-blur-sm">
-          <div className="px-3 md:px-6">
-            <ChatInput
-              input={input}
-              loading={loading}
-              botId={botId}
-              onInputChange={setInput}
-              onSend={handleSend}
-              onKeyPress={handleKeyPress}
-              inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
-              selectedFiles={selectedFiles}
-              onSelectedFilesChange={setSelectedFiles}
-              reasoning={reasoning}
-              onReasoningChange={setReasoning}
-            />
-          </div>
+              {/* Chat Input - Bottom Position */}
+              <div className="absolute bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur-sm">
+                <div className="px-3 md:px-6">
+                  <ChatInput
+                    input={input}
+                    loading={loading}
+                    botId={botId}
+                    onInputChange={setInput}
+                    onSend={handleSend}
+                    onKeyPress={handleKeyPress}
+                    inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
+                    selectedFiles={selectedFiles}
+                    onSelectedFilesChange={setSelectedFiles}
+                    reasoning={reasoning}
+                    onReasoningChange={setReasoning}
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
+            /* Empty State - Centered Input */
+            <div className="h-full flex flex-col items-center justify-center px-3 md:px-6 chat-empty-state overflow-hidden">
+              <div className="w-full max-w-4xl">
+                {/* Welcome Message */}
+                <div className="text-center mb-8">
+                  <div className="flex justify-center mb-4">
+                    <Avatar className="bg-primary/10 w-16 h-16 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-300">
+                      <AvatarFallback className="text-primary">
+                        <Bot className="w-8 h-8" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-card-foreground mb-2">
+                    {chatbotDetails?.name || t("assistantDefaultName")}
+                  </h1>
+                  <p className="text-muted-foreground text-sm md:text-base">
+                    {chatbotDetails?.description || t("startConversation")}
+                  </p>
+                </div>
+
+                {/* Centered Chat Input */}
+                <div className="w-full input-transition">
+                  <ChatInput
+                    input={input}
+                    loading={loading}
+                    botId={botId}
+                    onInputChange={setInput}
+                    onSend={handleSend}
+                    onKeyPress={handleKeyPress}
+                    inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
+                    selectedFiles={selectedFiles}
+                    onSelectedFilesChange={setSelectedFiles}
+                    reasoning={reasoning}
+                    onReasoningChange={setReasoning}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

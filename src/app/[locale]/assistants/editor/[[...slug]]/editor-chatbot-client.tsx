@@ -614,7 +614,9 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                         onRecommendationClick={(recommendation: string) =>
                           setInput(recommendation)
                         }
-                        thinkingMessage={toolsMessage}
+                        thinkingMessage={thinkingText}
+                        toolsMessage={toolsMessage}
+                        toolsMetadata={toolsMetadata}
                         renderChatbotDetails={false}
                         shouldScrollToEnd={shouldScrollToEnd}
                         onScrolledToEnd={() => setShouldScrollToEnd(false)}
@@ -705,6 +707,8 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               }
               renderChatbotDetails={true}
               thinkingMessage=""
+              toolsMessage=""
+              toolsMetadata={null}
             />
           </div>
           <div className="flex-none border-t border-border p-4 bg-muted/50">

@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 // } from "./RecommendationContainer";
 import ChatMessageAgent from "./chat-message-box";
 import ThinkingMessage from "./thinking-message";
+import ToolMessage from "./tool-message";
 import { useTranslations } from "next-intl";
 
 interface StructuredMessage {
@@ -33,6 +34,8 @@ interface ChatMessagesProps {
   messages: StructuredMessage[];
   streamingMessage: string;
   thinkingMessage: string;
+  toolsMessage?: string;
+  toolsMetadata?: any;
   selectedDocuments: any[];
   loadingChatbot: boolean;
   chatbotDetails: any;
@@ -41,12 +44,15 @@ interface ChatMessagesProps {
   renderChatbotDetails: boolean;
   shouldScrollToEnd?: boolean;
   onScrolledToEnd?: () => void;
+  loading?: boolean;
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   streamingMessage,
   thinkingMessage,
+  toolsMessage,
+  toolsMetadata,
   selectedDocuments,
   loadingChatbot,
   chatbotDetails,
@@ -55,6 +61,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   renderChatbotDetails,
   shouldScrollToEnd,
   onScrolledToEnd,
+  loading,
 }) => {
   const [isDocumentsOpen, setIsDocumentsOpen] = React.useState(false);
   const t = useTranslations("chatMessages");
@@ -67,7 +74,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   }, [shouldScrollToEnd, messagesEndRef, onScrolledToEnd]);
 
   return (
-    <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4">
+    <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4 chat-messages-container">
       <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
         <AnimatePresence>
           {messages.length === 0 && renderChatbotDetails ? (
@@ -118,6 +125,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
+                  data-message-index={index}
                 >
                   <ChatMessageAgent message={displayMessage} />
                 </motion.div>
@@ -132,6 +140,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
+            data-message-index={messages.length}
           >
             <ChatMessageAgent
               message={{ role: "assistant", content: streamingMessage }}
@@ -139,12 +148,24 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
           </motion.div>
         )}
 
+        {/* Tool Message */}
+        {toolsMessage && !streamingMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ToolMessage content={toolsMessage} metadata={toolsMetadata} />
+          </motion.div>
+        )}
+
         {/* Thinking Message */}
-        {thinkingMessage && !streamingMessage && (
+        {thinkingMessage && !streamingMessage && !toolsMessage && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
+            data-message-index={messages.length}
           >
             <ThinkingMessage thinking={thinkingMessage} />
           </motion.div>
@@ -156,25 +177,31 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="mt-2 md:mt-4"
           >
             <Collapsible
               open={isDocumentsOpen}
               onOpenChange={setIsDocumentsOpen}
             >
-              <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
-                <CollapsibleTrigger className="flex w-full items-center justify-between p-3 md:p-4 text-left hover:bg-muted/50 transition-colors">
-                  <span className="text-sm md:text-base text-card-foreground font-medium">
-                    {t("sourceDocuments.count", {
-                      count: selectedDocuments.length,
-                    })}
-                  </span>
-                  <ChevronDown
-                    className={`h-4 w-4 transition-transform duration-300 text-muted-foreground ${
-                      isDocumentsOpen ? "rotate-180" : ""
-                    }`}
-                  />
+              <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+                <CollapsibleTrigger className="w-full bg-secondary hover:bg-secondary/80 transition-colors duration-200">
+                  <div className="flex items-center justify-between p-3 md:p-4">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <span className="text-sm md:text-base font-medium text-card-foreground">
+                        {t("sourceDocuments.title", {
+                          count: selectedDocuments.length,
+                        })}
+                      </span>
+                    </div>
+                    <motion.div
+                      animate={{ rotate: isDocumentsOpen ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                    </motion.div>
+                  </div>
                 </CollapsibleTrigger>
+
                 <CollapsibleContent>
                   <div className="px-3 md:px-4 pb-3 md:pb-4">
                     <div className="space-y-2 md:space-y-3">
@@ -210,6 +237,17 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
               </div>
             </Collapsible>
           </motion.div>
+        )}
+
+        {/* Dynamic spacer to create space below messages */}
+        {messages.length > 0 && (
+          <div
+            className={`message-spacer transition-all duration-500 ease-in-outh-[66.67vh] ${
+              loading || streamingMessage || thinkingMessage
+                ? "h-[66.67vh]"
+                : "h-[66.67vh]"
+            }`}
+          />
         )}
         <div ref={messagesEndRef} />
       </div>
