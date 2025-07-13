@@ -175,7 +175,7 @@ export function AppSidebar() {
                 <div className="flex items-center gap-3 mt-4 p-2 rounded-lg hover:bg-primary/10 transition-colors duration-200">
                   <div className="relative w-10 h-10">
                     <Image
-                      src={userInfo.picture || "/default-avatar.svg"}
+                      src={"/default-avatar.svg"}
                       alt="avatar"
                       width={40}
                       height={40}
