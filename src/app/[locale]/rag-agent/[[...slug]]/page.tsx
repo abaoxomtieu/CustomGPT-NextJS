@@ -48,6 +48,7 @@ export const metadata: Metadata = {
 
 export default async function RagAgentPage(props: any) {
   const params = await props.params;
+  const locale = await props.params.locale;
   const slugArray = Array.isArray(params?.slug)
     ? params.slug
     : [params?.slug ?? ""];
@@ -55,10 +56,7 @@ export default async function RagAgentPage(props: any) {
   return (
     <main>
       <h1 className="sr-only">RAG Agent - AI FTES</h1>
-      <RagAgentClient
-        params={{ slug: slugArray }}
-        locale={props.params.locale}
-      />
+      <RagAgentClient params={{ slug: slugArray }} locale={locale} />
     </main>
   );
 }
