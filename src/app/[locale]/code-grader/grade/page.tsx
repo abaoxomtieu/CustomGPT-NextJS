@@ -18,7 +18,7 @@ import { EXTENSION_OPTIONS } from "@/constant";
 import { useFileTree } from "@/hooks/use-file-tree";
 import { useGrading } from "@/hooks/use-grading";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import RepositoryConfig from "@/components/grade-code/reposistory-config";
 import FileTreePanel from "@/components/grade-code/file-tree-panel";

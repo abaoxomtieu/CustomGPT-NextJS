@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { ApiDomain } from "@/constant";
 import { getCookie } from "@/helpers/Cookies";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 interface CreateChatbotFormProps {
   onSuccess: () => void;

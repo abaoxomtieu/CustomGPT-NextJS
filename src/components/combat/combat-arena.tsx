@@ -18,7 +18,7 @@ import { modelOptions } from "./combat-selection";
 import { cn } from "@/lib/utils";
 import CombatChatMessages from "./combat-chat-message";
 import { StructuredMessage } from "./combat-message";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 
 interface CombatArenaProps {

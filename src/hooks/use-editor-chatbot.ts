@@ -12,7 +12,7 @@
  */
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { toast } from "sonner";
 import { getCookie } from "@/helpers/Cookies";
 import { useAuth } from "@/hooks/use-auth";
