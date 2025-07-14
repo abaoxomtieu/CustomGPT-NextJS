@@ -1,6 +1,7 @@
 import React from "react";
 import { Bot } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Collapsible,
   CollapsibleContent,
@@ -42,8 +43,6 @@ interface ChatMessagesProps {
   messagesEndRef: React.RefObject<HTMLDivElement>;
   onRecommendationClick: (recommendation: string) => void;
   renderChatbotDetails: boolean;
-  shouldScrollToEnd?: boolean;
-  onScrolledToEnd?: () => void;
   loading?: boolean;
 }
 
@@ -59,19 +58,10 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   messagesEndRef,
   onRecommendationClick,
   renderChatbotDetails,
-  shouldScrollToEnd,
-  onScrolledToEnd,
   loading,
 }) => {
   const [isDocumentsOpen, setIsDocumentsOpen] = React.useState(false);
   const t = useTranslations("chatMessages");
-
-  React.useEffect(() => {
-    if (shouldScrollToEnd && messagesEndRef?.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      onScrolledToEnd && onScrolledToEnd();
-    }
-  }, [shouldScrollToEnd, messagesEndRef, onScrolledToEnd]);
 
   return (
     <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4 chat-messages-container">
@@ -133,6 +123,40 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
             })
           )}
         </AnimatePresence>
+
+        {/* Loading Skeleton - Show when loading but no streaming message yet */}
+        {loading &&
+          !streamingMessage &&
+          (!thinkingMessage || thinkingMessage.trim().length === 0) &&
+          (!toolsMessage || toolsMessage.trim().length === 0) && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="flex justify-start py-2"
+            >
+              <div className="flex items-start w-full max-w-2xl mx-auto">
+                <Avatar className="bg-primary/10 ring-2 ring-primary/20">
+                  <AvatarFallback className="text-primary">
+                    <Bot className="w-4 h-4" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="ml-4 flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-semibold text-base text-foreground"></span>
+                    <span className="bg-foreground/10 text-foreground text-xs px-2 py-0.5 rounded-full">
+                      AI
+                    </span>
+                  </div>
+                  <div className="rounded-2xl px-5 py-4 shadow-md bg-background space-y-2">
+                    <Skeleton className="h-4 w-3/4 bg-muted" />
+                    <Skeleton className="h-4 w-1/2 bg-muted" />
+                    <Skeleton className="h-4 w-2/3 bg-muted" />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
         {/* Streaming Message */}
         {streamingMessage && (
@@ -239,16 +263,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
           </motion.div>
         )}
 
-        {/* Dynamic spacer to create space below messages */}
-        {messages.length > 0 && (
-          <div
-            className={`message-spacer transition-all duration-500 ease-in-outh-[66.67vh] ${
-              loading || streamingMessage || thinkingMessage
-                ? "h-[66.67vh]"
-                : "h-[66.67vh]"
-            }`}
-          />
-        )}
         <div ref={messagesEndRef} />
       </div>
     </div>

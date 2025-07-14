@@ -199,9 +199,7 @@ export default function RagAgentClient({
   >(urlConversationId as string);
   const [isMobileConversationOpen, setIsMobileConversationOpen] =
     useState(false);
-  const [shouldScrollToEnd, setShouldScrollToEnd] = useState(false);
-  const [shouldScrollToNewMessage, setShouldScrollToNewMessage] =
-    useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -244,9 +242,9 @@ export default function RagAgentClient({
     const originalHeight = document.body.style.height;
     const originalMaxHeight = document.body.style.maxHeight;
 
-    document.body.style.overflow = 'hidden';
-    document.body.style.height = '100vh';
-    document.body.style.maxHeight = '100vh';
+    document.body.style.overflow = "hidden";
+    document.body.style.height = "100vh";
+    document.body.style.maxHeight = "100vh";
 
     return () => {
       document.body.style.overflow = originalOverflow;
@@ -255,114 +253,49 @@ export default function RagAgentClient({
     };
   }, []);
 
-  // Scroll to new message position (near header) with space below
-  useEffect(() => {
-    if (shouldScrollToNewMessage && chatContainerRef.current) {
-      const container = chatContainerRef.current;
-      // Find the last user message (most recent one sent)
-      const lastUserMessageIndex = messages.length - 1;
-      const lastUserMessageElement = container.querySelector(
-        `[data-message-index="${lastUserMessageIndex}"]`
-      );
+  // Check if user is at the bottom of the scroll container
+  const checkIfAtBottom = () => {
+    const container = chatContainerRef.current;
+    if (!container) return true;
 
-      if (lastUserMessageElement) {
-        const headerHeight = 80; // Approximate header height
-        const offset = 20; // Additional spacing from header
+    const threshold = 50; // 50px threshold for "near bottom"
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight <=
+      threshold;
 
-        // Add slight delay to ensure DOM is fully updated
-        setTimeout(() => {
-          const elementRect = lastUserMessageElement.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
+    setIsAtBottom(isNearBottom);
+    return isNearBottom;
+  };
 
-          // Calculate scroll position to show the last user message near the top
-          const scrollTop =
-            container.scrollTop +
-            elementRect.top -
-            containerRect.top -
-            headerHeight -
-            offset;
-
-          container.scrollTo({
-            top: scrollTop,
-            behavior: "smooth",
-          });
-        }, 50);
-      }
-
-      setShouldScrollToNewMessage(false);
+  // Smooth scroll to bottom
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      setIsAtBottom(true);
     }
-  }, [shouldScrollToNewMessage, messages.length]);
+  };
 
-  // Auto-scroll when messages change and there's loading/streaming
+  // Handle scroll events
+  const handleScroll = () => {
+    checkIfAtBottom();
+  };
+
+  // Auto-scroll only when user is at bottom
   useEffect(() => {
-    if (
-      chatContainerRef.current &&
-      messages.length > 0 &&
-      (loading || streamingMessage)
-    ) {
-      const container = chatContainerRef.current;
+    if (isAtBottom) {
       // Small delay to ensure DOM is updated
       setTimeout(() => {
-        const lastUserMessageIndex = messages.length - 1;
-        const lastUserMessageElement = container.querySelector(
-          `[data-message-index="${lastUserMessageIndex}"]`
-        );
-
-        if (lastUserMessageElement) {
-          const headerHeight = 80;
-          const offset = 20;
-
-          const elementRect = lastUserMessageElement.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
-
-          const scrollTop =
-            container.scrollTop +
-            elementRect.top -
-            containerRect.top -
-            headerHeight -
-            offset;
-
-          container.scrollTo({
-            top: scrollTop,
-            behavior: "smooth",
-          });
-        }
+        scrollToBottom();
       }, 100);
     }
-  }, [messages.length, loading, streamingMessage]);
+  }, [messages, streamingMessage]);
 
-  // Scroll when streaming starts to maintain user message at top
+  // Initial check on messages change
   useEffect(() => {
-    if (streamingMessage && chatContainerRef.current && messages.length > 0) {
-      const container = chatContainerRef.current;
-      setTimeout(() => {
-        const lastUserMessageIndex = messages.length - 1;
-        const lastUserMessageElement = container.querySelector(
-          `[data-message-index="${lastUserMessageIndex}"]`
-        );
-
-        if (lastUserMessageElement) {
-          const headerHeight = 80;
-          const offset = 20;
-
-          const elementRect = lastUserMessageElement.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
-
-          const scrollTop =
-            container.scrollTop +
-            elementRect.top -
-            containerRect.top -
-            headerHeight -
-            offset;
-
-          container.scrollTo({
-            top: scrollTop,
-            behavior: "smooth",
-          });
-        }
-      }, 200);
-    }
-  }, [streamingMessage]);
+    setTimeout(() => {
+      checkIfAtBottom();
+    }, 100);
+  }, [messages.length]);
 
   // Thinking text rotation effect
   useEffect(() => {
@@ -586,10 +519,7 @@ export default function RagAgentClient({
       reasoning: reasoning,
     };
     await handleStreamingChat(payload);
-    // Trigger scroll to new message position
-    setTimeout(() => {
-      setShouldScrollToNewMessage(true);
-    }, 100);
+    // Auto scroll will be handled by the effect if user is at bottom
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -879,36 +809,37 @@ export default function RagAgentClient({
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden">
           {hasMessages ? (
             /* Chat Messages - Normal Layout */
             <>
               <div
-                className="h-full overflow-y-auto smooth-scroll"
+                className="flex-1 overflow-y-auto smooth-scroll"
                 ref={chatContainerRef}
+                onScroll={handleScroll}
               >
-                <ChatMessages
-                  messages={messages}
-                  streamingMessage={streamingMessage}
-                  selectedDocuments={selectedDocuments}
-                  loadingChatbot={loadingChatbot}
-                  chatbotDetails={chatbotDetails}
-                  messagesEndRef={
-                    messagesEndRef as React.RefObject<HTMLDivElement>
-                  }
-                  onRecommendationClick={(recommendation: string) =>
-                    setInput(recommendation)
-                  }
-                  thinkingMessage={reasoning ? thinkingText : ""}
-                  renderChatbotDetails={true}
-                  shouldScrollToEnd={shouldScrollToEnd}
-                  onScrolledToEnd={() => setShouldScrollToEnd(false)}
-                  loading={loading}
-                />
+                <div className="pb-6">
+                  <ChatMessages
+                    messages={messages}
+                    streamingMessage={streamingMessage}
+                    selectedDocuments={selectedDocuments}
+                    loadingChatbot={loadingChatbot}
+                    chatbotDetails={chatbotDetails}
+                    messagesEndRef={
+                      messagesEndRef as React.RefObject<HTMLDivElement>
+                    }
+                    onRecommendationClick={(recommendation: string) =>
+                      setInput(recommendation)
+                    }
+                    thinkingMessage={reasoning ? thinkingText : ""}
+                    renderChatbotDetails={true}
+                    loading={loading}
+                  />
+                </div>
               </div>
 
-              {/* Chat Input - Bottom Position */}
-              <div className="absolute bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur-sm">
+              {/* Chat Input - Fixed at bottom */}
+              <div className="flex-none border-t border-border bg-background/95 backdrop-blur-sm">
                 <div className="px-3 md:px-6">
                   <ChatInput
                     input={input}

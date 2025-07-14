@@ -59,18 +59,15 @@ const styles = {
   headerContainer:
     "max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center px-3 md:px-4 gap-2 md:gap-0",
   headerLeft: "flex items-center gap-2 md:gap-3 flex-1 min-w-0",
-  headerRight: "flex items-center gap-1 md:gap-2 flex-shrink-0 w-full md:w-auto justify-end",
+  headerRight:
+    "flex items-center gap-1 md:gap-2 flex-shrink-0 w-full md:w-auto justify-end",
   mainContent: "flex-1 flex flex-col md:flex-row overflow-hidden",
   leftSection:
     "w-full md:w-1/2 transition-all duration-300 ease-in-out overflow-hidden",
-  rightSection:
-    "flex-1 flex flex-col md:w-1/2 transition-all duration-300 ease-in-out overflow-hidden bg-muted/50",
+
   tabList: "w-2/3 flex justify-center",
   tabTrigger:
     "w-fit data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-sm",
-  chatContainer: "h-[calc(100%-40px)] overflow-y-auto flex flex-col",
-  chatInput:
-    "flex-none p-0 md:p-4 border-t border-border bg-background/80 backdrop-blur-sm",
   emptyState: "text-center py-6 md:py-10",
   emptyStateCard:
     "bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border",
@@ -279,6 +276,14 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
   const router = useRouter();
   const t = useTranslations("editorChatbot");
   const [isApiDocsOpen, setIsApiDocsOpen] = React.useState(false);
+
+  // Scroll detection states
+  const [isAtBottomLeft, setIsAtBottomLeft] = React.useState(true);
+  const [isAtBottomRight, setIsAtBottomRight] = React.useState(true);
+
+  // Chat container refs
+  const leftChatContainerRef = React.useRef<HTMLDivElement>(null);
+  const rightChatContainerRef = React.useRef<HTMLDivElement>(null);
   const {
     messages,
     input,
@@ -319,11 +324,86 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     setRagReasoning,
   } = useEditorChatbot(botId, notFounded);
 
-  const [shouldScrollToEnd, setShouldScrollToEnd] = React.useState(false);
+  // Check if user is at the bottom of the scroll container
+  const checkIfAtBottomLeft = () => {
+    const container = leftChatContainerRef.current;
+    if (!container) return true;
 
-  // Sử dụng query hook để fetch chatbot details  
-  const { data: chatbotDetailsFromQuery, error: chatbotDetailsError } = useChatbotDetail(notFounded ? undefined : botId);
-  
+    const threshold = 50; // 50px threshold for "near bottom"
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight <=
+      threshold;
+
+    setIsAtBottomLeft(isNearBottom);
+    return isNearBottom;
+  };
+
+  const checkIfAtBottomRight = () => {
+    const container = rightChatContainerRef.current;
+    if (!container) return true;
+
+    const threshold = 50; // 50px threshold for "near bottom"
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight <=
+      threshold;
+
+    setIsAtBottomRight(isNearBottom);
+    return isNearBottom;
+  };
+
+  // Smooth scroll to bottom
+  const scrollToBottomLeft = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      setIsAtBottomLeft(true);
+    }
+  };
+
+  const scrollToBottomRight = () => {
+    if (ragMessagesEndRef.current) {
+      ragMessagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      setIsAtBottomRight(true);
+    }
+  };
+
+  // Handle scroll events
+  const handleScrollLeft = () => {
+    checkIfAtBottomLeft();
+  };
+
+  const handleScrollRight = () => {
+    checkIfAtBottomRight();
+  };
+
+  // Auto-scroll only when user is at bottom
+  React.useEffect(() => {
+    if (isAtBottomLeft) {
+      setTimeout(() => {
+        scrollToBottomLeft();
+      }, 100);
+    }
+  }, [messages, streamingMessage]);
+
+  React.useEffect(() => {
+    if (isAtBottomRight) {
+      setTimeout(() => {
+        scrollToBottomRight();
+      }, 100);
+    }
+  }, [ragMessages, ragStreamingMessage]);
+
+  // Initial check on messages change
+  React.useEffect(() => {
+    setTimeout(() => {
+      checkIfAtBottomLeft();
+      checkIfAtBottomRight();
+    }, 100);
+  }, [messages.length, ragMessages.length]);
+
+  // Sử dụng query hook để fetch chatbot details
+  const { data: chatbotDetailsFromQuery, error: chatbotDetailsError } =
+    useChatbotDetail(notFounded ? undefined : botId);
+
   useEffect(() => {
     if (chatbotDetailsFromQuery && !notFounded) {
       setChatbotData(chatbotDetailsFromQuery);
@@ -331,7 +411,12 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
     if (chatbotDetailsError) {
       console.error("Error fetching chatbot details:", chatbotDetailsError);
     }
-  }, [chatbotDetailsFromQuery, chatbotDetailsError, notFounded, setChatbotData]);
+  }, [
+    chatbotDetailsFromQuery,
+    chatbotDetailsError,
+    notFounded,
+    setChatbotData,
+  ]);
 
   useEffect(() => {
     if (!isLoading && !isLogin) {
@@ -379,7 +464,6 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
       return;
     }
     await handleSend(files);
-    setShouldScrollToEnd(true);
   };
 
   const handleRagSendWrapper = async (files: File[]) => {
@@ -506,7 +590,10 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                   <Brain className="w-4 h-4" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="bg-card border-border w-64" align="end">
+              <PopoverContent
+                className="bg-card border-border w-64"
+                align="end"
+              >
                 <div className="space-y-3">
                   <div>
                     <label className="text-xs font-medium text-muted-foreground">
@@ -525,21 +612,27 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                       </SelectContent>
                     </Select>
                   </div>
-                  <div 
+                  <div
                     className="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-secondary/50"
                     onClick={() => router.push("/profile")}
                   >
-                    <KeyRound className={`w-4 h-4 ${
-                      geminiApiKey ? "text-green-600" : "text-yellow-600"
-                    }`} />
+                    <KeyRound
+                      className={`w-4 h-4 ${
+                        geminiApiKey ? "text-green-600" : "text-yellow-600"
+                      }`}
+                    />
                     <div className="flex-1">
                       <p className="text-sm font-medium">
                         {t("geminiKey.status")}
                       </p>
-                      <p className={`text-xs ${
-                        geminiApiKey ? "text-green-600" : "text-yellow-600"
-                      }`}>
-                        {geminiApiKey ? t("geminiKey.set") : t("geminiKey.notSet")}
+                      <p
+                        className={`text-xs ${
+                          geminiApiKey ? "text-green-600" : "text-yellow-600"
+                        }`}
+                      >
+                        {geminiApiKey
+                          ? t("geminiKey.set")
+                          : t("geminiKey.notSet")}
                       </p>
                     </div>
                   </div>
@@ -552,7 +645,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               className="text-xs md:text-sm whitespace-nowrap px-2 md:px-4"
               aria-label={t("clearChat")}
             >
-              <Trash2 className="mr-1 md:mr-2 w-3 h-3 md:w-4 md:h-4" /> 
+              <Trash2 className="mr-1 md:mr-2 w-3 h-3 md:w-4 md:h-4" />
               <span className="hidden sm:inline">{t("clearChat")}</span>
               <span className="sm:hidden">{t("clear")}</span>
             </Button>
@@ -589,44 +682,49 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
             </div>
             <TabsContent
               value="chat"
-              className={styles.chatContainer}
+              className="h-[calc(100%-40px)] flex flex-col overflow-hidden"
               role="tabpanel"
             >
-              <div className="flex-1 overflow-y-auto">
-                <AnimatePresence mode="wait">
-                  {messages.length === 0 ? (
-                    <EmptyState notFounded={notFounded} />
-                  ) : (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                    >
-                      <ChatMessages
-                        messages={messages}
-                        streamingMessage={streamingMessage}
-                        selectedDocuments={[]}
-                        loadingChatbot={false}
-                        chatbotDetails={chatbotData}
-                        messagesEndRef={
-                          messagesEndRef as React.RefObject<HTMLDivElement>
-                        }
-                        onRecommendationClick={(recommendation: string) =>
-                          setInput(recommendation)
-                        }
-                        thinkingMessage={thinkingText}
-                        toolsMessage={toolsMessage}
-                        toolsMetadata={toolsMetadata}
-                        renderChatbotDetails={false}
-                        shouldScrollToEnd={shouldScrollToEnd}
-                        onScrolledToEnd={() => setShouldScrollToEnd(false)}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              <div
+                className="flex-1 overflow-y-auto"
+                ref={leftChatContainerRef}
+                onScroll={handleScrollLeft}
+              >
+                <div className="pb-6">
+                  <AnimatePresence mode="wait">
+                    {messages.length === 0 ? (
+                      <EmptyState notFounded={notFounded} />
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      >
+                        <ChatMessages
+                          messages={messages}
+                          streamingMessage={streamingMessage}
+                          selectedDocuments={[]}
+                          loadingChatbot={false}
+                          chatbotDetails={chatbotData}
+                          messagesEndRef={
+                            messagesEndRef as React.RefObject<HTMLDivElement>
+                          }
+                          onRecommendationClick={(recommendation: string) =>
+                            setInput(recommendation)
+                          }
+                          thinkingMessage={thinkingText}
+                          toolsMessage={toolsMessage}
+                          toolsMetadata={toolsMetadata}
+                          renderChatbotDetails={false}
+                          loading={loading}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
-              <div className={styles.chatInput}>
+              <div className="flex-none border-t border-border bg-background/80 backdrop-blur-sm p-0 md:p-4">
                 <div className="w-full max-w-none px-3 md:px-0">
                   <ChatInput
                     input={input}
@@ -662,10 +760,10 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
           </Tabs>
         </section>
 
-        <section className={styles.rightSection}>
+        <section className="flex-1 flex flex-col md:w-1/2 transition-all duration-300 ease-in-out overflow-hidden bg-muted/50">
           <h3 className="sr-only">Chat với Chatbot</h3>
           {chatbotData && (
-            <div className="flex items-center justify-between p-3 border-b border-border bg-background/50">
+            <div className="flex-none flex items-center justify-between p-3 border-b border-border bg-background/50">
               <div className="flex items-center gap-2">
                 <Bot className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium">
@@ -692,24 +790,31 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
               </TooltipProvider>
             </div>
           )}
-          <div className="flex-1 overflow-y-auto p-4">
-            <ChatMessages
-              messages={ragMessages}
-              streamingMessage={ragStreamingMessage}
-              selectedDocuments={ragSelectedDocuments}
-              loadingChatbot={false}
-              chatbotDetails={chatbotData}
-              messagesEndRef={
-                ragMessagesEndRef as React.RefObject<HTMLDivElement>
-              }
-              onRecommendationClick={(recommendation: string) =>
-                setRagInput(recommendation)
-              }
-              renderChatbotDetails={true}
-              thinkingMessage=""
-              toolsMessage=""
-              toolsMetadata={null}
-            />
+          <div
+            className="flex-1 overflow-y-auto p-4"
+            ref={rightChatContainerRef}
+            onScroll={handleScrollRight}
+          >
+            <div className="pb-6">
+              <ChatMessages
+                messages={ragMessages}
+                streamingMessage={ragStreamingMessage}
+                selectedDocuments={ragSelectedDocuments}
+                loadingChatbot={false}
+                chatbotDetails={chatbotData}
+                messagesEndRef={
+                  ragMessagesEndRef as React.RefObject<HTMLDivElement>
+                }
+                onRecommendationClick={(recommendation: string) =>
+                  setRagInput(recommendation)
+                }
+                renderChatbotDetails={true}
+                thinkingMessage=""
+                toolsMessage=""
+                toolsMetadata={null}
+                loading={ragLoading}
+              />
+            </div>
           </div>
           <div className="flex-none border-t border-border p-4 bg-muted/50">
             <ChatInput
