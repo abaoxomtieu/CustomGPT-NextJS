@@ -175,7 +175,8 @@ export function AppSidebar() {
                 <div className="flex items-center gap-3 mt-4 p-2 rounded-lg hover:bg-primary/10 transition-colors duration-200">
                   <div className="relative w-10 h-10">
                     <Image
-                      src={"/default-avatar.svg"}
+                      // src={"/default-avatar.svg"}
+                      src={userInfo.picture}
                       alt="avatar"
                       width={40}
                       height={40}
@@ -202,7 +203,7 @@ export function AppSidebar() {
                     .filter((item) => {
                       if (!isLogin) {
                         return (
-                          item.title === t("home") || 
+                          item.title === t("home") ||
                           item.title === t("chatbot") ||
                           item.title === t("image_generation")
                         );
@@ -364,9 +365,11 @@ export function AppSidebar() {
             {data
               .filter((item) => {
                 if (!isLogin) {
-                  return item.title === t("home") || 
-                         item.title === t("chatbot") ||
-                         item.title === t("image_generation");
+                  return (
+                    item.title === t("home") ||
+                    item.title === t("chatbot") ||
+                    item.title === t("image_generation")
+                  );
                 }
                 if (isMobile && item.title === t("code_evaluation")) {
                   return false;
