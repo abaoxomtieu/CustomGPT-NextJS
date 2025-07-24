@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bot } from "lucide-react";
+import { Bot, Copy, Check } from "lucide-react";
 
 interface MessageContent {
   type: string;
@@ -20,6 +22,49 @@ interface AgentMessage {
 const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
   const { userInfo } = useAuth();
   const isAI = message.role === "assistant";
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  // Copy code to clipboard
+  const copyToClipboard = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedCode(code);
+      setTimeout(() => setCopiedCode(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy code:', err);
+    }
+  };
+
+  // Code block component with copy button
+  const CodeBlock = ({ language, children, ...props }: any) => {
+    const codeString = String(children).replace(/\n$/, "");
+    const isCopied = copiedCode === codeString;
+
+    return (
+      <div className="relative group">
+        <button
+          onClick={() => copyToClipboard(codeString)}
+          className="absolute top-2 right-2 p-2 bg-gray-700 hover:bg-gray-600 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          title="Copy code"
+        >
+          {isCopied ? (
+            <Check className="w-4 h-4" />
+          ) : (
+            <Copy className="w-4 h-4" />
+          )}
+        </button>
+        <SyntaxHighlighter
+          style={vscDarkPlus as any}
+          language={language}
+          PreTag="div"
+          className="rounded-lg"
+          {...props}
+        >
+          {codeString}
+        </SyntaxHighlighter>
+      </div>
+    );
+  };
 
   // Convert newlines to <br/> for ReactMarkdown
   const formatContent = (content: string) => {
@@ -45,6 +90,24 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
                 {...props}
               />
             ),
+            code: ({ node, className, children, ...props }: any) => {
+              const match = /language-(\w+)/.exec(className || "");
+              const language = match ? match[1] : "";
+              const inline = (props as any).inline;
+              
+              return !inline && language ? (
+                <CodeBlock language={language} {...props}>
+                  {children}
+                </CodeBlock>
+              ) : (
+                <code
+                  className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono"
+                  {...props}
+                >
+                  {children}
+                </code>
+              );
+            },
           }}
         >
           {formatContent(message.content)}
@@ -64,7 +127,29 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
                 );
               }
               return (
-                <ReactMarkdown key={`text-${index}`}>
+                <ReactMarkdown 
+                  key={`text-${index}`}
+                  components={{
+                    code: ({ node, className, children, ...props }: any) => {
+                      const match = /language-(\w+)/.exec(className || "");
+                      const language = match ? match[1] : "";
+                      const inline = (props as any).inline;
+                      
+                      return !inline && language ? (
+                        <CodeBlock language={language} {...props}>
+                          {children}
+                        </CodeBlock>
+                      ) : (
+                        <code
+                          className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono"
+                          {...props}
+                        >
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >
                   {formatContent(item.text)}
                 </ReactMarkdown>
               );
