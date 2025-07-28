@@ -242,43 +242,13 @@ const ChatbotListClient: React.FC = () => {
 
   return (
     <div className="mx-auto w-full bg-gradient-to-b from-background/50 to-background/30 px-4 md:px-6 min-h-screen">
-      {/* Back and Home Buttons */}
-      <div className="mb-4 md:mb-8 flex items-center gap-2">
-        <Button
-          variant="link"
-          onClick={() => router.back()}
-          className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors duration-200 p-0"
-        >
-          {t("back")}
-        </Button>
-        <span className="text-muted-foreground">|</span>
-        <Button
-          variant="link"
-          onClick={() => router.push("/")}
-          className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors duration-200 p-0 flex items-center gap-1"
-        >
-          <Home className="size-4 md:size-5" />
-          {t("home")}
-        </Button>
-      </div>
-      {/* Search and Create */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4 mb-6 md:mb-8">
+      {/* Search Only (no Back, Home, or Create New) */}
+      <div className="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-3 md:gap-4 mb-6 md:mb-8">
         <Input
           placeholder={t("searchPlaceholder")}
           onChange={(e) => handleSearch(e.target.value)}
           className="w-full sm:w-72 md:w-96 bg-card/50 border-primary/10 text-sm md:text-base focus:border-primary/50 transition-colors duration-200"
         />
-        {isLogin && (
-          <Button
-            variant="outline"
-            onClick={handleCreateChatbot}
-            className="w-full sm:w-auto bg-primary text-background hover:text-background border-none hover:bg-primary/90 hover:scale-105 transition-all duration-300 flex text-sm md:text-base shadow-lg"
-            disabled={!isLogin}
-          >
-            <Plus className="mr-2 size-4 md:size-5" />
-            {t("createNew")}
-          </Button>
-        )}
       </div>
       {/* Chatbot List */}
       <Tabs

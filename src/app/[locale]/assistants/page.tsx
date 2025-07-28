@@ -1,6 +1,8 @@
-import ChatbotListClient from "./chatbot-list-client";
+import { Sparkles, Bot } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { Metadata } from "next";
-
+import ChatbotListClient from "./chatbot-list-client";
 export const metadata: Metadata = {
   title: "Danh sách Chatbot - AI FTES",
   description:
@@ -51,14 +53,48 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default function ChatbotListPage() {
   return (
-    <main className="min-h-screen bg-background/80 py-8 px-4 w-full">
-      <h1 className="text-3xl font-bold text-foreground mb-2">
-        Danh sách Chatbot
-      </h1>
-      <ChatbotListClient />
+    <main className="min-h-screen bg-gradient-to-b from-background/80 to-background/95 py-4 px-2 w-full">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_25%_25%,rgba(var(--primary),0.08)_0%,transparent_60%),radial-gradient(circle_at_75%_75%,rgba(var(--primary),0.04)_0%,transparent_60%)] mb-6 shadow-lg">
+        <div className="flex flex-col md:flex-row items-center gap-6 px-4 py-6 md:py-8">
+          <div className="flex-1 space-y-2 text-center md:text-left">
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#1e40af] to-[#3b82f6] bg-clip-text text-transparent animate-fade-in">
+              Danh sách Chatbot AI
+            </h1>
+            <p className="text-base md:text-lg text-muted-foreground animate-fade-in">
+              Khám phá, trò chuyện và tạo chatbot AI cho nhiều mục đích khác nhau. Giao diện thân thiện, dễ sử dụng cho mọi đối tượng!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start animate-fade-in">
+              <Link href="/create-prompt">
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 text-base rounded-full shadow-lg hover:shadow-xl group">
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Tạo Chatbot mới
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button
+                  variant="outline"
+                  className="h-10 px-6 text-base rounded-full"
+                >
+                  Trang chủ
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="flex-1 flex items-center justify-center animate-fade-in">
+            <div className="relative h-32 w-32 md:h-40 md:w-40 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-dashed border-primary/30 flex items-center justify-center overflow-hidden group shadow-xl">
+              <Bot className="h-12 w-12 md:h-20 md:w-20 text-primary/70" />
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Chatbot List Section */}
+      <section>
+        <ChatbotListClient />
+      </section>
     </main>
   );
 }

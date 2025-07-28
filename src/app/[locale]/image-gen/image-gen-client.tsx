@@ -184,15 +184,6 @@ export default function ImageGenClient() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 p-2 sm:p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-4 sm:mb-6 lg:mb-8">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-full mb-3 sm:mb-4">
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-            <h1 className="text-lg sm:text-xl font-bold">{t("title")}</h1>
-          </div>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base px-4">
-            {t("subtitle")}
-          </p>
-        </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
           {/* Input Panel */}
