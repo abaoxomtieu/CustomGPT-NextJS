@@ -37,6 +37,10 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-blue-primary: var(--blue-primary);
+  --color-blue-40: var(--blue-40);
+  --color-blue-60: var(--blue-60);
+  --color-blue-active: var(--blue-active);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -76,6 +80,12 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Blue color scheme */
+  --blue-primary: #3F51B5;
+  --blue-40: #1F1B4D66;
+  --blue-60: #3F51B566;
+  --blue-active: #1A237E;
 }
 
 .dark {
@@ -110,6 +120,12 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  
+  /* Blue color scheme for dark mode */
+  --blue-primary: #5C6BC0;
+  --blue-40: #3F51B566;
+  --blue-60: #5C6BC066;
+  --blue-active: #3949AB;
 }
 
 @layer base {

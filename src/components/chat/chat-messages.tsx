@@ -89,7 +89,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                       animate={{ scale: 1 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <Bot className="text-3xl md:text-4xl text-primary mb-3 md:mb-4 mx-auto" />
+                      <Bot className="text-3xl md:text-4xl text-blue-primary mb-3 md:mb-4 mx-auto" />
                     </motion.div>
                     <h3 className="text-base md:text-lg font-medium text-card-foreground mb-2">
                       {chatbotDetails?.name || t("emptyState.title")}
@@ -136,8 +136,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
               className="flex justify-start py-2"
             >
               <div className="flex items-start w-full max-w-2xl mx-auto">
-                <Avatar className="bg-primary/10 ring-2 ring-primary/20">
-                  <AvatarFallback className="text-primary">
+                <Avatar className="bg-blue-primary/10 ring-2 ring-blue-primary/20">
+                  <AvatarFallback className="text-blue-primary">
                     <Bot className="w-4 h-4" />
                   </AvatarFallback>
                 </Avatar>
@@ -210,7 +210,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 <CollapsibleTrigger className="w-full bg-secondary hover:bg-secondary/80 transition-colors duration-200">
                   <div className="flex items-center justify-between p-3 md:p-4">
                     <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <div className="w-2 h-2 bg-blue-primary rounded-full"></div>
                       <span className="text-sm md:text-base font-medium text-card-foreground">
                         {t("sourceDocuments.title", {
                           count: selectedDocuments.length,

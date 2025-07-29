@@ -1,216 +1,226 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { marked } from "marked";
+
+import { FolderOpen, ArrowUp, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import { Loader2, Trash2, Plus } from "lucide-react";
-import { useTranslations } from "next-intl";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  GradedAssignment,
-  gradedAssignmentService,
-} from "@/services/gradedAssignmentService";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { useCallback, useEffect, useState } from "react";
+import { DEFAULT_REPO_URL } from "@/constant";
+import { EXTENSION_OPTIONS } from "@/constant";
+import { useFileTree } from "@/hooks/use-file-tree";
 import { useGrading } from "@/hooks/use-grading";
+import { toast } from "sonner";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import FileTreePanel from "@/components/grade-code/file-tree-panel";
+import GradingPanel from "@/components/grade-code/grading-panel";
+import RepositoryConfig from "@/components/grade-code/reposistory-config";
+import GradingResult from "@/components/grade-code/grading-result";
+import { TreeNode } from "../../../../types/type";
 
-export default function CodeGraderHistoryPage() {
+const GradePage = () => {
   const t = useTranslations("codeGrader");
-  const [assignments, setAssignments] = useState<GradedAssignment[]>([]);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [isFolderStructureModalVisible, setIsFolderStructureModalVisible] =
+    useState(false);
 
-  const { gradeResult }  = useGrading({
-    selectedFiles: [],
-    projectDescription: "",
+  const [repoUrl, setRepoUrl] = useState(DEFAULT_REPO_URL);
+  const [projectName, setProjectName] = useState("");
+  const [selectedExtensions, setSelectedExtensions] = useState<string[]>([
+    "js",
+    "ts",
+    "jsx",
+    "tsx",
+    "py",
+    "java",
+    "cpp",
+    "c",
+    "html",
+    "css",
+  ]);
+  const [folderStructureCriteria, setFolderStructureCriteria] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [useTestData, setUseTestData] = useState(false);
+
+  // Test data for debugging
+  const testTreeData: TreeNode[] = [
+    {
+      label: "src",
+      value: "src",
+      children: [
+        {
+          label: "components",
+          value: "src/components",
+          children: [
+            { label: "Button.tsx", value: "src/components/Button.tsx" },
+            { label: "Input.tsx", value: "src/components/Input.tsx" },
+          ],
+        },
+        { label: "App.tsx", value: "src/App.tsx" },
+        { label: "index.ts", value: "src/index.ts" },
+      ],
+    },
+    { label: "package.json", value: "package.json" },
+    { label: "README.md", value: "README.md" },
+  ];
+
+  const {
+    criteria,
+    setCriteria,
+    folderCriteria,
+    setFolderCriteria,
+    gradeLoading,
+    error,
+    gradeResult,
+    gradeFolderStructureResult,
+    gradeCode,
+    loadFrontendCriteria,
+    loadBackendCriteria,
+  } = useGrading({
+    selectedFiles: selectedFiles,
+    projectDescription: projectName,
   });
 
-  // Handler functions
-  const handleExtensionChange = useCallback((value: string[]) => {
-    // Implementation needed
-  }, []);
-
-  const handleFileSelection = useCallback((files: string[]) => {
-    // Implementation needed
-  }, []);
+  const {
+    fileTreeData,
+    loading: isLoadingFileTree,
+    error: fileTreeError,
+    fetchFileTree,
+  } = useFileTree({});
 
   const handleFetchFileTree = useCallback(() => {
-    // Implementation needed
-  }, []);
-
-  const handleGenerateDescription = useCallback(() => {
-    // Implementation needed
-  }, []);
-
-  const fetchAssignments = async () => {
-    try {
-      const data = await gradedAssignmentService.getAllAssignments();
-      setAssignments(data);
-    } catch (error) {
-      toast.error(t("messages.loadError"));
-    } finally {
-      setLoading(false);
+    if (repoUrl) {
+      fetchFileTree(repoUrl, selectedExtensions);
     }
-  };
-
-  const deleteAssignment = async (id: string) => {
-    try {
-      await gradedAssignmentService.deleteAssignment(id);
-      setAssignments(assignments.filter((assignment) => assignment.id !== id));
-      toast.success(t("messages.deleteSuccess"));
-    } catch (error) {
-      toast.error(t("messages.deleteError"));
-    }
-  };
-
-  useEffect(() => {
-    fetchAssignments();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
+  }, [repoUrl, selectedExtensions, fetchFileTree]);
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <Button
-          onClick={() => router.push("/code-grader/grade")}
-          className="flex items-center gap-2"
+    <div className="min-h-screen p-6">
+      <div className="container mx-auto max-w-6xl">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold mb-2">Code Grader</h1>
+          <p className="text-muted-foreground">
+            Grade and evaluate code quality with AI assistance
+          </p>
+
+          {/* Test button for debugging */}
+        </div>
+
+        <RepositoryConfig
+          repoUrl={repoUrl}
+          loading={isLoadingFileTree}
+          selectedExtensions={selectedExtensions}
+          onRepoUrlChange={setRepoUrl}
+          onExtensionChange={setSelectedExtensions}
+          onFetchFiles={handleFetchFileTree}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 h-[500px]">
+          <FileTreePanel
+            fileTreeData={useTestData ? testTreeData : fileTreeData}
+            selectedFiles={selectedFiles}
+            onFileSelection={setSelectedFiles}
+          />
+
+          <GradingPanel
+            criteria={criteria}
+            setCriteria={setCriteria}
+            folderCriteria={folderCriteria}
+            setFolderCriteria={setFolderCriteria}
+            projectDescription={projectName}
+            setProjectDescription={setProjectName}
+            onGenerateDescription={() => {}}
+            onGradeCode={() => gradeCode(criteria)}
+            onLoadFrontendCriteria={loadFrontendCriteria}
+            onLoadBackendCriteria={loadBackendCriteria}
+            isGenerateDisabled={selectedFiles.length === 0}
+            isGradeDisabled={
+              selectedFiles.length === 0 || criteria.length === 0
+            }
+            gradeLoading={gradeLoading}
+          />
+        </div>
+
+        {gradeLoading && (
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">Grading Progress</span>
+              <span className="text-sm text-muted-foreground">Loading...</span>
+            </div>
+            <Progress value={50} className="w-full" />
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-700 text-sm">{error}</p>
+          </div>
+        )}
+
+        {gradeResult.length > 0 && (
+          <GradingResult
+            results={gradeResult}
+            gradeFolderStructureResult={gradeFolderStructureResult}
+          />
+        )}
+
+        <Dialog
+          open={isFolderStructureModalVisible}
+          onOpenChange={setIsFolderStructureModalVisible}
         >
-          <Plus className="w-4 h-4" />
-          {t("newGrading")}
-        </Button>
+          <DialogContent className="overflow-y-auto max-h-[70vh] max-w-[80vw]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-lg">
+                <FolderOpen className="text-blue-500" />
+                <span className="font-semibold">
+                  Folder Structure Evaluation
+                </span>
+              </DialogTitle>
+            </DialogHeader>
+            <div className="prose max-w-none break-words">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: marked(folderCriteria),
+                }}
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                variant="secondary"
+                onClick={() => setIsFolderStructureModalVisible(false)}
+              >
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
-      {assignments.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500 mb-4">{t("noAssignmentsFound")}</p>
-          <Button
-            onClick={() => router.push("/code-grader/grade")}
-            className="flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            {t("createFirstAssignment")}
-          </Button>
-        </div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {assignments.map((assignment) => (
-            <Card
-              key={assignment.id}
-              className="hover:shadow-md transition-shadow border border-foreground/10"
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-base font-medium line-clamp-2 flex-1 mr-2">
-                    {assignment.project_name}
-                  </CardTitle>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                        <Trash2 className="h-3 w-3 text-red-500" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>{t("deleteAssignment")}</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          {t("deleteConfirm")}
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => deleteAssignment(assignment.id)}
-                          className="bg-red-500 hover:bg-red-600"
-                        >
-                          {t("delete")}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {format(new Date(assignment.created_at), "MMM dd, yyyy")}
-                </p>
-              </CardHeader>
-              <CardContent className="pt-0 pb-3">
-                <div className="space-y-2">
-                  <div>
-                    <p className="text-xs font-medium text-foreground/80 mb-1">
-                      {t("files")} ({assignment.selected_files.length})
-                    </p>
-                    <div className="text-xs text-muted-foreground">
-                      {assignment.selected_files
-                        .slice(0, 2)
-                        .map((file, index) => (
-                          <div key={index} className="truncate">
-                            {file.split("/").pop()}
-                          </div>
-                        ))}
-                      {assignment.selected_files.length > 2 && (
-                        <div className="text-muted-foreground/60">
-                          +{assignment.selected_files.length - 2} {t("more")}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-medium text-foreground/80 mb-1">
-                      {t("criteria")} ({assignment.criterias_list.length})
-                    </p>
-                    <div className="text-xs text-muted-foreground">
-                      {assignment.criterias_list
-                        .slice(0, 1)
-                        .map((criteria, index) => (
-                          <div key={index} className="truncate">
-                            {criteria.length > 40
-                              ? criteria.substring(0, 40) + "..."
-                              : criteria}
-                          </div>
-                        ))}
-                      {assignment.criterias_list.length > 1 && (
-                        <div className="text-muted-foreground/60">
-                          +{assignment.criterias_list.length - 1} {t("more")}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full mt-3 h-7 text-xs"
-                    onClick={() =>
-                      router.push(`/code-grader/history/${assignment.id}`)
-                    }
-                  >
-                    {t("viewDetails")}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+      <Button
+        variant="outline"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="fixed bottom-4 right-4 flex items-center gap-2 shadow-lg"
+      >
+        <ArrowUp className="w-5 h-5" />
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => router.push("/code-grader/history")}
+        className="fixed top-4 right-4 flex items-center gap-2 shadow-lg"
+      >
+        <History className="w-4 h-4" />
+        <span className="hidden sm:inline">View History</span>
+      </Button>
     </div>
   );
-}
+};
+
+export default GradePage;

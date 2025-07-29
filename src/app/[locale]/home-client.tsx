@@ -67,9 +67,9 @@ const HomeClient: React.FC = () => {
   const t = useTranslations("HomePage");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
+    <div className="min-h-screen bg-gradient-to-b from-background via-blue-40/10 to-background/95">
       {/* Enhanced Hero Section with Parallax */}
-      <section className="relative overflow-hidden bg-[radial-gradient(circle_at_25%_25%,rgba(var(--primary),0.1)_0%,transparent_50%),radial-gradient(circle_at_75%_75%,rgba(var(--primary),0.05)_0%,transparent_50%)] min-h-screen flex items-center">
+      <section className="relative overflow-hidden bg-[radial-gradient(circle_at_25%_25%,rgba(63,81,181,0.1)_0%,transparent_50%),radial-gradient(circle_at_75%_75%,rgba(63,81,181,0.05)_0%,transparent_50%)] min-h-screen flex items-center">
         {/* Parallax Background Elements */}
         <div
           className="absolute inset-0 opacity-20"
@@ -120,7 +120,7 @@ const HomeClient: React.FC = () => {
                 data-fade
               >
                 <Link href="/assistants" className="group">
-                  <Button className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 h-14 md:h-16 px-8 md:px-12 text-lg md:text-xl transition-all duration-200 rounded-full shadow-lg hover:shadow-xl">
+                  <Button className="w-full sm:w-auto bg-blue-primary text-white hover:bg-blue-active h-14 md:h-16 px-8 md:px-12 text-lg md:text-xl transition-all duration-200 rounded-full shadow-lg hover:shadow-xl border-0">
                     {t("start_now")}
                     <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -246,11 +246,11 @@ const HomeClient: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Large Featured Card */}
             <div
-              className="col-span-1 md:col-span-2 lg:col-span-2 lg:row-span-2 bg-card/80 backdrop-blur-md rounded-xl p-8 shadow-lg border border-border/10 hover:border-primary/50 hover:shadow-xl transition-all duration-200 opacity-0 relative overflow-hidden"
+              className="col-span-1 md:col-span-2 lg:col-span-2 lg:row-span-2 bg-card/80 backdrop-blur-md rounded-xl p-8 shadow-lg border border-blue-60/20 hover:border-blue-primary/50 hover:shadow-xl transition-all duration-200 opacity-0 relative overflow-hidden"
               data-fade
             >
               <div className="space-y-4">
-                <div className="w-20 h-20 flex items-center justify-center rounded-full bg-primary/10">
+                <div className="w-20 h-20 flex items-center justify-center rounded-full bg-blue-primary/10">
                   <FcSettings className="text-4xl" />
                 </div>
                 <h3 className="text-2xl font-bold text-foreground">
@@ -281,11 +281,11 @@ const HomeClient: React.FC = () => {
             ].map((feature, index) => (
               <div
                 key={index}
-                className="bg-card/80 backdrop-blur-md rounded-xl p-8 shadow-lg border border-border/10 hover:border-primary/50 hover:shadow-xl transition-all duration-200 opacity-0"
+                className="bg-card/80 backdrop-blur-md rounded-xl p-8 shadow-lg border border-blue-60/20 hover:border-blue-primary/50 hover:shadow-xl transition-all duration-200 opacity-0"
                 data-fade
               >
                 <div className="flex justify-between items-start mb-4">
-                  <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10">
+                  <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-primary/10">
                     {feature.icon}
                   </div>
                 </div>
@@ -305,7 +305,7 @@ const HomeClient: React.FC = () => {
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="relative">
           <div
-            className="bg-card/80 backdrop-blur-md rounded-3xl p-8 md:p-16 shadow-lg border border-border/10 hover:border-primary/50 hover:shadow-xl transition-all duration-200 opacity-0"
+            className="bg-card/80 backdrop-blur-md rounded-3xl p-8 md:p-16 shadow-lg border border-blue-60/20 hover:border-blue-primary/50 hover:shadow-xl transition-all duration-200 opacity-0"
             data-fade
           >
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -318,14 +318,14 @@ const HomeClient: React.FC = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link href="/assistants">
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 text-lg rounded-full shadow-lg hover:shadow-xl group">
+                    <Button className="bg-blue-primary text-white hover:bg-blue-active h-12 px-8 text-lg rounded-full shadow-lg hover:shadow-xl group border-0">
                       {t("cta.button")}
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
                   <Button
                     variant="outline"
-                    className="h-12 px-8 text-lg rounded-full"
+                    className="h-12 px-8 text-lg rounded-full border-blue-60 text-blue-primary hover:bg-blue-40/20 hover:border-blue-primary"
                   >
                     Xem demo
                   </Button>
@@ -346,8 +346,8 @@ const HomeClient: React.FC = () => {
                   <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
                 </div>
                 {/* Decorative Elements */}
-                <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full animate-[float_6s_ease-in-out_infinite]" />
-                <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-gradient-to-br from-primary/15 to-primary/5 rounded-full animate-[float_6s_ease-in-out_infinite_-2s]" />
+                <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-blue-primary/20 to-blue-60/30 rounded-full animate-[float_6s_ease-in-out_infinite]" />
+                <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-gradient-to-br from-blue-60/40 to-blue-40/30 rounded-full animate-[float_6s_ease-in-out_infinite_-2s]" />
               </div>
             </div>
           </div>

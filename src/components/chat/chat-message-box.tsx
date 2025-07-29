@@ -209,29 +209,29 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
   const senderName = isAI ? "" : userInfo?.name;
 
   return (
-    <div className="flex justify-start py-2">
-      <div className="flex items-start w-full max-w-2xl mx-auto">
-        <Avatar>
+    <div className={`flex py-2 ${!isAI ? 'justify-end' : 'justify-start'}`}>
+      <div className={`flex items-start w-full max-w-2xl mx-auto ${!isAI ? 'flex-row-reverse' : ''}`}>
+        <Avatar className={`ring-2 ${isAI ? 'bg-blue-primary/10 ring-blue-primary/20' : 'bg-blue-active/10 ring-blue-active/20'}`}>
           <AvatarImage
             src={!isAI ? userInfo?.picture : undefined}
             alt="avatar"
           />
-          <AvatarFallback>
+          <AvatarFallback className={isAI ? 'text-blue-primary' : 'text-blue-active'}>
             {isAI ? <Bot className="w-4 h-4" /> : userInfo?.name?.charAt(0)}
           </AvatarFallback>
         </Avatar>
 
-        <div className="ml-4 flex-1">
-          <div className="flex items-center gap-2 mb-1">
+        <div className={`flex-1 ${!isAI ? 'mr-4' : 'ml-4'}`}>
+          <div className={`flex items-center gap-2 mb-1 ${!isAI ? 'justify-end' : ''}`}>
             <span
               className={`font-semibold text-base ${
-                isAI ? "text-foreground" : "text-green-600"
+                isAI ? "text-blue-primary" : "text-blue-active"
               }`}
             >
               {senderName}
             </span>
             {isAI && (
-              <span className="bg-foreground/10 text-foreground text-xs px-2 py-0.5 rounded-full ml-1">
+              <span className="bg-blue-primary/10 text-blue-primary text-xs px-2 py-0.5 rounded-full ml-1">
                 AI
               </span>
             )}
@@ -240,8 +240,8 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
             className={`rounded-2xl px-5 py-4 shadow-md transition-all duration-200 group
               ${
                 isAI
-                  ? "bg-background hover:bg-foreground/20"
-                  : "bg-foreground/10 hover:foreground/20"
+                  ? "bg-blue-primary/5 border border-blue-60/20 hover:bg-blue-primary/10 hover:border-blue-primary/30"
+                  : "bg-blue-active/5 border border-blue-active/20 hover:bg-blue-active/10 hover:border-blue-active/30 ml-8"
               }
               text-foreground text-[15px] leading-relaxed
             `}

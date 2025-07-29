@@ -55,38 +55,44 @@ export const metadata: Metadata = {
 
 export default function ChatbotListPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background/80 to-background/95 py-4 px-2 w-full">
+    <main className="min-h-screen bg-gradient-to-b from-background/80 via-blue-primary/5 to-background/95 py-4 px-2 w-full">
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_25%_25%,rgba(var(--primary),0.08)_0%,transparent_60%),radial-gradient(circle_at_75%_75%,rgba(var(--primary),0.04)_0%,transparent_60%)] mb-6 shadow-lg">
-        <div className="flex flex-col md:flex-row items-center gap-6 px-4 py-6 md:py-8">
-          <div className="flex-1 space-y-2 text-center md:text-left">
-            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#1e40af] to-[#3b82f6] bg-clip-text text-transparent animate-fade-in">
+      <section className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-primary/8 via-blue-60/5 to-transparent border border-blue-60/20 mb-4 shadow-md backdrop-blur-sm">
+        <div className="flex items-center justify-between px-4 py-4 md:px-6 md:py-5">
+          <div className="flex-1 space-y-1">
+            <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-primary to-blue-active bg-clip-text text-transparent">
               Danh sách Chatbot AI
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground animate-fade-in">
-              Khám phá, trò chuyện và tạo chatbot AI cho nhiều mục đích khác nhau. Giao diện thân thiện, dễ sử dụng cho mọi đối tượng!
+            <p className="text-sm md:text-base text-muted-foreground line-clamp-2">
+              Khám phá, trò chuyện và tạo chatbot AI cho nhiều mục đích khác
+              nhau
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start animate-fade-in">
+          </div>
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="hidden sm:flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-blue-primary/10 to-blue-60/20 border border-blue-primary/20">
+              <Bot className="w-6 h-6 md:w-7 md:h-7 text-blue-primary" />
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
               <Link href="/create-prompt">
-                <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 text-base rounded-full shadow-lg hover:shadow-xl group">
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Tạo Chatbot mới
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-blue-primary to-blue-active hover:from-blue-active hover:to-blue-primary shadow-md hover:shadow-lg transition-all duration-300 text-xs md:text-sm font-semibold whitespace-nowrap"
+                >
+                  <Sparkles className="mr-1.5 h-3 w-3 md:h-4 md:w-4" />
+                  <span className="hidden sm:inline">Tạo mới</span>
+                  <span className="sm:hidden">Tạo</span>
                 </Button>
               </Link>
               <Link href="/">
                 <Button
                   variant="outline"
-                  className="h-10 px-6 text-base rounded-full"
+                  size="sm"
+                  className="border-blue-60/30 hover:border-blue-primary/50 hover:bg-blue-primary/5 text-xs md:text-sm whitespace-nowrap"
                 >
-                  Trang chủ
+                  <span className="hidden sm:inline">Trang chủ</span>
+                  <span className="sm:hidden">Home</span>
                 </Button>
               </Link>
-            </div>
-          </div>
-          <div className="flex-1 flex items-center justify-center animate-fade-in">
-            <div className="relative h-32 w-32 md:h-40 md:w-40 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-dashed border-primary/30 flex items-center justify-center overflow-hidden group shadow-xl">
-              <Bot className="h-12 w-12 md:h-20 md:w-20 text-primary/70" />
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
             </div>
           </div>
         </div>

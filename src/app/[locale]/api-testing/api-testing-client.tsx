@@ -361,7 +361,6 @@ export default function ApiTestingClient() {
       };
 
       const testCases = await apiTestingService.generateTestCases(data);
-      console.log("Received test cases:", testCases);
 
       // Update test cases
       setRows((prevRows) =>
@@ -408,7 +407,6 @@ export default function ApiTestingClient() {
       };
 
       const result = await apiTestingService.testApi(data);
-      console.log("Test API result:", result);
 
       // Store test results
       setRows((prevRows) =>

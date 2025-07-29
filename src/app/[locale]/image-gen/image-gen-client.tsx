@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +33,7 @@ import {
 
 export default function ImageGenClient() {
   const t = useTranslations("imageGeneration");
+  const isMobile = useIsMobile();
   const [prompt, setPrompt] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -81,7 +83,6 @@ export default function ImageGenClient() {
         selectedImage || undefined
       );
 
-      console.log(responseBlob);
 
       // Check if response is text or image
       if (responseBlob.type === "text/plain") {
@@ -181,20 +182,36 @@ export default function ImageGenClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 p-2 sm:p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-blue-primary/5 to-blue-60/10 p-2 sm:p-4">
+      <style jsx>{`
+        .glass-card {
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+        }
+        .glass-card:hover {
+          transform: translateY(-2px);
+        }
+        @media (max-width: 768px) {
+          .glass-card:hover {
+            transform: none;
+          }
+        }
+      `}</style>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+        <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'xl:grid-cols-2 gap-4 sm:gap-6'}`}>
           {/* Input Panel */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+          <Card className="glass-card border-blue-60/20 bg-card/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className=" border-b border-blue-60/10">
+              <CardTitle className="flex items-center gap-2 text-sm sm:text-base text-card-foreground">
+                <div className="p-2 rounded-lg bg-blue-primary/10 text-blue-primary">
+                  <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
                 {t("form.generateButton")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className={`${isMobile ? 'space-y-4 p-4' : 'space-y-6'}`}>
               {/* Prompt Input */}
               <div className="space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -277,7 +294,7 @@ export default function ImageGenClient() {
                       type="button"
                       variant="outline"
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full h-24 sm:h-32 border-dashed border-2 hover:border-primary/50 touch-manipulation"
+                      className={`w-full ${isMobile ? 'h-28' : 'h-24 sm:h-32'} border-dashed border-2 border-blue-60/30 hover:border-blue-primary/50 hover:bg-blue-primary/5 transition-all duration-300 touch-manipulation`}
                     >
                       <div className="text-center">
                         <Upload className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-muted-foreground" />
@@ -317,7 +334,7 @@ export default function ImageGenClient() {
                 <Button
                   onClick={handleGenerate}
                   disabled={!prompt.trim() || isGenerating}
-                  className="w-full sm:flex-1 h-12 sm:h-10 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 touch-manipulation text-sm sm:text-base"
+                  className={`w-full sm:flex-1 ${isMobile ? 'h-14' : 'h-12 sm:h-10'} bg-gradient-to-r from-blue-primary to-blue-active hover:from-blue-active hover:to-blue-primary shadow-lg hover:shadow-xl transition-all duration-300 touch-manipulation text-sm sm:text-base font-semibold`}
                 >
                   {isGenerating ? (
                     <>
@@ -335,7 +352,7 @@ export default function ImageGenClient() {
                   variant="outline"
                   onClick={clearAll}
                   disabled={isGenerating}
-                  className="w-full sm:w-auto h-12 sm:h-10 touch-manipulation text-sm sm:text-base"
+                  className={`w-full sm:w-auto ${isMobile ? 'h-14' : 'h-12 sm:h-10'} border-blue-60/30 hover:border-blue-primary/50 hover:bg-blue-primary/5 transition-all duration-300 touch-manipulation text-sm sm:text-base`}
                 >
                   {t("form.clearButton")}
                 </Button>
@@ -344,10 +361,12 @@ export default function ImageGenClient() {
           </Card>
 
           {/* Result Panel */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+          <Card className="glass-card border-blue-60/20 bg-card/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardHeader className=" border-b border-blue-60/10">
+              <CardTitle className="flex items-center gap-2 text-sm sm:text-base text-card-foreground">
+                <div className="p-2 rounded-lg bg-blue-primary/10 text-blue-primary">
+                  <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
                 {t("result.title")}
               </CardTitle>
             </CardHeader>
@@ -425,14 +444,17 @@ export default function ImageGenClient() {
         </div>
 
         {/* Tips Section */}
-        <Card className="mt-4 sm:mt-6">
-          <CardHeader>
-            <CardTitle className="text-base sm:text-lg">
+        <Card className={`${isMobile ? 'mt-4' : 'mt-4 sm:mt-6'} glass-card border-blue-60/20 bg-card/80 backdrop-blur-sm shadow-lg`}>
+          <CardHeader className=" border-b border-blue-60/10">
+            <CardTitle className={`${isMobile ? 'text-base' : 'text-base sm:text-lg'} text-card-foreground flex items-center gap-2`}>
+              <div className="p-2 rounded-lg bg-blue-primary/10 text-blue-primary">
+                <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5" />
+              </div>
               {t("tips.title")}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
+          <CardContent className={`${isMobile ? 'p-4' : ''}`}>
+            <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'lg:grid-cols-2 gap-4 sm:gap-6'} text-xs sm:text-sm text-muted-foreground`}>
               <div>
                 <h4 className="font-medium text-foreground mb-2 sm:mb-3 text-sm sm:text-base">
                   {t("tips.goodPrompts.title")}
@@ -565,7 +587,7 @@ export default function ImageGenClient() {
                     handleGenerate();
                   }}
                   disabled={!prompt.trim() || isGenerating}
-                  className="w-full sm:w-auto h-10 sm:h-9 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-sm touch-manipulation"
+                  className={`w-full sm:w-auto ${isMobile ? 'h-12' : 'h-10 sm:h-9'} bg-gradient-to-r from-blue-primary to-blue-active hover:from-blue-active hover:to-blue-primary shadow-lg hover:shadow-xl transition-all duration-300 text-sm touch-manipulation font-semibold`}
                 >
                   {isGenerating ? (
                     <>

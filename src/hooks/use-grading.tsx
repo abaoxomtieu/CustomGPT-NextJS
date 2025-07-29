@@ -84,6 +84,8 @@ export const useGrading = ({
 
         let hasError = false;
         let chunkCount = 0;
+        let buffer = ""; // Buffer to accumulate partial JSON
+
         while (true) {
           const { done, value } = await reader.read();
 
@@ -91,56 +93,53 @@ export const useGrading = ({
 
           chunkCount++;
           const chunkText = decoder.decode(value, { stream: true });
-          console.log(`=== CHUNK ${chunkCount} ===`);
-          console.log("Raw chunk received:", chunkText);
-          console.log("Chunk length:", chunkText.length);
-          console.log("Chunk trimmed:", chunkText.trim());
 
-          // Skip empty chunks
-          if (!chunkText.trim()) {
-            console.log("Skipping empty chunk");
+          // Add to buffer
+          buffer += chunkText;
+
+          // Skip if buffer is empty
+          if (!buffer.trim()) {
             continue;
           }
 
-          // Split by double newlines in case multiple JSON objects are in one chunk
-          const jsonChunks = chunkText.split('\n\n').filter(chunk => chunk.trim());
-          console.log(`Found ${jsonChunks.length} JSON objects in this chunk`);
+          // Split by double newlines to find complete JSON objects
+          const parts = buffer.split("\n\n");
+
+          // Keep the last part in buffer (might be incomplete)
+          buffer = parts.pop() || "";
+
+          // Process complete JSON objects
+          const jsonChunks = parts.filter((chunk) => chunk.trim());
 
           for (let i = 0; i < jsonChunks.length; i++) {
             const jsonChunk = jsonChunks[i].trim();
             if (!jsonChunk) continue;
 
-            console.log(`Processing JSON object ${i + 1}/${jsonChunks.length}:`, jsonChunk);
-
             try {
               const chunk: GradeResponse = JSON.parse(jsonChunk);
-              console.log("Parsed chunk:", chunk);
 
               // Process only folder_structure and final chunks
               if (chunk.type === "folder_structure") {
-                console.log("✅ Processing folder_structure chunk:", chunk.output);
                 setGradeFolderStructureResult(chunk.output as string);
-                console.log("✅ Folder structure state updated");
               } else if (chunk.type === "criteria_result") {
-                console.log(`✅ Processing criteria ${chunk.criteria_index}/${chunk.total_criteria}:`, chunk.result);
-                
                 // Update partial results to show progress
                 if (chunk.partial_results) {
                   setGradeResult(chunk.partial_results);
-                  toast.loading(`Processing criteria ${chunk.criteria_index}/${chunk.total_criteria}...`, {
-                    id: "grading-progress",
-                  });
+                  toast.loading(
+                    `Processing criteria ${chunk.criteria_index}/${chunk.total_criteria}...`,
+                    {
+                      id: "grading-progress",
+                    }
+                  );
                 }
               } else if (chunk.type === "final") {
-                console.log("✅ Processing final chunk:", chunk.output);
                 setGradeResult(chunk.output as GradingResult[]);
-                
+
                 // Also set folder structure result if present in final response
                 if (chunk.grade_folder_structure) {
-                  console.log("✅ Setting folder structure from final response:", chunk.grade_folder_structure);
                   setGradeFolderStructureResult(chunk.grade_folder_structure);
                 }
-                
+
                 toast.dismiss("grading-progress");
                 // Don't break here, continue processing remaining chunks
               } else if (chunk.type === "error") {
@@ -160,21 +159,51 @@ export const useGrading = ({
           }
 
           // Check if we received final chunk to break the loop
-          if (jsonChunks.some(chunk => {
-            try {
-              const parsed = JSON.parse(chunk.trim());
-              return parsed.type === "final";
-            } catch {
-              return false;
-            }
-          })) {
+          if (
+            jsonChunks.some((chunk) => {
+              try {
+                const parsed = JSON.parse(chunk.trim());
+                return parsed.type === "final";
+              } catch {
+                return false;
+              }
+            })
+          ) {
             console.log("Final chunk detected, breaking loop");
             break;
           }
         }
 
-        console.log(`Total chunks processed: ${chunkCount}`);
+        // Process any remaining content in buffer
+        if (buffer.trim()) {
+          try {
+            const chunk: GradeResponse = JSON.parse(buffer.trim());
 
+            // Process the remaining chunk
+            if (chunk.type === "folder_structure") {
+              setGradeFolderStructureResult(chunk.output as string);
+            } else if (chunk.type === "criteria_result") {
+              console.log(
+                `✅ Processing remaining criteria ${chunk.criteria_index}/${chunk.total_criteria}:`,
+                chunk.result
+              );
+              if (chunk.partial_results) {
+                setGradeResult(chunk.partial_results);
+              }
+            } else if (chunk.type === "final") {
+              setGradeResult(chunk.output as GradingResult[]);
+              if (chunk.grade_folder_structure) {
+                setGradeFolderStructureResult(chunk.grade_folder_structure);
+              }
+            } else if (chunk.type === "error") {
+              hasError = true;
+              toast.error(chunk.output as string);
+            }
+          } catch (bufferError) {
+            console.error("❌ Error processing remaining buffer:", bufferError);
+            console.error("❌ Problematic buffer content:", buffer.trim());
+          }
+        }
         // Show final status based on error state
         if (hasError) {
           toast.warning("Grading completed with some errors");

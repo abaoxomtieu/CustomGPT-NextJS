@@ -67,17 +67,17 @@ const styles = {
 
   tabList: "w-2/3 flex justify-center",
   tabTrigger:
-    "w-fit data-[state=active]:bg-foreground data-[state=active]:text-background data-[state=active]:shadow-sm",
+    "w-fit data-[state=active]:bg-blue-primary data-[state=active]:text-white data-[state=active]:shadow-sm",
   emptyState: "text-center py-6 md:py-10",
   emptyStateCard:
-    "bg-card rounded-xl p-4 md:p-8 shadow-sm border border-border",
+    "bg-card rounded-xl p-4 md:p-8 shadow-sm border border-blue-60/20",
   featureCard:
-    "bg-secondary/50 p-4 md:p-6 rounded-xl border border-border transform hover:scale-[1.02] transition-transform duration-200",
-  featureIcon: "bg-primary/10 p-2 rounded-lg mr-3",
+    "bg-secondary/50 p-4 md:p-6 rounded-xl border border-blue-60/20 hover:border-blue-primary/50 transform hover:scale-[1.02] transition-transform duration-200",
+  featureIcon: "bg-blue-primary/10 p-2 rounded-lg mr-3",
   featureList:
     "text-sm md:text-base text-muted-foreground space-y-2 md:space-y-3",
   featureItem: "flex items-center",
-  featureDot: "w-2 h-2 bg-primary rounded-full mr-2",
+  featureDot: "w-2 h-2 bg-blue-primary rounded-full mr-2",
 };
 
 // Empty State Component
@@ -227,7 +227,7 @@ const UnauthorizedState = ({ notFounded }: { notFounded: boolean }) => {
         animate={{ opacity: 1, y: 0 }}
         className="text-center max-w-md mx-auto p-6"
       >
-        <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+        <div className="bg-card rounded-xl p-6 shadow-sm border border-blue-60/20">
           <div className="flex flex-col items-center mb-6">
             <motion.div
               whileHover={{ scale: 1.1 }}
@@ -520,7 +520,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
             <Popover>
               <PopoverTrigger asChild>
                 <Badge
-                  className={`hidden md:flex ml-2 text-xs md:text-sm ${
+                  className={`hidden md:flex ml-2 text-xs md:text-sm mr-2 ${
                     geminiApiKey
                       ? "bg-green-500/10 text-green-500"
                       : "bg-yellow-500/10 text-yellow-500"
@@ -777,7 +777,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => setIsApiDocsOpen(true)}
-                      className="h-8 px-2 bg-foreground text-background"
+                      className="h-8 px-2 bg-blue-primary text-white"
                     >
                       <Code2 className="w-4 h-4" />
                       <span className="ml-1 hidden sm:inline">API</span>
@@ -842,7 +842,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
       </div>
 
       <Dialog open={clearModalVisible} onOpenChange={setClearModalVisible}>
-        <DialogContent className="bg-card border-border">
+        <DialogContent className="bg-card border-blue-60/30">
           <DialogHeader>
             <DialogTitle className="text-card-foreground text-base md:text-lg">
               {t("clearModal.title")}
@@ -862,7 +862,7 @@ const EditorChatbotClient: React.FC<UpdateChatbotClientProps> = ({
             <Button
               variant="outline"
               onClick={() => setClearModalVisible(false)}
-              className="border-border text-sm"
+              className="border-blue-60/30 text-sm"
             >
               {t("clearModal.buttons.cancel")}
             </Button>

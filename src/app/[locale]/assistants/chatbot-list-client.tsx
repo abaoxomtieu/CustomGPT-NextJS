@@ -116,7 +116,7 @@ const ChatbotListClient: React.FC = () => {
       .map((_, index) => (
         <Card
           key={index}
-          className="h-full transform hover:scale-105 transition-all duration-300 bg-card/50 backdrop-blur-sm border-primary/10"
+          className="h-full transform hover:scale-105 transition-all duration-300 bg-card/50 backdrop-blur-sm border-blue-60/20"
         >
           <div className="flex items-start gap-4 p-4">
             <div className="flex-shrink-0">
@@ -137,10 +137,10 @@ const ChatbotListClient: React.FC = () => {
 
   const renderEmptyState = () => {
     return (
-      <div className="text-center py-8 md:py-16 bg-gradient-to-b from-card/50 to-card/30 backdrop-blur-sm rounded-xl shadow-lg border border-primary/10">
+      <div className="text-center py-8 md:py-16 bg-gradient-to-b from-card/50 to-card/30 backdrop-blur-sm rounded-xl shadow-lg border border-blue-60/20">
         <div className="flex flex-col items-center justify-center">
-          <div className="p-4 rounded-full bg-primary/10 mb-4">
-            <Bot className="text-4xl md:text-6xl text-primary" />
+          <div className="p-4 rounded-full bg-blue-primary/10 mb-4">
+            <Bot className="text-4xl md:text-6xl text-blue-primary" />
           </div>
           <h3 className="text-lg md:text-xl font-semibold text-card-foreground mb-2">
             {t("noChatbots")}
@@ -152,7 +152,7 @@ const ChatbotListClient: React.FC = () => {
         <Button
           variant="outline"
           onClick={handleCreateChatbot}
-          className="bg-primary text-primary-foreground border-none hover:bg-primary/90 hover:scale-105 transition-all duration-300 flex justify-center w-4/5 md:w-2/3 mx-auto shadow-lg"
+          className="bg-blue-primary text-white border-none hover:bg-blue-active hover:scale-105 transition-all duration-300 flex justify-center w-4/5 md:w-2/3 mx-auto shadow-lg"
         >
           <Plus className="mr-2 size-4 md:size-5" />
           {t("createNewChatbot")}
@@ -169,7 +169,7 @@ const ChatbotListClient: React.FC = () => {
       <CardHeader className="p-3 md:p-4">
         <CardTitle>
           <div className="text-base md:text-lg font-semibold flex items-center justify-between text-card-foreground">
-            <span className="line-clamp-1 group-hover:text-primary transition-colors duration-200">
+            <span className="line-clamp-1 group-hover:text-blue-primary transition-colors duration-200">
               {bot.name}
             </span>
             <div className="flex items-center gap-1 md:gap-2">
@@ -231,7 +231,7 @@ const ChatbotListClient: React.FC = () => {
         <Button
           variant="ghost"
           onClick={() => handleChatbotClick(bot)}
-          className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border-none text-xs md:text-sm h-8 md:h-9 transition-all duration-200"
+          className="w-full bg-blue-primary/10 text-blue-primary hover:bg-blue-primary hover:text-white border-none text-xs md:text-sm h-8 md:h-9 transition-all duration-200"
         >
           <MessageCircle className="mr-2 size-3.5 md:size-4" />
           {t("chatWithBot")}
@@ -247,25 +247,25 @@ const ChatbotListClient: React.FC = () => {
         <Input
           placeholder={t("searchPlaceholder")}
           onChange={(e) => handleSearch(e.target.value)}
-          className="w-full sm:w-72 md:w-96 bg-card/50 border-primary/10 text-sm md:text-base focus:border-primary/50 transition-colors duration-200"
+          className="w-full sm:w-72 md:w-96 bg-card/50 border-blue-60/30 text-sm md:text-base focus:border-blue-primary/50 transition-colors duration-200"
         />
       </div>
       {/* Chatbot List */}
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}
-        className="bg-background/80 backdrop-blur-sm rounded-xl shadow-lg border border-primary/10"
+        className="bg-background/80 backdrop-blur-sm rounded-xl shadow-lg border border-blue-60/20"
       >
-        <TabsList className="w-full bg-background/80 border-b border-primary/10">
+        <TabsList className="w-full bg-background/80 border-b border-blue-60/20">
           <TabsTrigger
             value="my-chatbots"
-            className="flex-1 text-sm md:text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
+            className="flex-1 text-sm md:text-base data-[state=active]:bg-blue-primary data-[state=active]:text-white transition-all duration-200"
           >
             {t("myChatbots")}
           </TabsTrigger>
           <TabsTrigger
             value="public-chatbots"
-            className="flex-1 text-sm md:text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200"
+            className="flex-1 text-sm md:text-base data-[state=active]:bg-blue-primary data-[state=active]:text-white transition-all duration-200"
           >
             {t("publicChatbots")}
           </TabsTrigger>
@@ -289,9 +289,9 @@ const ChatbotListClient: React.FC = () => {
               filteredPublicChatbots.map((bot) => renderChatbotCard(bot, true))
             ) : (
               <div className="col-span-full">
-                <div className="text-center py-8 md:py-16 rounded-xl shadow-lg border border-primary/10 bg-gradient-to-b from-card/50 to-card/30 backdrop-blur-sm">
-                  <div className="p-4 rounded-full bg-primary/10 inline-block mb-4">
-                    <Globe className="text-4xl md:text-6xl text-primary" />
+                <div className="text-center py-8 md:py-16 rounded-xl shadow-lg border border-blue-60/20 bg-gradient-to-b from-card/50 to-card/30 backdrop-blur-sm">
+                  <div className="p-4 rounded-full bg-blue-primary/10 inline-block mb-4">
+                    <Globe className="text-4xl md:text-6xl text-blue-primary" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-card-foreground mb-2">
                     {t("noPublicChatbots")}

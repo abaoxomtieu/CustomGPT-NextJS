@@ -71,7 +71,7 @@ export default function GradedAssignmentDetail() {
         <Button
           variant="ghost"
           className="mb-6"
-          onClick={() => router.push("/code-grader")}
+          onClick={() => router.push("/code-grader/history")}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           {t("backToHistory")}

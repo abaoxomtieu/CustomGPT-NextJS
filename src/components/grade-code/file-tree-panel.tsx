@@ -57,11 +57,14 @@ export default function FileTreePanel({
           )}
         </CardHeader>
         <CardContent className="p-2 flex-1 overflow-y-auto">
-          {fileTreeData.length > 0 ? (
+          {(() => {
+            return null;
+          })()}
+          {fileTreeData && fileTreeData.length > 0 ? (
             <FileTree nodes={fileTreeData} onFileSelection={onFileSelection} />
           ) : (
-            <div className="h-full flex items-center justify-center text-muted-foreground">
-              <p className="text-xs text-center px-4">
+            <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
+              <p className="text-xs text-center px-4 mb-4">
                 {t("no_files_to_display")}
                 <br />
                 <span className="hidden sm:inline">
@@ -69,6 +72,13 @@ export default function FileTreePanel({
                 </span>
                 <span className="sm:hidden">{t("clone_repo_first")}</span>
               </p>
+              {/* Debug info */}
+              <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded max-w-full overflow-auto">
+                <div>Data type: {typeof fileTreeData}</div>
+                <div>Is Array: {Array.isArray(fileTreeData) ? 'Yes' : 'No'}</div>
+                <div>Length: {fileTreeData?.length || 'undefined'}</div>
+                <div>Raw data: {JSON.stringify(fileTreeData).substring(0, 200)}...</div>
+              </div>
             </div>
           )}
         </CardContent>

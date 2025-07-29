@@ -14,6 +14,8 @@ import {
   KeyRound,
   Menu,
   Brain,
+  Settings,
+  ChevronDown,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -61,6 +63,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useTranslations } from "next-intl";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -77,7 +86,7 @@ const styles = `
     max-height: 100vh;
   }
   .chat-container {
-    background: linear-gradient(to bottom, var(--background), var(--background)/95);
+    background: linear-gradient(to bottom, var(--background), var(--blue-40)/10, var(--background)/95);
     height: 100vh;
     max-height: 100vh;
     overflow: hidden;
@@ -86,14 +95,14 @@ const styles = `
   .glass-header {
     background: rgba(var(--card), 0.8);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(var(--border), 0.1);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--blue-60);
+    box-shadow: 0 1px 2px rgba(63, 81, 181, 0.1);
   }
   .glass-sidebar {
     background: rgba(var(--card), 0.8);
     backdrop-filter: blur(10px);
-    border-right: 1px solid rgba(var(--border), 0.1);
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    border-right: 1px solid var(--blue-60);
+    box-shadow: 2px 0 4px rgba(63, 81, 181, 0.1);
   }
   .message-bubble {
     transition: all 0.2s ease;
@@ -189,6 +198,8 @@ export default function RagAgentClient({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isApiDocsOpen, setIsApiDocsOpen] = useState(false);
   const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false);
+  const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
+  const isMobile = useIsMobile();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [reasoning, setReasoning] = useState(false);
   const [allowFirstRequest, setAllowFirstRequest] = useState(
@@ -232,7 +243,6 @@ export default function RagAgentClient({
   });
 
   const geminiApiKey = getCookie("gemini_api_key");
-  const isMobile = useIsMobile();
   const [zoomAnim, setZoomAnim] = useState(false);
   const hasMessages = messages.length > 0;
 
@@ -681,7 +691,7 @@ export default function RagAgentClient({
       {/* Mobile Conversation Toggle Button */}
       <button
         onClick={() => setIsMobileConversationOpen(!isMobileConversationOpen)}
-        className="md:hidden fixed bottom-20 right-4 z-40 bg-primary text-primary-foreground p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors duration-200"
+        className="md:hidden fixed bottom-20 right-4 z-40 bg-blue-primary text-white p-3 rounded-full shadow-lg hover:bg-blue-active transition-colors duration-200"
       >
         <Menu className="w-6 h-6" />
       </button>
@@ -696,208 +706,507 @@ export default function RagAgentClient({
 
       {/* Main Content */}
       <div className="flex flex-col w-full h-full overflow-hidden">
-        {/* Header */}
-        <div className="flex-none glass-header py-2 md:py-4">
-          <div className="flex justify-between items-center px-3 md:px-6">
-            <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => router.push("/assistants")}
-                className="text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-colors duration-200 flex-shrink-0"
-              >
-                <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
-              </Button>
-              <Avatar className="bg-primary/10 w-7 h-7 md:w-10 md:h-10 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-200 flex-shrink-0">
-                <AvatarFallback className="text-primary">
-                  <Bot className="w-3 h-3 md:w-5 md:h-5" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="fade-in min-w-0 flex-1">
-                {loadingChatbot ? (
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="animate-spin w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
-                    <span className="text-sm md:text-base text-muted-foreground">
-                      {t("loading")}
-                    </span>
+        {/* Content Area with Right Sidebar */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Main Chat Area */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {hasMessages ? (
+              /* Chat Messages - Normal Layout */
+              <>
+                <div
+                  className="flex-1 overflow-y-auto smooth-scroll"
+                  ref={chatContainerRef}
+                  onScroll={handleScroll}
+                >
+                  <div className="pb-6">
+                    <ChatMessages
+                      messages={messages}
+                      streamingMessage={streamingMessage}
+                      selectedDocuments={selectedDocuments}
+                      loadingChatbot={loadingChatbot}
+                      chatbotDetails={chatbotDetails}
+                      messagesEndRef={
+                        messagesEndRef as React.RefObject<HTMLDivElement>
+                      }
+                      onRecommendationClick={(recommendation: string) =>
+                        setInput(recommendation)
+                      }
+                      thinkingMessage={reasoning ? thinkingText : ""}
+                      renderChatbotDetails={true}
+                      loading={loading}
+                    />
                   </div>
-                ) : (
-                  <>
-                    <h1 className="text-sm md:text-xl font-semibold text-card-foreground truncate">
+                </div>
+
+                {/* Chat Input - Fixed at bottom */}
+                <div className="flex-none border-t border-border bg-background/95 backdrop-blur-sm">
+                  <div className="px-3 md:px-6">
+                    <ChatInput
+                      input={input}
+                      loading={loading}
+                      botId={botId}
+                      onInputChange={setInput}
+                      onSend={handleSend}
+                      onKeyPress={handleKeyPress}
+                      inputRef={
+                        inputRef as React.RefObject<HTMLTextAreaElement>
+                      }
+                      selectedFiles={selectedFiles}
+                      onSelectedFilesChange={setSelectedFiles}
+                      reasoning={reasoning}
+                      onReasoningChange={setReasoning}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* Empty State - Centered Input */
+              <div className="h-full flex flex-col items-center justify-center px-3 md:px-6 chat-empty-state overflow-hidden">
+                <div className="w-full max-w-4xl">
+                  {/* Welcome Message */}
+                  <div className="text-center mb-8">
+                    <div className="flex justify-center mb-4">
+                      <Avatar className="bg-primary/10 w-16 h-16 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-300">
+                        <AvatarFallback className="text-primary">
+                          <Bot className="w-8 h-8" />
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <h1 className="text-2xl md:text-3xl font-bold text-card-foreground mb-2">
                       {chatbotDetails?.name || t("assistantDefaultName")}
                     </h1>
-                    <p className="text-xs md:text-sm text-muted-foreground line-clamp-1 hidden md:block">
-                      {chatbotDetails?.description}
+                    <p className="text-muted-foreground text-sm md:text-base">
+                      {chatbotDetails?.description || t("startConversation")}
                     </p>
-                  </>
-                )}
+                  </div>
+
+                  {/* Centered Chat Input */}
+                  <div className="w-full input-transition">
+                    <ChatInput
+                      input={input}
+                      loading={loading}
+                      botId={botId}
+                      onInputChange={setInput}
+                      onSend={handleSend}
+                      onKeyPress={handleKeyPress}
+                      inputRef={
+                        inputRef as React.RefObject<HTMLTextAreaElement>
+                      }
+                      selectedFiles={selectedFiles}
+                      onSelectedFilesChange={setSelectedFiles}
+                      reasoning={reasoning}
+                      onReasoningChange={setReasoning}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Sidebar with Features - Hidden on Mobile */}
+          {!isMobile && (
+            <div className="w-80 glass-sidebar flex flex-col overflow-hidden">
+            {/* Sidebar Header */}
+            <div className="flex-none p-4 border-b border-blue-60/20">
+              <div className="flex items-center gap-3 mb-4">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => router.push("/assistants")}
+                  className="text-muted-foreground hover:text-foreground hover:bg-blue-primary/10 transition-colors duration-200"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+                <Avatar className="bg-blue-primary/10 w-10 h-10 ring-2 ring-blue-primary/20">
+                  <AvatarFallback className="text-blue-primary">
+                    <Bot className="w-5 h-5" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  {loadingChatbot ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="animate-spin w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        Loading...
+                      </span>
+                    </div>
+                  ) : (
+                    <>
+                      <h2 className="text-lg font-semibold text-card-foreground truncate">
+                        {chatbotDetails?.name || t("assistantDefaultName")}
+                      </h2>
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        {chatbotDetails?.description}
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
-              {/* Login status - smaller on mobile */}
-              {!isLogin && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Badge
-                        variant="secondary"
-                        className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs md:text-xs transition-colors duration-200 px-1 py-0.5 md:px-2 md:py-1"
-                        onClick={() => router.push("/login")}
-                      >
-                        {t("notLoggedIn")}
-                      </Badge>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-popover text-popover-foreground">
-                      {t("loginToUse")}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
 
-              {/* API Key badge - hidden on mobile */}
-              <Popover>
-                <PopoverTrigger asChild>
+            {/* Sidebar Content */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+              {/* AI Model Selection */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-card-foreground">
+                  AI Model
+                </label>
+                <Select value={modelName} onValueChange={setModelName}>
+                  <SelectTrigger className="w-full bg-background border-blue-60/30 hover:border-blue-primary/50 transition-colors duration-200">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover text-popover-foreground border-blue-60/30 shadow-lg">
+                    {modelOptions.map((opt) => (
+                      <SelectItem value={opt.value} key={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* API Key Status */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-card-foreground">
+                  API Key Status
+                </label>
+                <div
+                  onClick={() => router.push("/profile")}
+                  className="flex items-center gap-3 p-3 rounded-lg border border-blue-60/20 hover:border-blue-primary/50 hover:bg-blue-primary/5 transition-all duration-200 cursor-pointer"
+                >
+                  <KeyRound className="w-5 h-5 text-blue-primary" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-card-foreground">
+                      {geminiApiKey ? "API Key Set" : "API Key Not Set"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {geminiApiKey ? "Ready to use" : "Click to configure"}
+                    </p>
+                  </div>
                   <Badge
-                    className={`hidden md:flex ml-2 text-xs transition-colors duration-200 ${
+                    className={`text-xs ${
                       geminiApiKey
-                        ? "bg-green-500/10 text-green-500 hover:bg-green-500/20"
-                        : "bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20"
-                    } cursor-pointer`}
+                        ? "bg-green-500/10 text-green-500"
+                        : "bg-yellow-500/10 text-yellow-500"
+                    }`}
                   >
-                    <KeyRound className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-                    {geminiApiKey ? t("geminiKeySet") : t("geminiKeyNotSet")}
+                    {geminiApiKey ? "Active" : "Setup"}
                   </Badge>
-                </PopoverTrigger>
-                <PopoverContent className="bg-popover text-popover-foreground border-border shadow-lg">
-                  {geminiApiKey ? (
-                    t("geminiKeyTooltipSet")
-                  ) : (
-                    <span>
-                      {t("geminiKeyTooltipNotSet")}
-                      <br />
-                      <Button
-                        size="sm"
-                        variant="link"
-                        className="text-primary hover:text-primary/80 transition-colors duration-200"
-                        onClick={() => router.push("/profile")}
-                      >
-                        {t("setupNow")}
-                      </Button>
-                    </span>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-card-foreground">
+                  Features
+                </label>
+                <div className="space-y-2">
+                  {/* Document Management */}
+                  <Button
+                    variant="ghost"
+                    onClick={() => setIsDocumentDialogOpen(true)}
+                    className="w-full justify-start gap-3 h-auto p-3 hover:bg-blue-primary/10 border border-transparent hover:border-blue-60/20"
+                  >
+                    <FileText className="w-5 h-5 text-blue-primary" />
+                    <div className="text-left">
+                      <p className="text-sm font-medium">Manage Documents</p>
+                      <p className="text-xs text-muted-foreground">
+                        Upload and organize files
+                      </p>
+                    </div>
+                  </Button>
+
+                  {/* API Documentation */}
+                  <Button
+                    variant="ghost"
+                    onClick={() => setIsApiDocsOpen(true)}
+                    className="w-full justify-start gap-3 h-auto p-3 hover:bg-blue-primary/10 border border-transparent hover:border-blue-60/20"
+                  >
+                    <TerminalSquare className="w-5 h-5 text-blue-primary" />
+                    <div className="text-left">
+                      <p className="text-sm font-medium">API Documentation</p>
+                      <p className="text-xs text-muted-foreground">
+                        Integration guides
+                      </p>
+                    </div>
+                  </Button>
+
+                  {/* Edit Chatbot */}
+                  {chatbotDetails && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => setIsEditDialogOpen(true)}
+                      className="w-full justify-start gap-3 h-auto p-3 hover:bg-blue-primary/10 border border-transparent hover:border-blue-60/20"
+                    >
+                      <Edit className="w-5 h-5 text-blue-primary" />
+                      <div className="text-left">
+                        <p className="text-sm font-medium">Edit Chatbot</p>
+                        <p className="text-xs text-muted-foreground">
+                          Modify settings
+                        </p>
+                      </div>
+                    </Button>
                   )}
-                </PopoverContent>
-              </Popover>
 
-              {/* Dropdown menu */}
-              {headerDropdown}
+                  {/* Clear Messages */}
+                  <Button
+                    variant="ghost"
+                    onClick={clearMessages}
+                    className="w-full justify-start gap-3 h-auto p-3 hover:bg-red-500/10 border border-transparent hover:border-red-500/20"
+                  >
+                    <Trash2 className="w-5 h-5 text-red-500" />
+                    <div className="text-left">
+                      <p className="text-sm font-medium">Clear Messages</p>
+                      <p className="text-xs text-muted-foreground">
+                        Reset conversation
+                      </p>
+                    </div>
+                  </Button>
+                </div>
+              </div>
 
-              {/* Model Select - hidden on mobile */}
-              <Select value={modelName} onValueChange={setModelName}>
-                <SelectTrigger className="hidden md:flex w-32 md:w-44 bg-background border-border hover:border-primary/50 transition-colors duration-200">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-popover text-popover-foreground border-border shadow-lg">
-                  {modelOptions.map((opt) => (
-                    <SelectItem value={opt.value} key={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {/* Login Status */}
+              {!isLogin && (
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-card-foreground">
+                    Account
+                  </label>
+                  <Button
+                    variant="outline"
+                    onClick={() => router.push("/login")}
+                    className="w-full justify-start gap-3 h-auto p-3 border-blue-60/30 hover:border-blue-primary/50 hover:bg-blue-primary/5"
+                  >
+                    <Brain className="w-5 h-5 text-blue-primary" />
+                    <div className="text-left">
+                      <p className="text-sm font-medium">Login Required</p>
+                      <p className="text-xs text-muted-foreground">
+                        Sign in to continue
+                      </p>
+                    </div>
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-
-        {/* Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {hasMessages ? (
-            /* Chat Messages - Normal Layout */
-            <>
-              <div
-                className="flex-1 overflow-y-auto smooth-scroll"
-                ref={chatContainerRef}
-                onScroll={handleScroll}
-              >
-                <div className="pb-6">
-                  <ChatMessages
-                    messages={messages}
-                    streamingMessage={streamingMessage}
-                    selectedDocuments={selectedDocuments}
-                    loadingChatbot={loadingChatbot}
-                    chatbotDetails={chatbotDetails}
-                    messagesEndRef={
-                      messagesEndRef as React.RefObject<HTMLDivElement>
-                    }
-                    onRecommendationClick={(recommendation: string) =>
-                      setInput(recommendation)
-                    }
-                    thinkingMessage={reasoning ? thinkingText : ""}
-                    renderChatbotDetails={true}
-                    loading={loading}
-                  />
-                </div>
-              </div>
-
-              {/* Chat Input - Fixed at bottom */}
-              <div className="flex-none border-t border-border bg-background/95 backdrop-blur-sm">
-                <div className="px-3 md:px-6">
-                  <ChatInput
-                    input={input}
-                    loading={loading}
-                    botId={botId}
-                    onInputChange={setInput}
-                    onSend={handleSend}
-                    onKeyPress={handleKeyPress}
-                    inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
-                    selectedFiles={selectedFiles}
-                    onSelectedFilesChange={setSelectedFiles}
-                    reasoning={reasoning}
-                    onReasoningChange={setReasoning}
-                  />
-                </div>
-              </div>
-            </>
-          ) : (
-            /* Empty State - Centered Input */
-            <div className="h-full flex flex-col items-center justify-center px-3 md:px-6 chat-empty-state overflow-hidden">
-              <div className="w-full max-w-4xl">
-                {/* Welcome Message */}
-                <div className="text-center mb-8">
-                  <div className="flex justify-center mb-4">
-                    <Avatar className="bg-primary/10 w-16 h-16 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-300">
-                      <AvatarFallback className="text-primary">
-                        <Bot className="w-8 h-8" />
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-card-foreground mb-2">
-                    {chatbotDetails?.name || t("assistantDefaultName")}
-                  </h1>
-                  <p className="text-muted-foreground text-sm md:text-base">
-                    {chatbotDetails?.description || t("startConversation")}
-                  </p>
-                </div>
-
-                {/* Centered Chat Input */}
-                <div className="w-full input-transition">
-                  <ChatInput
-                    input={input}
-                    loading={loading}
-                    botId={botId}
-                    onInputChange={setInput}
-                    onSend={handleSend}
-                    onKeyPress={handleKeyPress}
-                    inputRef={inputRef as React.RefObject<HTMLTextAreaElement>}
-                    selectedFiles={selectedFiles}
-                    onSelectedFilesChange={setSelectedFiles}
-                    reasoning={reasoning}
-                    onReasoningChange={setReasoning}
-                  />
-                </div>
-              </div>
-            </div>
           )}
         </div>
+
+        {/* Mobile Header with Settings */}
+        {isMobile && (
+          <div className="flex-none glass-header border-t border-blue-60/20 p-3">
+            <div className="flex items-center justify-between">
+              {/* Left side - Bot info */}
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => router.push("/assistants")}
+                  className="text-muted-foreground hover:text-foreground hover:bg-blue-primary/10 transition-colors duration-200 flex-shrink-0"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+                <Avatar className="bg-blue-primary/10 w-8 h-8 ring-2 ring-blue-primary/20 flex-shrink-0">
+                  <AvatarFallback className="text-blue-primary">
+                    <Bot className="w-4 h-4" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-sm font-semibold text-card-foreground truncate">
+                    {chatbotDetails?.name || t("assistantDefaultName")}
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      className={`text-xs ${
+                        geminiApiKey
+                          ? "bg-green-500/10 text-green-500"
+                          : "bg-yellow-500/10 text-yellow-500"
+                      }`}
+                    >
+                      {geminiApiKey ? "Active" : "Setup"}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground truncate">
+                      {modelOptions.find(opt => opt.value === modelName)?.label}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right side - Settings */}
+              <Sheet open={isMobileSettingsOpen} onOpenChange={setIsMobileSettingsOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="flex-shrink-0">
+                    <Settings className="w-5 h-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-80">
+                  <SheetHeader>
+                    <SheetTitle>Settings & Features</SheetTitle>
+                  </SheetHeader>
+                  <div className="flex-1 overflow-y-auto py-6 space-y-6">
+                    {/* AI Model Selection */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium text-card-foreground">
+                        AI Model
+                      </label>
+                      <Select value={modelName} onValueChange={setModelName}>
+                        <SelectTrigger className="w-full bg-background border-blue-60/30 hover:border-blue-primary/50 transition-colors duration-200">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-popover text-popover-foreground border-blue-60/30 shadow-lg">
+                          {modelOptions.map((opt) => (
+                            <SelectItem value={opt.value} key={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* API Key Status */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium text-card-foreground">
+                        API Key Status
+                      </label>
+                      <div
+                        onClick={() => {
+                          router.push("/profile");
+                          setIsMobileSettingsOpen(false);
+                        }}
+                        className="flex items-center gap-3 p-3 rounded-lg border border-blue-60/20 hover:border-blue-primary/50 hover:bg-blue-primary/5 transition-all duration-200 cursor-pointer"
+                      >
+                        <KeyRound className="w-5 h-5 text-blue-primary" />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-card-foreground">
+                            {geminiApiKey ? "API Key Set" : "API Key Not Set"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {geminiApiKey ? "Ready to use" : "Click to configure"}
+                          </p>
+                        </div>
+                        <Badge
+                          className={`text-xs ${
+                            geminiApiKey
+                              ? "bg-green-500/10 text-green-500"
+                              : "bg-yellow-500/10 text-yellow-500"
+                          }`}
+                        >
+                          {geminiApiKey ? "Active" : "Setup"}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* Features */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium text-card-foreground">
+                        Features
+                      </label>
+                      <div className="space-y-2">
+                        {/* Document Management */}
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            setIsDocumentDialogOpen(true);
+                            setIsMobileSettingsOpen(false);
+                          }}
+                          className="w-full justify-start gap-3 h-auto p-3 hover:bg-blue-primary/10 border border-transparent hover:border-blue-60/20"
+                        >
+                          <FileText className="w-5 h-5 text-blue-primary" />
+                          <div className="text-left">
+                            <p className="text-sm font-medium">Manage Documents</p>
+                            <p className="text-xs text-muted-foreground">
+                              Upload and organize files
+                            </p>
+                          </div>
+                        </Button>
+
+                        {/* API Documentation */}
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            setIsApiDocsOpen(true);
+                            setIsMobileSettingsOpen(false);
+                          }}
+                          className="w-full justify-start gap-3 h-auto p-3 hover:bg-blue-primary/10 border border-transparent hover:border-blue-60/20"
+                        >
+                          <TerminalSquare className="w-5 h-5 text-blue-primary" />
+                          <div className="text-left">
+                            <p className="text-sm font-medium">API Documentation</p>
+                            <p className="text-xs text-muted-foreground">
+                              Integration guides
+                            </p>
+                          </div>
+                        </Button>
+
+                        {/* Edit Chatbot */}
+                        {chatbotDetails && (
+                          <Button
+                            variant="ghost"
+                            onClick={() => {
+                              setIsEditDialogOpen(true);
+                              setIsMobileSettingsOpen(false);
+                            }}
+                            className="w-full justify-start gap-3 h-auto p-3 hover:bg-blue-primary/10 border border-transparent hover:border-blue-60/20"
+                          >
+                            <Edit className="w-5 h-5 text-blue-primary" />
+                            <div className="text-left">
+                              <p className="text-sm font-medium">Edit Chatbot</p>
+                              <p className="text-xs text-muted-foreground">
+                                Modify settings
+                              </p>
+                            </div>
+                          </Button>
+                        )}
+
+                        {/* Clear Messages */}
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            clearMessages();
+                            setIsMobileSettingsOpen(false);
+                          }}
+                          className="w-full justify-start gap-3 h-auto p-3 hover:bg-red-500/10 border border-transparent hover:border-red-500/20"
+                        >
+                          <Trash2 className="w-5 h-5 text-red-500" />
+                          <div className="text-left">
+                            <p className="text-sm font-medium">Clear Messages</p>
+                            <p className="text-xs text-muted-foreground">
+                              Reset conversation
+                            </p>
+                          </div>
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Login Status */}
+                    {!isLogin && (
+                      <div className="space-y-3">
+                        <label className="text-sm font-medium text-card-foreground">
+                          Account
+                        </label>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            router.push("/login");
+                            setIsMobileSettingsOpen(false);
+                          }}
+                          className="w-full justify-start gap-3 h-auto p-3 border-blue-60/30 hover:border-blue-primary/50 hover:bg-blue-primary/5"
+                        >
+                          <Brain className="w-5 h-5 text-blue-primary" />
+                          <div className="text-left">
+                            <p className="text-sm font-medium">Login Required</p>
+                            <p className="text-xs text-muted-foreground">
+                              Sign in to continue
+                            </p>
+                          </div>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Document Management Dialog */}
