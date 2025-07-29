@@ -445,7 +445,8 @@
       "description": "Mô tả",
       "fieldDescription": "Mô tả trường",
       "action": "Hành động",
-      "exampleTestCases": "Ví dụ Test Cases"
+      "exampleTestCases": "Ví dụ Test Cases",
+      "footer": "Tổng số {count} API đã thêm"
     },
     "placeholders": {
       "endpoint": "/api/...",

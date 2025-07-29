@@ -445,7 +445,8 @@
       "description": "Description",
       "fieldDescription": "Field Description",
       "action": "Action",
-      "exampleTestCases": "Example Test Cases"
+      "exampleTestCases": "Example Test Cases",
+      "footer": "Total {count} APIs added"
     },
     "placeholders": {
       "endpoint": "/api/...",

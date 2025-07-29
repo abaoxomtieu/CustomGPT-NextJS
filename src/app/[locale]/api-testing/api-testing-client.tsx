@@ -37,6 +37,9 @@ import {
   Eye,
   Play,
   FileText,
+  Code,
+  Zap,
+  CheckCircle,
 } from "lucide-react";
 import {
   apiTestingService,
@@ -433,23 +436,103 @@ export default function ApiTestingClient() {
   };
 
   return (
-    <div className="container mx-auto py-8 p-4">
-      <Card className="">
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-2xl font-bold">{t("title")}</CardTitle>
-            <Button
-              onClick={addRow}
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              {t("addApi")}
-            </Button>
+    <div className="min-h-screen bg-gradient-to-br from-background via-blue-primary/5 to-blue-60/10 p-4 sm:p-6 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-primary/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-60/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+      
+      <div className="container mx-auto max-w-7xl relative z-10 py-8 space-y-8">
+        {/* Hero Header Section */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-primary/8 via-blue-60/5 to-transparent border border-blue-60/20 mb-8 shadow-lg backdrop-blur-sm animate-fade-in">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-primary/5 via-transparent to-blue-active/5"></div>
+          <div className="relative p-6 md:p-8">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-blue-primary/10 to-blue-active/10 border border-blue-primary/20">
+                    <Code className="w-8 h-8 text-blue-primary" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-primary to-blue-active bg-clip-text text-transparent">
+                      API Testing
+                    </h1>
+                    <p className="text-muted-foreground text-sm md:text-base">
+                      Generate and execute comprehensive API test cases with AI assistance
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-primary/10 border border-blue-primary/20">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <span className="text-xs font-medium text-blue-primary">AI Generated</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-60/10 border border-blue-60/20">
+                    <Zap className="w-3 h-3 text-blue-60" />
+                    <span className="text-xs font-medium text-blue-60">Automated Testing</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-active/10 border border-blue-active/20">
+                    <CheckCircle className="w-3 h-3 text-blue-active" />
+                    <span className="text-xs font-medium text-blue-active">Quality Assurance</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="hidden md:flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-blue-primary/10 to-blue-active/10 border-2 border-dashed border-blue-primary/30">
+                <div className="relative">
+                  <div className="absolute inset-0 rounded-full bg-blue-primary/20 animate-ping"></div>
+                  <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-blue-primary to-blue-active flex items-center justify-center">
+                    <Code className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Card className="glass-card border-blue-60/20 bg-card/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in delay-100">
+        <CardHeader className="border-b border-blue-60/10">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-blue-primary/10 text-blue-primary">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold text-card-foreground">{t("title")}</CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Configure your APIs and generate comprehensive test cases
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                onClick={addRow}
+                className="flex items-center gap-2 bg-gradient-to-r from-blue-primary to-blue-active hover:from-blue-active hover:to-blue-primary shadow-md hover:shadow-lg transition-all duration-300"
+              >
+                <Plus className="w-4 h-4" />
+                {t("addApi")}
+              </Button>
+            </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
+        <CardContent className="p-6">
+          <style jsx>{`
+            .glass-card {
+              backdrop-filter: blur(12px);
+              -webkit-backdrop-filter: blur(12px);
+            }
+            .glass-card:hover {
+              transform: translateY(-2px);
+            }
+            @media (max-width: 768px) {
+              .glass-card:hover {
+                transform: none;
+              }
+            }
+          `}</style>
+          <div className="overflow-x-auto rounded-lg border border-blue-60/20 bg-card/50 backdrop-blur-sm">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -653,7 +736,8 @@ export default function ApiTestingClient() {
             </div>
           )}
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }
