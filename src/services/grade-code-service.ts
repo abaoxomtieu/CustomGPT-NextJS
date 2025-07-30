@@ -3,6 +3,48 @@ import { getCookie } from "@/helpers/Cookies";
 import axios, { AxiosError } from "axios";
 
 export const apiService = {
+  fetchFileTreeFromUpload: async (files: FileList, extensions: string[]) => {
+    try {
+      const formData = new FormData();
+      
+      // Add files to form data
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i], files[i].webkitRelativePath || files[i].name);
+      }
+      
+      // Add extensions
+      extensions.forEach(ext => {
+        formData.append('extensions', ext);
+      });
+
+      const response = await axios.post(
+        `${ApiDomain}/grade-code/get-file-tree-upload`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      return { data: response.data.file_tree, error: null };
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 413) {
+          return {
+            data: null,
+            error: "Files are too large (exceeds 2MB limit). Please select smaller files.",
+          };
+        }
+        return {
+          data: null,
+          error: err.response?.data?.detail || "Failed to process uploaded files",
+        };
+      }
+      return { data: null, error: "Failed to process uploaded files" };
+    }
+  },
+
   fetchFileTree: async (repoUrl: string, extensions: string[]) => {
     try {
       const response = await axios.post(
@@ -150,6 +192,29 @@ export const apiService = {
           error instanceof AxiosError
             ? error.response?.data?.detail
             : "Failed to grade overall",
+      };
+    }
+  },
+  
+  cleanupUpload: async () => {
+    try {
+      const response = await axios.post(
+        `${ApiDomain}/grade-code/cleanup-upload`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
+      return { data: response.data, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error:
+          error instanceof AxiosError
+            ? error.response?.data?.detail || "Failed to cleanup upload"
+            : "Failed to cleanup upload",
       };
     }
   },

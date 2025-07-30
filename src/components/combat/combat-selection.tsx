@@ -59,7 +59,7 @@ const CombatSelection: React.FC<CombatSelectionProps> = ({
   // Memoize background style
   const backgroundStyle = useMemo(
     () => ({
-      background: "linear-gradient(120deg, #141e30 0%, #243b55 100%)",
+      background: "linear-gradient(120deg, #0f172a 0%, #7c3aed 50%, #0f172a 100%)",
     }),
     []
   );

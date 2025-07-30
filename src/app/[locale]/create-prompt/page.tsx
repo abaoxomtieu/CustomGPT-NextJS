@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import CreatePromptClient from "./create-prompt-client";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Tạo Chatbot AI với Trợ Lý AI | Tích Hợp Gemini API",

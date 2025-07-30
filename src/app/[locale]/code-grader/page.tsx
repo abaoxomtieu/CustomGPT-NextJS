@@ -71,6 +71,7 @@ const GradePage = () => {
     loading: isLoadingFileTree,
     error: fileTreeError,
     fetchFileTree,
+    fetchFileTreeFromUpload,
   } = useFileTree({});
 
   const handleFetchFileTree = useCallback(() => {
@@ -78,6 +79,12 @@ const GradePage = () => {
       fetchFileTree(repoUrl, selectedExtensions);
     }
   }, [repoUrl, selectedExtensions, fetchFileTree]);
+
+  const handleUploadFiles = useCallback((files: FileList) => {
+    if (files && files.length > 0) {
+      fetchFileTreeFromUpload(files, selectedExtensions);
+    }
+  }, [selectedExtensions, fetchFileTreeFromUpload]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-blue-primary/5 to-blue-60/10 p-4 sm:p-6 relative overflow-hidden">
@@ -159,6 +166,7 @@ const GradePage = () => {
                 onRepoUrlChange={setRepoUrl}
                 onExtensionChange={setSelectedExtensions}
                 onFetchFiles={handleFetchFileTree}
+                onUploadFiles={handleUploadFiles}
               />
             </div>
           </div>

@@ -61,7 +61,7 @@ const CombatArena: React.FC<CombatArenaProps> = ({
   // Memoize background styles to prevent unnecessary re-renders
   const backgroundStyles = useMemo(
     () => ({
-      background: "linear-gradient(120deg, #18112b 0%, #2a183b 100%)",
+      background: "linear-gradient(120deg, #0f172a 0%, #7c3aed 50%, #0f172a 100%)",
     }),
     []
   );
