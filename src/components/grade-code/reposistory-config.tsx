@@ -231,7 +231,7 @@ export default function RepositoryConfig({
               ref={fileInputRef}
               onChange={handleFileInputChange}
               multiple
-              webkitdirectory=""
+              {...({ webkitdirectory: "" } as any)}
               style={{ display: 'none' }}
             />
             

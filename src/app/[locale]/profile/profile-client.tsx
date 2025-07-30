@@ -190,7 +190,7 @@ export default function ProfileClient() {
 
   if (isLoading || initialLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="animate-spin h-16 w-16 text-primary" />
           <span className="text-foreground">
@@ -202,7 +202,7 @@ export default function ProfileClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 sm:p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-background p-4 sm:p-6 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-primary/5 rounded-full blur-3xl animate-pulse"></div>

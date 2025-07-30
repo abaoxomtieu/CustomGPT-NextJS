@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import HomeClient from "./home-client";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "AI FTES - Nền tảng AI cho sinh viên",

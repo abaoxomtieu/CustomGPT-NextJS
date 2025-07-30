@@ -58,6 +58,7 @@
     "code_grader": "Đánh giá code",
     "api_testing": "Kiểm thử API",
     "code_evaluation": "Đánh giá code",
+    "code_runner": "Chạy code",
     "image_generation": "Tạo ảnh",
     "logout": "Đăng xuất",
     "language": {

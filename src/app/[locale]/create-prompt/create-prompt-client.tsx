@@ -333,7 +333,7 @@ const CreatePromptClient = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="flex items-center justify-center h-screen bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">
@@ -346,7 +346,7 @@ const CreatePromptClient = () => {
 
   return (
     <>
-      <div className="flex flex-col h-[100dvh] bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="flex flex-col h-[100dvh] bg-background">
         {/* Header */}
         <div className="flex-none bg-card/90 backdrop-blur-sm shadow-sm border-b border-border py-2 md:py-4">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center px-4 gap-2 md:gap-0">

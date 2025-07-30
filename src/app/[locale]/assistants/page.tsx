@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { Metadata } from "next";
 import ChatbotListClient from "./chatbot-list-client";
-import ParticlesBackground from "@/components/particles-background";
 export const metadata: Metadata = {
   title: "Danh sách Chatbot - AI FTES",
   description:
@@ -58,7 +57,6 @@ export default function ChatbotListPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background/80 via-blue-primary/5 to-background/95 py-4 px-2 w-full">
       {/* Hero Section */}
-      <ParticlesBackground />
       <section className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-primary/8 via-blue-60/5 to-transparent border border-blue-60/20 mb-4 shadow-md backdrop-blur-sm">
         <div className="flex items-center justify-between px-4 py-4 md:px-6 md:py-5">
           <div className="flex-1 space-y-1">

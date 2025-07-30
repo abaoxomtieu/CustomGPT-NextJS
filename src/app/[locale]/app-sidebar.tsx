@@ -115,6 +115,11 @@ export function AppSidebar() {
       url: "/profile",
       icon: Users,
     },
+    {
+      title: "Code Runner",
+      url: "/code-runner",
+      icon: Users,
+    },
   ];
   // Check if current page should hide sidebar
   const shouldHideSidebar =

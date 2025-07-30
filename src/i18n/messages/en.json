@@ -58,6 +58,7 @@
     "code_grader": "Grade Code",
     "api_testing": "API Testing",
     "code_evaluation": "Code Evaluation",
+    "code_runner": "Code Runner",
     "image_generation": "Image Generation",
     "logout": "Logout",
     "language": {
