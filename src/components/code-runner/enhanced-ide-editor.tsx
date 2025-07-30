@@ -2,13 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ApiDomain } from "@/constant";
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { java } from '@codemirror/lang-java';
@@ -104,6 +101,7 @@ const EnhancedIDEEditor: React.FC<EnhancedIDEEditorProps> = ({
   isExternalRunning = false
 }) => {
   // Folder management states
+  const ApiDomain = "https://abao77-run-code-api.hf.space"
   const [folderStructure, setFolderStructure] = useState<FolderStructure | null>(null);
   const [selectedFileNode, setSelectedFileNode] = useState<FileNode | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -730,7 +728,7 @@ const EnhancedIDEEditor: React.FC<EnhancedIDEEditorProps> = ({
       const blob = new Blob([currentFile.content], { type: 'text/plain' });
       formData.append("files", blob, currentFile.name);
 
-      const apiUrl = `${ApiDomain}/code/judge`;
+      const apiUrl = `${ApiDomain}/judge`;
       console.log('Making API call to:', apiUrl);
       console.log('FormData contents:', {
         main_files: JSON.stringify([currentFile.name]),

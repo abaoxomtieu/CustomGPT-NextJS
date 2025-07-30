@@ -28,7 +28,7 @@ import {
   File,
   FileText,
 } from "lucide-react";
-import { ApiDomain } from "@/constant";
+// import { ApiDomain } from "@/constant";
 import EnhancedIDEEditor from "@/components/code-runner/enhanced-ide-editor";
 
 // Enhanced folder upload interfaces
@@ -68,6 +68,7 @@ interface InputAnalysisResult {
 }
 
 const CodeRunnerPage = () => {
+  const ApiDomain = "https://abao77-run-code-api.hf.space";
   const [language, setLanguage] = useState("python");
   const [mainFiles, setMainFiles] = useState<string[]>([]);
   const [repoUrl, setRepoUrl] = useState("");
@@ -570,7 +571,7 @@ const CodeRunnerPage = () => {
       formData.append("code_content", codeContent);
       formData.append("language", language);
 
-      const response = await fetch(`${ApiDomain}/code/analyze-inputs`, {
+      const response = await fetch(`${ApiDomain}/analyze-inputs`, {
         method: "POST",
         body: formData,
       });
@@ -627,7 +628,7 @@ const CodeRunnerPage = () => {
         formData.append("repo_url", repoUrl);
       }
 
-      const response = await fetch(`${ApiDomain}/code/analyze-inputs`, {
+      const response = await fetch(`${ApiDomain}/analyze-inputs`, {
         method: "POST",
         body: formData,
       });
@@ -725,7 +726,7 @@ const CodeRunnerPage = () => {
     }
 
     try {
-      const response = await fetch(`${ApiDomain}/code/judge`, {
+      const response = await fetch(`${ApiDomain}/judge`, {
         method: "POST",
         body: formData,
       });
@@ -781,7 +782,7 @@ const CodeRunnerPage = () => {
     }
 
     try {
-      const response = await fetch(`${ApiDomain}/code/judge`, {
+      const response = await fetch(`${ApiDomain}/judge`, {
         method: "POST",
         body: formData,
       });
