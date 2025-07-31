@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Dialog,
   DialogContent,
@@ -23,9 +24,12 @@ import {
   Eye,
   Lightbulb,
   Maximize2,
+  Home,
+  ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   generateImage,
   generateImagePrompt,
@@ -182,7 +186,7 @@ export default function ImageGenClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-blue-primary/5 to-blue-60/10 p-2 sm:p-4">
+    <div className="w-full bg-gradient-to-br from-background via-blue-primary/5 to-blue-60/10 p-2 sm:p-4 min-h-[calc(100vh-4rem)]">
       <style jsx>{`
         .glass-card {
           backdrop-filter: blur(12px);
@@ -199,6 +203,40 @@ export default function ImageGenClient() {
       `}</style>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
+        <div className="mb-6">
+          {/* Mobile Sidebar Trigger */}
+          <div className="flex items-center gap-3 mb-4 md:hidden">
+            <SidebarTrigger className="flex items-center justify-center w-8 h-8 rounded-lg border border-border" />
+          </div>
+          
+          {/* Breadcrumb */}
+          <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">
+            <Link 
+              href="/" 
+              className="flex items-center hover:text-foreground transition-colors"
+            >
+              <Home className="w-4 h-4 mr-1" />
+              Trang chủ
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-foreground font-medium">Tạo ảnh AI</span>
+          </nav>
+          
+          {/* Page Title */}
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-primary/10 to-blue-60/20 text-blue-primary">
+              <ImageIcon className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-primary to-blue-active bg-clip-text text-transparent">
+                Tạo ảnh AI
+              </h1>
+              <p className="text-muted-foreground text-sm sm:text-base">
+                Tạo hình ảnh từ văn bản và ảnh tham khảo với AI
+              </p>
+            </div>
+          </div>
+        </div>
 
         <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'xl:grid-cols-2 gap-4 sm:gap-6'}`}>
           {/* Input Panel */}

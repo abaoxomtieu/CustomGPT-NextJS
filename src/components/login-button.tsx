@@ -25,7 +25,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
         });
         if (response.status === 200) {
           toast.success("Login success", {
-            description: "Login success",
+            description: <div className="text-black">Login Success</div>,
           });
           setIslogin(true);
           setCookie("token", response.data.token, 30);

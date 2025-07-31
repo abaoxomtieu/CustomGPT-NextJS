@@ -63,7 +63,7 @@ export default function LoginPage() {
                 </p>
               </div>
 
-              <LoginButton className="w-full" />
+              <LoginButton />
 
               <div className="text-center text-xs text-muted-foreground">
                 <p>

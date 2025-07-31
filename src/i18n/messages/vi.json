@@ -56,6 +56,7 @@
     "ai_combat": "Đấu trường",
     "profile": "Quản lý thông tin",
     "code_grader": "Đánh giá code",
+    "grade_assignment": "Chấm bài tập",
     "api_testing": "Kiểm thử API",
     "code_evaluation": "Đánh giá code",
     "code_runner": "Chạy code",
@@ -621,6 +622,40 @@
       "conversationId": "id_cuộc_hội_thoại_tùy_chọn",
       "streamingContent": "Nội dung tin nhắn streaming...",
       "finalResponseContent": "Tin nhắn phản hồi hoàn chỉnh"
+    }
+  },
+  "gradeAssignment": {
+    "title": "Chấm Bài Tập",
+    "uploadImages": "Tải Lên Hình Ảnh",
+    "extractedText": "Văn Bản Đã Trích Xuất",
+    "questionsList": "Danh Sách Câu Hỏi",
+    "dragDropText": "Kéo thả hình ảnh hoặc click để chọn",
+    "supportedFormats": "Hỗ trợ: JPG, PNG, BMP, TIFF, WEBP",
+    "dropImagesHere": "Thả hình ảnh vào đây...",
+    "selectedImages": "Đã chọn {count} hình ảnh",
+    "clearAll": "Xóa tất cả",
+    "extractText": "Trích Xuất Văn Bản",
+    "extracting": "Đang trích xuất...",
+    "extractSuccess": "Trích xuất văn bản thành công!",
+    "copyText": "Sao chép",
+    "copied": "Đã sao chép",
+    "textLength": "Độ dài: {length} ký tự",
+    "noQuestionsDetected": "Chưa có câu hỏi nào được phát hiện. Vui lòng tải lên hình ảnh chứa đề bài.",
+    "totalQuestions": "Tổng cộng {count} câu hỏi được phát hiện:",
+    "addQuestion": "Thêm câu hỏi",
+    "editQuestion": "Sửa",
+    "deleteQuestion": "Xóa",
+    "saveQuestion": "Lưu",
+    "cancelEdit": "Hủy",
+    "newQuestion": "Câu hỏi mới:",
+    "addNewQuestion": "Thêm",
+    "processedImages": "Đã xử lý {count} hình ảnh: {names}",
+    "savedImage": "Hình ảnh đã lưu: {path}",
+    "errors": {
+      "onlyImages": "Chỉ chấp nhận các file hình ảnh (jpg, png, etc.)",
+      "selectAtLeastOne": "Vui lòng chọn ít nhất một hình ảnh",
+      "extractionFailed": "Không thể trích xuất văn bản từ hình ảnh",
+      "unknownError": "Đã xảy ra lỗi không xác định"
     }
   },
   "imageGeneration": {

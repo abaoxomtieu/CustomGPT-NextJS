@@ -109,8 +109,9 @@ export default async function RootLayout({
                   disableTransitionOnChange
                 >
                   <AppSidebar />
-
-                  <div className="w-full">{children}</div>
+                  <SidebarInset>
+                    <div className="w-full">{children}</div>
+                  </SidebarInset>
                 </ThemeProvider>
               </SidebarProvider>
             </GoogleOAuthProvider>

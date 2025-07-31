@@ -56,6 +56,7 @@
     "ai_combat": "AI Combat",
     "profile": "Profile",
     "code_grader": "Grade Code",
+    "grade_assignment": "Grade Assignment",
     "api_testing": "API Testing",
     "code_evaluation": "Code Evaluation",
     "code_runner": "Code Runner",
@@ -621,6 +622,40 @@
       "conversationId": "optional_conversation_id",
       "streamingContent": "Streaming message content...",
       "finalResponseContent": "Complete response message"
+    }
+  },
+  "gradeAssignment": {
+    "title": "Grade Assignment",
+    "uploadImages": "Upload Images",
+    "extractedText": "Extracted Text",
+    "questionsList": "Questions List",
+    "dragDropText": "Drag and drop images or click to select",
+    "supportedFormats": "Supported: JPG, PNG, BMP, TIFF, WEBP",
+    "dropImagesHere": "Drop images here...",
+    "selectedImages": "Selected {count} images",
+    "clearAll": "Clear All",
+    "extractText": "Extract Text",
+    "extracting": "Extracting...",
+    "extractSuccess": "Text extracted successfully!",
+    "copyText": "Copy Text",
+    "copied": "Copied",
+    "textLength": "Length: {length} characters",
+    "noQuestionsDetected": "No questions detected yet. Please upload images containing question text.",
+    "totalQuestions": "Total {count} questions detected:",
+    "addQuestion": "Add Question",
+    "editQuestion": "Edit",
+    "deleteQuestion": "Delete",
+    "saveQuestion": "Save",
+    "cancelEdit": "Cancel",
+    "newQuestion": "New question:",
+    "addNewQuestion": "Add",
+    "processedImages": "Processed {count} images: {names}",
+    "savedImage": "Saved image: {path}",
+    "errors": {
+      "onlyImages": "Only image files are accepted (jpg, png, etc.)",
+      "selectAtLeastOne": "Please select at least one image",
+      "extractionFailed": "Failed to extract text from images",
+      "unknownError": "An unknown error occurred"
     }
   },
   "imageGeneration": {

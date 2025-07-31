@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import ReactMarkdown from "react-markdown";
+import MarkdownRenderer from "@/components/markdown-render";
 import CombatMessage, { StructuredMessage } from "./combat-message";
 import { Button } from "../ui/button";
 import { Bot } from "lucide-react";
@@ -138,7 +138,7 @@ const CombatChatMessages: React.FC<CombatChatMessagesProps> = ({
                   </div>
                   <div className="flex-1 text-white text-sm leading-relaxed">
                     <div className="w-full">
-                      <ReactMarkdown>{streamingMessage}</ReactMarkdown>
+                      <MarkdownRenderer content={streamingMessage} />
                     </div>
                   </div>
                 </div>

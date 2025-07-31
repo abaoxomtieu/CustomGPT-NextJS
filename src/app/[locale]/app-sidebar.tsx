@@ -99,6 +99,11 @@ export function AppSidebar() {
           icon: Code,
         },
         {
+          title: t("grade_assignment"),
+          url: "/grade-assignment",
+          icon: Award,
+        },
+        {
           title: t("api_testing"),
           url: "/api-testing",
           icon: TestTube,
@@ -113,11 +118,6 @@ export function AppSidebar() {
     {
       title: t("profile"),
       url: "/profile",
-      icon: Users,
-    },
-    {
-      title: "Code Runner",
-      url: "/code-runner",
       icon: Users,
     },
   ];

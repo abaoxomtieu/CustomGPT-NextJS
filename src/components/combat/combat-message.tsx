@@ -1,5 +1,5 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import MarkdownRenderer from "@/components/markdown-render";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Bot } from "lucide-react";
 
@@ -56,20 +56,9 @@ const CombatMessage: React.FC<CombatMessageProps> = ({
   const renderContent = () => {
     if (typeof message.content === "string") {
       return (
-        <ReactMarkdown
-          components={{
-            img: ({ node, src, alt, ...props }) => (
-              <img
-                src={src}
-                alt={alt || "Image"}
-                className="my-2 max-w-full rounded-md"
-                {...props}
-              />
-            ),
-          }}
-        >
-          {formatContent(message.displayContent || message.content)}
-        </ReactMarkdown>
+        <MarkdownRenderer
+          content={formatContent(message.displayContent || message.content)}
+        />
       );
     } else {
       return (
@@ -77,9 +66,7 @@ const CombatMessage: React.FC<CombatMessageProps> = ({
           {message.content.map((item, index) => {
             if (item.type === "text" && item.text) {
               return (
-                <ReactMarkdown key={`text-${index}`}>
-                  {formatContent(item.text)}
-                </ReactMarkdown>
+                <MarkdownRenderer key={`text-${index}`} content={formatContent(item.text)} />
               );
             } else if (item.type === "image" && item.url) {
               return (

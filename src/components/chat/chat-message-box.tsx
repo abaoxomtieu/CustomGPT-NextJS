@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import ReactMarkdown from "react-markdown";
+import MarkdownRenderer from "@/components/markdown-render";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useAuth } from "@/hooks/use-auth";
@@ -80,38 +80,9 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
       }
       // For AI messages, use markdown
       return (
-        <ReactMarkdown
-          components={{
-            img: ({ node, src, alt, ...props }) => (
-              <img
-                src={src}
-                alt={alt || "Image"}
-                className="my-2 max-w-full rounded-md"
-                {...props}
-              />
-            ),
-            code: ({ node, className, children, ...props }: any) => {
-              const match = /language-(\w+)/.exec(className || "");
-              const language = match ? match[1] : "";
-              const inline = (props as any).inline;
-              
-              return !inline && language ? (
-                <CodeBlock language={language} {...props}>
-                  {children}
-                </CodeBlock>
-              ) : (
-                <code
-                  className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono"
-                  {...props}
-                >
-                  {children}
-                </code>
-              );
-            },
-          }}
-        >
-          {formatContent(message.content)}
-        </ReactMarkdown>
+        <MarkdownRenderer
+          content={formatContent(message.content)}
+        />
       );
     } else {
       // Complex content with text and images
@@ -127,31 +98,10 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
                 );
               }
               return (
-                <ReactMarkdown 
+                <MarkdownRenderer 
                   key={`text-${index}`}
-                  components={{
-                    code: ({ node, className, children, ...props }: any) => {
-                      const match = /language-(\w+)/.exec(className || "");
-                      const language = match ? match[1] : "";
-                      const inline = (props as any).inline;
-                      
-                      return !inline && language ? (
-                        <CodeBlock language={language} {...props}>
-                          {children}
-                        </CodeBlock>
-                      ) : (
-                        <code
-                          className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono"
-                          {...props}
-                        >
-                          {children}
-                        </code>
-                      );
-                    },
-                  }}
-                >
-                  {formatContent(item.text)}
-                </ReactMarkdown>
+                  content={formatContent(item.text)}
+                />
               );
             } else if (item.type === "image" && item.url) {
               return (

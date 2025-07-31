@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import EditorChatbotClient from "./editor-chatbot-client";
 import { notFound } from "next/navigation";
 import { generateMongoId } from "@/helpers/Cookies";
+import AuthGuard from "@/components/auth-guard";
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const resolvedParams = await params;
@@ -153,8 +154,10 @@ export default async function EditorPage({ params }: any) {
   }
 
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <EditorChatbotClient botId={botId} notFounded={notFounded} />
-    </Suspense>
+    <AuthGuard redirectTo="/">
+      <Suspense fallback={<LoadingFallback />}>
+        <EditorChatbotClient botId={botId} notFounded={notFounded} />
+      </Suspense>
+    </AuthGuard>
   );
 }
