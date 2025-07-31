@@ -16,6 +16,18 @@ export interface ExtractTextResponse {
   data: ExtractedData;
 }
 
+export interface GradeResult {
+  question: string;
+  file_name: string;
+  result: any; // API response structure from backend
+}
+
+export interface GradeAssignmentResponse {
+  success: boolean;
+  message?: string;
+  data: any[]; // Array of grading results from backend
+}
+
 export const gradeAssignmentApiService = {
   extractTextFromImages: async (images: File[] | FileList): Promise<{ data: ExtractedData | null; error: string | null }> => {
     try {
@@ -76,6 +88,80 @@ export const gradeAssignmentApiService = {
         };
       }
       return { data: null, error: "Đã xảy ra lỗi không xác định" };
+    }
+  },
+
+  gradeAssignment: async (
+    questions: string[],
+    files: File[]
+  ): Promise<{ data: any[] | null; error: string | null }> => {
+    try {
+      const formData = new FormData();
+      
+      // Add questions to form data
+      console.log("📤 Preparing to submit", questions.length, "questions with", files.length, "files");
+      questions.forEach((question, index) => {
+        console.log(`📝 Adding question ${index + 1}:`, question.substring(0, 50) + "...");
+        formData.append('assignment_questions', question);
+      });
+
+      // Add files to form data
+      files.forEach((file, index) => {
+        console.log(`📎 Adding file ${index + 1}:`, file.name, `(${file.size} bytes)`);
+        formData.append('files', file);
+      });
+
+      console.log("🚀 Sending grading request to:", `${ApiDomain}/graded-assignments/grade-assignment`);
+      const response = await axios.post(
+        `${ApiDomain}/graded-assignments/grade-assignment`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("token")}`,
+            // Don't set Content-Type for FormData - let axios handle it
+          },
+        }
+      );
+
+      console.log("✅ Grading response received:", response.status, response.statusText);
+      console.log("📥 Grading results:", response.data);
+
+      // Backend trả về array trực tiếp, không wrap trong object
+      return { data: response.data, error: null };
+    } catch (err) {
+      console.error("❌ Grading request failed:", err);
+      if (err instanceof AxiosError) {
+        console.error("❌ Axios error details:", {
+          status: err.response?.status,
+          statusText: err.response?.statusText,
+          data: err.response?.data,
+          headers: err.response?.headers,
+        });
+        
+        if (err.response?.status === 413) {
+          return {
+            data: null,
+            error: "File quá lớn (vượt quá giới hạn). Vui lòng chọn file nhỏ hơn.",
+          };
+        }
+        if (err.response?.status === 422) {
+          return {
+            data: null,
+            error: err.response?.data?.detail || "Dữ liệu gửi lên không hợp lệ. Vui lòng kiểm tra lại file và câu hỏi.",
+          };
+        }
+        if (err.response?.status === 400) {
+          return {
+            data: null,
+            error: err.response?.data?.detail || "Yêu cầu không hợp lệ. Vui lòng kiểm tra lại dữ liệu.",
+          };
+        }
+        return {
+          data: null,
+          error: err.response?.data?.detail || "Không thể chấm điểm bài tập",
+        };
+      }
+      return { data: null, error: "Đã xảy ra lỗi không xác định khi chấm điểm" };
     }
   },
 };

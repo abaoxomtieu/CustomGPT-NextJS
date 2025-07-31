@@ -59,6 +59,7 @@
     "react-markdown": "^10.1.0",
     "react-particles": "^2.12.2",
     "react-syntax-highlighter": "^15.6.1",
+    "remark-gfm": "^4.0.1",
     "sonner": "^2.0.5",
     "swiper": "^11.2.10",
     "tailwind-merge": "^3.3.0",

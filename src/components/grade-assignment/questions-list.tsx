@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Edit2, Save, X, Plus, Trash2, GripVertical } from "lucide-react";
+import { Edit2, Save, X, Plus, Trash2, GripVertical, Upload, FileText, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,9 +13,20 @@ import MarkdownRenderer from '@/components/markdown-render';
 interface QuestionsListProps {
   questions: string[];
   onQuestionsUpdate: (questions: string[]) => void;
+  uploadedFiles?: Map<number, File>;
+  onFileUpload?: (questionIndex: number, file: File | null) => void;
+  onSubmitGrading?: () => void;
+  isGrading?: boolean;
 }
 
-const QuestionsList: React.FC<QuestionsListProps> = ({ questions, onQuestionsUpdate }) => {
+const QuestionsList: React.FC<QuestionsListProps> = ({ 
+  questions, 
+  onQuestionsUpdate,
+  uploadedFiles = new Map(),
+  onFileUpload,
+  onSubmitGrading,
+  isGrading = false
+}) => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -63,6 +74,11 @@ const QuestionsList: React.FC<QuestionsListProps> = ({ questions, onQuestionsUpd
     }
   };
 
+  const startAddingNew = () => {
+    setIsAddingNew(true);
+    setNewQuestionText("");
+  };
+
   const cancelAddNew = () => {
     setIsAddingNew(false);
     setNewQuestionText("");
@@ -77,13 +93,75 @@ const QuestionsList: React.FC<QuestionsListProps> = ({ questions, onQuestionsUpd
     onQuestionsUpdate(updatedQuestions);
   };
 
+  const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (onFileUpload) {
+      onFileUpload(index, file);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    if (onFileUpload) {
+      onFileUpload(index, null);
+    }
+  };
+
+  const getUploadedFilesCount = () => {
+    return uploadedFiles.size;
+  };
+
   if (validQuestions.length === 0) {
     return (
-      <Alert>
-        <AlertDescription>
-          Chưa có câu hỏi nào được phát hiện. Vui lòng tải lên hình ảnh chứa đề bài.
-        </AlertDescription>
-      </Alert>
+      <div className="space-y-4">
+        <Alert>
+          <AlertDescription>
+            Chưa có câu hỏi nào. Bạn có thể tạo câu hỏi thủ công hoặc trích xuất từ hình ảnh.
+          </AlertDescription>
+        </Alert>
+        
+        <div className="flex justify-center">
+          <Button
+            onClick={startAddingNew}
+            variant="outline"
+            size="sm"
+            className="h-10 px-4"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Tạo câu hỏi thủ công
+          </Button>
+        </div>
+
+        {/* Add New Question Form */}
+        {isAddingNew && (
+          <Card className="border-dashed">
+            <CardContent className="p-4">
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-medium text-muted-foreground">1.</span>
+                  <span className="text-sm text-muted-foreground">Câu hỏi mới:</span>
+                </div>
+                <Textarea
+                  value={newQuestionText}
+                  onChange={(e) => setNewQuestionText(e.target.value)}
+                  className="min-h-[80px] resize-none"
+                  placeholder="Nhập nội dung câu hỏi mới..."
+                  autoFocus
+                />
+                <div className="flex space-x-2">
+                  <Button size="sm" onClick={addNewQuestion}>
+                    <Save className="h-4 w-4 mr-1" />
+                    Thêm
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={cancelAddNew}>
+                    <X className="h-4 w-4 mr-1" />
+                    Hủy
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     );
   }
 
@@ -94,7 +172,7 @@ const QuestionsList: React.FC<QuestionsListProps> = ({ questions, onQuestionsUpd
           Danh sách câu hỏi ({validQuestions.length})
         </h3>
         <Button
-          onClick={addNewQuestion}
+          onClick={startAddingNew}
           variant="outline"
           size="sm"
           className="h-8 px-2 sm:px-3"
@@ -184,6 +262,53 @@ const QuestionsList: React.FC<QuestionsListProps> = ({ questions, onQuestionsUpd
                           <span className="hidden sm:inline">Xóa</span>
                         </Button>
                       </div>
+
+                      {/* File Upload Section */}
+                      {onFileUpload && (
+                        <div className="mt-3 p-3 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium">Upload file bài làm:</span>
+                            {uploadedFiles.has(index) && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => removeFile(index)}
+                                className="h-6 px-2 text-red-600 hover:text-red-700"
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                          
+                          {uploadedFiles.has(index) ? (
+                            <div className="flex items-center space-x-2 text-sm">
+                              <FileText className="h-4 w-4 text-green-600" />
+                              <span className="text-green-600 font-medium">
+                                {uploadedFiles.get(index)?.name}
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="relative">
+                              <input
+                                type="file"
+                                id={`file-${index}`}
+                                onChange={(e) => handleFileChange(index, e)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                accept=".py,.js,.java,.cpp,.c,.ts,.jsx,.tsx,.php,.rb,.go,.rs,.swift,.kt,.scala,.dart,.m,.h,.cs,.vb,.sql,.html,.css,.json,.xml,.yaml,.yml,.txt,.md"
+                              />
+                              <div className="flex items-center justify-center p-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors">
+                                <div className="text-center">
+                                  <Upload className="h-6 w-6 mx-auto mb-2 text-gray-400" />
+                                  <p className="text-sm text-gray-600">Click để chọn file</p>
+                                  <p className="text-xs text-gray-400 mt-1">
+                                    Hỗ trợ các file code: .py, .js, .java, .cpp, .c, .ts, etc.
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -224,6 +349,38 @@ const QuestionsList: React.FC<QuestionsListProps> = ({ questions, onQuestionsUpd
           </Card>
         )}
       </div>
+
+      {/* Submit Section */}
+      {onSubmitGrading && validQuestions.length > 0 && (
+        <div className="mt-6 p-4 border rounded-lg bg-blue-50 dark:bg-blue-900/20">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h4 className="font-semibold text-sm mb-1">Chấm điểm bài tập</h4>
+              <p className="text-xs text-muted-foreground">
+                Đã upload {getUploadedFilesCount()}/{validQuestions.length} file. 
+                Chỉ những câu hỏi có file upload sẽ được chấm điểm.
+              </p>
+            </div>
+            <Button
+              onClick={onSubmitGrading}
+              disabled={isGrading || getUploadedFilesCount() === 0}
+              className="w-full sm:w-auto"
+            >
+              {isGrading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Đang chấm điểm...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4 mr-2" />
+                  Chấm điểm ({getUploadedFilesCount()} file)
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
