@@ -213,7 +213,7 @@ export function AppSidebar() {
                           item.title === t("image_generation")
                         );
                       }
-                      if (isMobile && item.title === t("code_evaluation")) {
+                      if (isMobile && (item.title === t("code_evaluation") || item.title === t("ai_combat"))) {
                         return false;
                       }
                       return true;
@@ -365,7 +365,7 @@ export function AppSidebar() {
 
       {/* Mobile Bottom Navigation - Only show on home and profile pages */}
       {shouldShowMobileNav && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background/95 via-background/90 to-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-primary/10 z-10 shadow-lg">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background/95 via-background/90 to-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-primary/10 z-50 shadow-lg">
           <div className="flex justify-around items-center p-2">
             {data
               .filter((item) => {
@@ -376,7 +376,7 @@ export function AppSidebar() {
                     item.title === t("image_generation")
                   );
                 }
-                if (isMobile && item.title === t("code_evaluation")) {
+                if (isMobile && (item.title === t("code_evaluation") || item.title === t("ai_combat"))) {
                   return false;
                 }
                 return true;

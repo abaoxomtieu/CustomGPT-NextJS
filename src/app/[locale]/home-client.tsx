@@ -124,7 +124,7 @@ const HomeClient: React.FC = () => {
                 data-fade
               >
                 <Link href="/assistants" className="group">
-                  <Button className="w-full sm:w-auto bg-blue-primary text-white hover:bg-blue-active h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg transition-all duration-200 rounded-full shadow-lg hover:shadow-xl border-0">
+                  <Button className="w-full sm:w-auto bg-blue-primary text-background hover:bg-blue-active h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg transition-all duration-200 rounded-full shadow-lg hover:shadow-xl border-0">
                     {t("start_now")}
                     <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -154,13 +154,15 @@ const HomeClient: React.FC = () => {
         </div>
 
         <div className="text-center mb-16 opacity-0 relative z-10" data-fade>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
-            {t("features_title")}
-          </h2>
-          <p className="text-lg text-foreground max-w-2xl mx-auto">
-            Khám phá những tính năng mạnh mẽ giúp bạn tạo ra những trải nghiệm
-            AI tuyệt vời
-          </p>
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-blue-60/20">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {t("features_title")}
+            </h2>
+            <p className="text-lg text-foreground max-w-2xl mx-auto">
+              Khám phá những tính năng mạnh mẽ giúp bạn tạo ra những trải nghiệm
+              AI tuyệt vời
+            </p>
+          </div>
         </div>
 
         <div className="space-y-20 relative z-10">
@@ -197,26 +199,34 @@ const HomeClient: React.FC = () => {
               {/* Content */}
               <div
                 className={`space-y-6 ${
+                  // Mobile: alternate left/right positioning based on index
+                  index % 2 === 0 
+                    ? "translate-x-0 sm:translate-x-3" 
+                    : "translate-x-0 sm:-translate-x-3"
+                } ${
+                  // Desktop: follow feature direction  
                   feature.direction === "left"
-                    ? "-translate-x-5 lg:translate-x-0"
-                    : "translate-x-5 lg:translate-x-0"
+                    ? "lg:translate-x-0"
+                    : "lg:translate-x-0"
                 }`}
               >
-                <div className="flex items-center space-x-4">
-                  <div className="w-20 h-20 flex items-center justify-center rounded-full bg-primary/10 transition-transform duration-200 hover:scale-105">
-                    {feature.icon}
+                <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-blue-60/20">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-20 h-20 flex items-center justify-center rounded-full bg-primary/10 transition-transform duration-200 hover:scale-105">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+                      {feature.title}
+                    </h3>
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-foreground">
-                    {feature.title}
-                  </h3>
+                  <p className="text-lg text-foreground leading-relaxed mt-4">
+                    {feature.description}
+                  </p>
+                  <Button variant="outline" className="group mt-4">
+                    Tìm hiểu thêm
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
                 </div>
-                <p className="text-lg text-foreground leading-relaxed">
-                  {feature.description}
-                </p>
-                <Button variant="outline" className="group">
-                  Tìm hiểu thêm
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
               </div>
 
               {/* Image */}
@@ -278,7 +288,7 @@ const HomeClient: React.FC = () => {
                 <p className="text-foreground">
                   {t("management.manage.description")}
                 </p>
-                <Button className="sm:w-auto bg-blue-primary text-white hover:bg-blue-active h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg transition-all duration-200 rounded-full shadow-lg hover:shadow-xl border-0">
+                <Button className="sm:w-auto bg-blue-primary text-background hover:bg-blue-active h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg transition-all duration-200 rounded-full shadow-lg hover:shadow-xl border-0">
                   Bắt đầu quản lý
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
