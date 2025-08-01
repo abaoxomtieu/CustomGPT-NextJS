@@ -1,16 +1,26 @@
-import { ApiDomain } from "@/constant";
+import { ApiDomain } from "../../../../constant";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
+    const { exercise_questions } = await request.json();
 
-    // Forward the FormData to the backend
+    if (!exercise_questions || !Array.isArray(exercise_questions) || exercise_questions.length === 0) {
+      return NextResponse.json(
+        { error: "Exercise questions array is required and cannot be empty" },
+        { status: 400 }
+      );
+    }
+
+    // Forward the request to the backend
     const response = await fetch(
-      `${ApiDomain}/graded-assignments/grade-assignment`,
+      `${ApiDomain}/graded-assignments/generate-answer`,
       {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ exercise_questions }),
       }
     );
 

@@ -275,7 +275,7 @@ const HomeClient: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Large Featured Card */}
             <div
-              className="col-span-1 md:col-span-2 lg:col-span-2 lg:row-span-2 bg-card/80 backdrop-blur-md rounded-xl p-8 shadow-lg border border-blue-60/20 hover:border-blue-primary/50 hover:shadow-xl transition-all duration-200 opacity-0 relative overflow-hidden"
+              className="col-span-1 md:col-span-2 lg:col-span-2 lg:row-span-2 bg-card/80 backdrop-blur-md rounded-xl p-8 shadow-lg border border-blue-60/20 hover:border-blue-primary/50 hover:shadow-xl transition-all duration-200 relative overflow-hidden"
               data-fade
             >
               <div className="space-y-4">
