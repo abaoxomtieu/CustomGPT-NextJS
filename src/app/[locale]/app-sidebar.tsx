@@ -84,9 +84,9 @@ export function AppSidebar() {
       ],
     },
     {
-      title: t("ai_combat"),
-      url: "/ai-combat",
-      icon: Award,
+      title: t("image_generation"),
+      url: "/image-gen",
+      icon: ImageIcon,
     },
     {
       title: t("code_evaluation"),
@@ -110,10 +110,11 @@ export function AppSidebar() {
         },
       ],
     },
+
     {
-      title: t("image_generation"),
-      url: "/image-gen",
-      icon: ImageIcon,
+      title: t("ai_combat"),
+      url: "/ai-combat",
+      icon: Award,
     },
     {
       title: t("profile"),
@@ -213,7 +214,11 @@ export function AppSidebar() {
                           item.title === t("image_generation")
                         );
                       }
-                      if (isMobile && (item.title === t("code_evaluation") || item.title === t("ai_combat"))) {
+                      if (
+                        isMobile &&
+                        (item.title === t("code_evaluation") ||
+                          item.title === t("ai_combat"))
+                      ) {
                         return false;
                       }
                       return true;
@@ -376,7 +381,11 @@ export function AppSidebar() {
                     item.title === t("image_generation")
                   );
                 }
-                if (isMobile && (item.title === t("code_evaluation") || item.title === t("ai_combat"))) {
+                if (
+                  isMobile &&
+                  (item.title === t("code_evaluation") ||
+                    item.title === t("ai_combat"))
+                ) {
                   return false;
                 }
                 return true;

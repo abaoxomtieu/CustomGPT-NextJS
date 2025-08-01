@@ -14,13 +14,20 @@ import {
   BookOpen,
   Upload,
 } from "lucide-react";
-// import { toast } from "sonner";
 import ImageUploadDropzone from "@/components/grade-assignment/image-upload-dropzone";
 import ExtractedTextDisplay from "@/components/grade-assignment/extracted-text-display";
 import QuestionsList from "@/components/grade-assignment/questions-list";
 import ExtractQuestionsDialog from "@/components/grade-assignment/extract-questions-dialog";
+import FileUpload from "@/components/grade-assignment/file-upload";
 import MarkdownRenderer from "@/components/markdown-render";
 import { gradeAssignmentApiService } from "@/services/grade-assignment-service";
+
+export interface Question {
+  id: string;
+  text: string;
+  type?: string;
+  difficulty?: string;
+}
 
 export interface ExtractedData {
   extracted_text: string;
@@ -50,14 +57,24 @@ const GradeAssignmentPage = () => {
   const [showExtractDialog, setShowExtractDialog] = useState(false);
 
   // Initialize with empty questions list to allow manual question creation
-  const [questions, setQuestions] = useState<string[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   const handleExtractComplete = (data: ExtractedData) => {
     console.log("Extracted data received:", data);
     console.log("Split questions type:", typeof data.split_questions);
     console.log("Split questions value:", data.split_questions);
     setExtractedData(data);
-    setQuestions(data.split_questions || []);
+
+    // Convert string[] to Question[]
+    const questionsArray: Question[] = (data.split_questions || []).map(
+      (text, index) => ({
+        id: `extracted-${Date.now()}-${index}`,
+        text,
+        type: "extracted",
+      })
+    );
+    setQuestions(questionsArray);
+
     setIsLoading(false);
     // Reset files when new data is extracted
     setQuestionFiles(new Map());
@@ -72,12 +89,12 @@ const GradeAssignmentPage = () => {
     setGradeResults(null);
   };
 
-  const handleQuestionsUpdate = (updatedQuestions: string[]) => {
+  const handleQuestionsUpdate = (updatedQuestions: Question[]) => {
     setQuestions(updatedQuestions);
     if (extractedData) {
       setExtractedData({
         ...extractedData,
-        split_questions: updatedQuestions,
+        split_questions: updatedQuestions.map((q) => q.text),
       });
     }
     // Reset files when questions change
@@ -112,7 +129,7 @@ const GradeAssignmentPage = () => {
       // Chỉ lấy những câu hỏi có file upload
       questionFiles.forEach((file, index) => {
         if (questions[index]) {
-          questionsWithFiles.push(questions[index]);
+          questionsWithFiles.push(questions[index].text);
           filesArray.push(file);
         }
       });
@@ -235,128 +252,341 @@ const GradeAssignmentPage = () => {
       </div>
 
       {/* Main Content - Mobile First Grid */}
-      <div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 sm:gap-6">
-        {/* Control Panel - Always first on mobile */}
-        <div className="w-full lg:col-span-4 lg:order-1 space-y-4">
-          {/* Extract Questions Card */}
+      {/* Control Panel - Always first on mobile */}
+
+      {/* Questions and Results Section - Stack vertically on mobile */}
+      <div className="w-full">
+        {/* Integrated Questions List with Upload */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <FileText className="h-5 w-5 text-green-600" />
+              Danh Sách Câu Hỏi và Upload Bài Làm
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-3 sm:px-6">
+            {/* Extract and View Controls */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              <Button
+                onClick={() => setShowExtractDialog(true)}
+                disabled={isLoading}
+                variant="outline"
+                size="sm"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                {isLoading ? "Đang trích xuất..." : "Trích xuất câu hỏi"}
+              </Button>
+              {extractedData?.extracted_text && (
+                <Button
+                  onClick={() => {
+                    // Show extracted text
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Xem văn bản đã trích xuất
+                </Button>
+              )}
+            </div>
+
+            {/* Questions with Integrated Upload and Add Buttons */}
+            <div className="space-y-4">
+              {/* Add button at the beginning */}
+              <div className="flex justify-center">
+                <Button
+                  onClick={() => {
+                    const newQuestion: Question = {
+                      id: `manual-${Date.now()}`,
+                      text: "",
+                      type: "manual",
+                    };
+                    setQuestions([newQuestion, ...questions]);
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="w-full max-w-xs border-dashed"
+                >
+                  <span className="text-lg mr-2">+</span>
+                  Thêm câu hỏi đầu tiên
+                </Button>
+              </div>
+
+              {questions.map((question, index) => (
+                <div key={question.id} className="space-y-3">
+                  {/* Question Card with Upload */}
+                  <Card className="border-l-4 border-l-green-500">
+                    <CardContent className="p-4">
+                      <div className="grid grid-cols-3 gap-4">
+                        {/* Question Content - Left Side (2/3) */}
+                        <div className="col-span-2 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">
+                                Câu {index + 1}
+                              </span>
+                              {question.type && (
+                                <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                                  {question.type}
+                                </span>
+                              )}
+                            </div>
+                            <Button
+                              onClick={() => {
+                                const updatedQuestions = questions.filter(
+                                  (q) => q.id !== question.id
+                                );
+                                setQuestions(updatedQuestions);
+                                // Remove associated file
+                                const newFiles = new Map(questionFiles);
+                                newFiles.delete(index);
+                                setQuestionFiles(newFiles);
+                              }}
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <span className="sr-only">Xóa câu hỏi</span>×
+                            </Button>
+                          </div>
+
+                          <textarea
+                            placeholder="Nhập nội dung câu hỏi..."
+                            className="w-full p-3 border rounded resize-none h-32"
+                            value={question.text}
+                            onChange={(e) => {
+                              const updatedQuestions = questions.map((q) =>
+                                q.id === question.id
+                                  ? { ...q, text: e.target.value }
+                                  : q
+                              );
+                              setQuestions(updatedQuestions);
+                            }}
+                          />
+
+                          {/* Individual Grading Button */}
+                          {question.text && questionFiles.get(index) && (
+                            <div className="pt-2 border-t">
+                              <Button
+                                onClick={async () => {
+                                  const file = questionFiles.get(index);
+                                  if (!file || !question.text) return;
+
+                                  setIsGrading(true);
+                                  try {
+                                    const { data: results, error } =
+                                      await gradeAssignmentApiService.gradeAssignment(
+                                        [question.text],
+                                        [file]
+                                      );
+
+                                    if (error) throw new Error(error);
+                                    if (!results)
+                                      throw new Error(
+                                        "Không nhận được kết quả từ server"
+                                      );
+
+                                    const newResult: GradeResult = {
+                                      question: question.text,
+                                      file_name: file.name,
+                                      result: results[0],
+                                    };
+
+                                    // Add or update result for this question
+                                    setGradeResults((prev) => {
+                                      const existing = prev || [];
+                                      const existingIndex = existing.findIndex(
+                                        (r) => r.question === question.text
+                                      );
+                                      if (existingIndex >= 0) {
+                                        const updated = [...existing];
+                                        updated[existingIndex] = newResult;
+                                        return updated;
+                                      } else {
+                                        return [...existing, newResult];
+                                      }
+                                    });
+
+                                    alert("Chấm điểm câu hỏi thành công!");
+                                  } catch (error) {
+                                    console.error(
+                                      "❌ Error grading question:",
+                                      error
+                                    );
+                                    alert(
+                                      `Có lỗi xảy ra: ${
+                                        error instanceof Error
+                                          ? error.message
+                                          : "Lỗi không xác định"
+                                      }`
+                                    );
+                                  } finally {
+                                    setIsGrading(false);
+                                  }
+                                }}
+                                disabled={isGrading}
+                                size="sm"
+                                className="w-full bg-blue-600 hover:bg-blue-700"
+                              >
+                                {isGrading ? (
+                                  <>
+                                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-2"></div>
+                                    Đang chấm...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Target className="h-3 w-3 mr-2" />
+                                    Chấm câu này
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Upload Area - Right Side (1/3) */}
+                        <div className="col-span-1 space-y-3">
+                          <div className="text-sm font-medium text-muted-foreground">
+                            Upload bài làm:
+                          </div>
+                          <div className="h-32">
+                            <FileUpload
+                              onFileChange={(file) =>
+                                handleFileUpload(index, file)
+                              }
+                              uploadedFile={questionFiles.get(index)}
+                              accept="image/*"
+                              placeholder="Kéo thả hoặc click"
+                            />
+                          </div>
+                          {questionFiles.get(index) && (
+                            <div className="text-xs text-green-600 flex items-center gap-1">
+                              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                              Sẵn sàng chấm
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Add button between questions */}
+                  <div className="flex justify-center">
+                    <Button
+                      onClick={() => {
+                        const newQuestion: Question = {
+                          id: `manual-${Date.now()}`,
+                          text: "",
+                          type: "manual",
+                        };
+                        const updatedQuestions = [...questions];
+                        updatedQuestions.splice(index + 1, 0, newQuestion);
+                        setQuestions(updatedQuestions);
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="w-full max-w-xs border-dashed hover:border-solid"
+                    >
+                      <span className="text-lg mr-2">+</span>
+                      Thêm câu hỏi
+                    </Button>
+                  </div>
+                </div>
+              ))}
+
+              {questions.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p className="mb-2">Chưa có câu hỏi nào</p>
+                  <p className="text-sm mb-4">
+                    Thêm câu hỏi thủ công hoặc trích xuất từ hình ảnh
+                  </p>
+                </div>
+              )}
+
+              {/* Grading Button */}
+              {questions.length > 0 && questionFiles.size > 0 && (
+                <div className="flex justify-center pt-6 border-t">
+                  <Button
+                    onClick={submitGrading}
+                    disabled={isGrading || questionFiles.size === 0}
+                    size="lg"
+                    className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                  >
+                    {isGrading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Đang chấm điểm...
+                      </>
+                    ) : (
+                      <>
+                        <Target className="h-4 w-4 mr-2" />
+                        Chấm điểm ({questionFiles.size}/{questions.length} câu)
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Grade Results Card */}
+        {gradeResults && gradeResults.length > 0 && (
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
-                <ImageIcon className="h-5 w-5 text-blue-600" />
-                Trích Xuất Câu Hỏi
+                <Target className="h-5 w-5 text-purple-600" />
+                Kết Quả Chấm Điểm Chi Tiết
               </CardTitle>
             </CardHeader>
             <CardContent className="px-3 sm:px-6">
-              <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Upload hình ảnh đề bài để AI tự động trích xuất và phân tách
-                  câu hỏi
-                </p>
-                <Button
-                  onClick={() => setShowExtractDialog(true)}
-                  className="w-full"
-                  variant="outline"
-                  disabled={isLoading}
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  {isLoading ? "Đang xử lý..." : "Tải Lên Hình Ảnh Đề Bài"}
-                </Button>
+              <div className="space-y-4">
+                {gradeResults.map((result, index) => (
+                  <Card key={index} className="border-l-4 border-l-blue-500">
+                    <CardContent className="p-4">
+                      <div className="space-y-3">
+                        {/* Question Header */}
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-sm flex items-center gap-2">
+                              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                                Câu {index + 1}
+                              </span>
+                            </h4>
+                            <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded border">
+                              <MarkdownRenderer content={result.question} />
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-2">
+                              📎 File: {result.file_name}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* AI Result */}
+                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 rounded-lg border">
+                          <h5 className="font-medium text-sm mb-2 flex items-center gap-2">
+                            <Target className="h-4 w-4 text-purple-600" />
+                            Kết Quả Chấm Điểm AI
+                          </h5>
+                          <div className="prose prose-sm max-w-none">
+                            <MarkdownRenderer
+                              content={
+                                typeof result.result === "string"
+                                  ? result.result
+                                  : JSON.stringify(result.result, null, 2)
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </CardContent>
           </Card>
-
-          {/* Extracted Text Card */}
-          {extractedData && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Văn Bản Đã Trích Xuất</CardTitle>
-              </CardHeader>
-              <CardContent className="px-3 sm:px-6">
-                <ExtractedTextDisplay text={extractedData.extracted_text} />
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Questions and Results Section - Stack vertically on mobile */}
-        <div className="w-full lg:col-span-8 lg:order-2 space-y-4 sm:space-y-6">
-          {/* Questions List Card */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <FileText className="h-5 w-5 text-green-600" />
-                Danh Sách Câu Hỏi và Upload Bài Làm
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-3 sm:px-6">
-              <QuestionsList
-                questions={questions}
-                onQuestionsUpdate={handleQuestionsUpdate}
-                uploadedFiles={questionFiles}
-                onFileUpload={handleFileUpload}
-                onSubmitGrading={submitGrading}
-                isGrading={isGrading}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Grade Results Card */}
-          {gradeResults && gradeResults.length > 0 && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Target className="h-5 w-5 text-purple-600" />
-                  Kết Quả Chấm Điểm Chi Tiết
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="px-3 sm:px-6">
-                <div className="space-y-4">
-                  {gradeResults.map((result, index) => (
-                    <Card key={index} className="border-l-4 border-l-blue-500">
-                      <CardContent className="p-4">
-                        <div className="space-y-3">
-                          {/* Question Header */}
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-sm flex items-center gap-2">
-                                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
-                                  Câu {index + 1}
-                                </span>
-                              </h4>
-                              <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded border">
-                                <MarkdownRenderer content={result.question} />
-                              </div>
-                              <p className="text-xs text-muted-foreground mt-2">
-                                📎 File: {result.file_name}
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* AI Result */}
-                          <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 rounded-lg border">
-                            <h5 className="font-medium text-sm mb-2 flex items-center gap-2">
-                              <Target className="h-4 w-4 text-purple-600" />
-                              Kết Quả Chấm Điểm AI
-                            </h5>
-                            <div className="prose prose-sm max-w-none">
-                              <MarkdownRenderer
-                                content={
-                                  typeof result.result === "string"
-                                    ? result.result
-                                    : JSON.stringify(result.result, null, 2)
-                                }
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+        )}
       </div>
 
       {/* Footer Info - Mobile Optimized */}
