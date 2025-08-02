@@ -323,17 +323,19 @@ export function AppSidebar() {
                 </span>
               </Button>
             )}
-            <Button
-              variant="outline"
-              onClick={toggleLanguage}
-              className="w-full flex justify-center items-center gap-2 hover:bg-primary/10 transition-colors duration-200 border-primary/20"
-            >
-              <Languages className="w-4 h-4" />
-              <span className="font-medium">
-                {locale === "en" ? "EN" : "VI"} →{" "}
-                {locale === "en" ? "VI" : "EN"}
-              </span>
-            </Button>
+            {!isMobile && (
+              <Button
+                variant="outline"
+                onClick={toggleLanguage}
+                className="w-full flex justify-center items-center gap-2 hover:bg-primary/10 transition-colors duration-200 border-primary/20"
+              >
+                <Languages className="w-4 h-4" />
+                <span className="font-medium">
+                  {locale === "en" ? "EN" : "VI"} →{" "}
+                  {locale === "en" ? "VI" : "EN"}
+                </span>
+              </Button>
+            )}
             {isLogin && (
               <Button
                 variant="outline"
@@ -400,33 +402,6 @@ export function AppSidebar() {
                   <span className="text-xs mt-1">{item.title}</span>
                 </Link>
               ))}
-            {!isMobile && (
-              <Button
-                variant="outline"
-                onClick={toggleTheme}
-                className="flex flex-col items-center p-2 text-primary/70 hover:text-primary transition-colors duration-200"
-              >
-                {theme === "dark" ? (
-                  <Moon className="w-6 h-6" />
-                ) : (
-                  <Sun className="w-6 h-6" />
-                )}
-                <span className="text-xs mt-1">
-                  {theme === "dark" ? "Dark" : "Light"}
-                </span>
-              </Button>
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleLanguage}
-              className="flex flex-col items-center p-2 text-primary/70 hover:text-primary transition-colors duration-200"
-            >
-              <Languages className="w-6 h-6" />
-              <span className="text-xs mt-1">
-                {locale === "en" ? "EN" : "VI"}
-              </span>
-            </Button>
             {isLogin ? (
               <Button
                 variant="ghost"

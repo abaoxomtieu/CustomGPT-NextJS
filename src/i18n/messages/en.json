@@ -60,7 +60,7 @@
     "api_testing": "API Testing",
     "code_evaluation": "Code Evaluation",
     "code_runner": "Code Runner",
-    "image_generation": "Image Generation",
+    "image_generation": "Image GenAI",
     "logout": "Logout",
     "language": {
       "title": "Language",
@@ -656,6 +656,76 @@
       "selectAtLeastOne": "Please select at least one image",
       "extractionFailed": "Failed to extract text from images",
       "unknownError": "An unknown error occurred"
+    }
+  },
+  "landingPage": {
+    "hero": {
+      "title": "FTES AI Platform",
+      "subtitle": "Revolutionize Your Development Workflow",
+      "description": "Advanced AI-powered tools for developers, educators, and content creators. From automated testing to intelligent grading, unleash the power of artificial intelligence.",
+      "getStarted": "Get Started Now",
+      "learnMore": "Learn More",
+      "trustedBy": "Trusted by developers and educators worldwide"
+    },
+    "features": {
+      "title": "Powerful AI Tools",
+      "subtitle": "Everything you need to enhance your development and educational workflow",
+      "apiTesting": {
+        "title": "Smart API Testing",
+        "description": "AI-powered REST API test case generation and validation. Automatically create comprehensive test suites with intelligent assertions.",
+        "features": ["Auto test case generation", "Multi-method support", "Smart assertions", "Detailed reporting"]
+      },
+      "codeGrader": {
+        "title": "Intelligent Code Grader",
+        "description": "Advanced AI evaluation for code quality, structure, and best practices across multiple programming languages.",
+        "features": ["Multi-language support", "Code quality analysis", "Structure evaluation", "Detailed feedback"]
+      },
+      "gradeAssignment": {
+        "title": "Assignment Grader",
+        "description": "Automated grading system with OCR text extraction and AI-powered answer evaluation for educational assignments.",
+        "features": ["OCR text extraction", "Auto question detection", "AI-powered grading", "Statistical analysis"]
+      },
+      "imageGeneration": {
+        "title": "AI Image Creator",
+        "description": "Generate stunning images from text prompts or transform existing images with advanced AI technology.",
+        "features": ["Text-to-image", "Image-to-image", "High quality output", "Multiple styles"]
+      }
+    },
+    "technologies": {
+      "title": "Supported Technologies",
+      "subtitle": "Wide range of programming languages and frameworks",
+      "languages": {
+        "title": "Programming Languages",
+        "list": ["JavaScript", "TypeScript", "Python", "Java", "C++", "C", "HTML", "CSS"]
+      },
+      "frameworks": {
+        "title": "Frameworks & Tools",
+        "list": ["React", "Next.js", "Node.js", "Express", "Flask", "Spring", "Django"]
+      }
+    },
+    "stats": {
+      "testCases": {
+        "number": "10K+",
+        "label": "Test Cases Generated"
+      },
+      "codeFiles": {
+        "number": "50K+",
+        "label": "Code Files Graded"
+      },
+      "assignments": {
+        "number": "5K+",
+        "label": "Assignments Processed"
+      },
+      "images": {
+        "number": "25K+",
+        "label": "Images Generated"
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Workflow?",
+      "description": "Join thousands of developers and educators using FTES AI to streamline their processes.",
+      "primaryButton": "Start Free Trial",
+      "secondaryButton": "View Demo"
     }
   },
   "imageGeneration": {
