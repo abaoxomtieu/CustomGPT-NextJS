@@ -18,10 +18,10 @@ import {
 
 const GradeAssignmentPage = () => {
   const t = useTranslations("gradeAssignment");
-  
+
   // State management
   const state = useGradeAssignmentState();
-  
+
   // Actions
   const actions = useGradeAssignmentActions({
     questions: state.questions,
@@ -56,7 +56,10 @@ const GradeAssignmentPage = () => {
     state.setExpandedAnswers(new Set());
   };
 
-  const handleToggleAnswerExpansion = (questionId: string, expanded: boolean) => {
+  const handleToggleAnswerExpansion = (
+    questionId: string,
+    expanded: boolean
+  ) => {
     state.setExpandedAnswers((prev) => {
       const newSet = new Set(prev);
       if (expanded) {
