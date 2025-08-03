@@ -40,6 +40,7 @@ import Image from "next/image";
 import ParticlesBackground from "../../components/back-ground";
 import { useTheme } from "next-themes";
 import { useIsMobile } from "@/hooks/use-mobile";
+import PromptOptimizationMini from "@/components/prompt-optimization-mini";
 
 // Intersection Observer hook for fade-in animations
 const useIntersectionObserver = () => {
@@ -436,6 +437,32 @@ const HomeClient: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Interactive Prompt Optimization Section */}
+      <section className="container mx-auto px-4 py-12 md:py-20 relative">
+        {/* Subtle particles for interactive section */}
+        <div className="absolute inset-0 overflow-hidden opacity-25">
+          <div className="absolute top-10 left-10 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+          <div className="absolute top-32 right-20 w-1 h-1 bg-purple-500 rounded-full animate-ping"></div>
+          <div className="absolute bottom-20 left-1/4 w-1.5 h-1.5 bg-purple-300 rounded-full animate-pulse delay-300"></div>
+          <div className="absolute top-1/2 right-10 w-1 h-1 bg-purple-600 rounded-full animate-ping delay-700"></div>
+        </div>
+
+        <div className="text-center mb-12 opacity-0 relative z-10" data-fade>
+          <div className="bg-background backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-blue-60/20">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
+              {t("prompt_optimization.title")}
+            </h2>
+            <p className="text-lg text-foreground max-w-2xl mx-auto">
+              {t("prompt_optimization.subtitle")}
+            </p>
+          </div>
+        </div>
+
+        <div className="relative z-10">
+          <PromptOptimizationMini />
         </div>
       </section>
 

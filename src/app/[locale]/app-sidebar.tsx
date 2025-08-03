@@ -15,6 +15,7 @@ import {
   Sun,
   Moon,
   ImageIcon,
+  Sparkles,
 } from "lucide-react";
 
 import {
@@ -87,6 +88,11 @@ export function AppSidebar() {
       title: t("image_generation"),
       url: "/image-gen",
       icon: ImageIcon,
+    },
+    {
+      title: t("prompt_optimization"),
+      url: "/prompt-optimization",
+      icon: Sparkles,
     },
     {
       title: t("code_evaluation"),

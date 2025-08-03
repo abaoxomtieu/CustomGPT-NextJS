@@ -60,6 +60,10 @@
         "description": "Lưu trữ và truy xuất lịch sử chat, giúp theo dõi tiến trình và cải thiện trải nghiệm người dùng."
       }
     },
+    "prompt_optimization": {
+      "title": "Thử Tối ưu Prompt",
+      "subtitle": "Trải nghiệm công cụ tối ưu prompt được hỗ trợ bởi AI ngay trên trang này"
+    },
     "cta": {
       "title": "Bắt đầu hành trình học tập thông minh",
       "description": "Khám phá ngay các công cụ AI được thiết kế đặc biệt cho việc học tập và phát triển kỹ năng.",
@@ -86,6 +90,7 @@
     "code_evaluation": "Đánh giá code",
     "code_runner": "Chạy code",
     "image_generation": "Tạo ảnh AI",
+    "prompt_optimization": "Tối ưu prompt",
     "logout": "Đăng xuất",
     "language": {
       "title": "Ngôn ngữ",

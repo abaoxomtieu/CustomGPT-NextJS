@@ -60,6 +60,10 @@
         "description": "Store and retrieve chat history, helping to track progress and improve user experience."
       }
     },
+    "prompt_optimization": {
+      "title": "Try Prompt Optimization",
+      "subtitle": "Experience our AI-powered prompt optimization tool directly on this page"
+    },
     "cta": {
       "title": "Start Your Smart Learning Journey",
       "description": "Discover AI tools specially designed for learning and skill development.",
@@ -86,6 +90,7 @@
     "code_evaluation": "Code Evaluation",
     "code_runner": "Code Runner",
     "image_generation": "Image GenAI",
+    "prompt_optimization": "Prompt Optimization",
     "logout": "Logout",
     "language": {
       "title": "Language",
@@ -698,22 +703,42 @@
       "apiTesting": {
         "title": "Smart API Testing",
         "description": "AI-powered REST API test case generation and validation. Automatically create comprehensive test suites with intelligent assertions.",
-        "features": ["Auto test case generation", "Multi-method support", "Smart assertions", "Detailed reporting"]
+        "features": [
+          "Auto test case generation",
+          "Multi-method support",
+          "Smart assertions",
+          "Detailed reporting"
+        ]
       },
       "codeGrader": {
         "title": "Intelligent Code Grader",
         "description": "Advanced AI evaluation for code quality, structure, and best practices across multiple programming languages.",
-        "features": ["Multi-language support", "Code quality analysis", "Structure evaluation", "Detailed feedback"]
+        "features": [
+          "Multi-language support",
+          "Code quality analysis",
+          "Structure evaluation",
+          "Detailed feedback"
+        ]
       },
       "gradeAssignment": {
         "title": "Assignment Grader",
         "description": "Automated grading system with OCR text extraction and AI-powered answer evaluation for educational assignments.",
-        "features": ["OCR text extraction", "Auto question detection", "AI-powered grading", "Statistical analysis"]
+        "features": [
+          "OCR text extraction",
+          "Auto question detection",
+          "AI-powered grading",
+          "Statistical analysis"
+        ]
       },
       "imageGeneration": {
         "title": "AI Image Creator",
         "description": "Generate stunning images from text prompts or transform existing images with advanced AI technology.",
-        "features": ["Text-to-image", "Image-to-image", "High quality output", "Multiple styles"]
+        "features": [
+          "Text-to-image",
+          "Image-to-image",
+          "High quality output",
+          "Multiple styles"
+        ]
       }
     },
     "technologies": {
@@ -721,11 +746,28 @@
       "subtitle": "Wide range of programming languages and frameworks",
       "languages": {
         "title": "Programming Languages",
-        "list": ["JavaScript", "TypeScript", "Python", "Java", "C++", "C", "HTML", "CSS"]
+        "list": [
+          "JavaScript",
+          "TypeScript",
+          "Python",
+          "Java",
+          "C++",
+          "C",
+          "HTML",
+          "CSS"
+        ]
       },
       "frameworks": {
         "title": "Frameworks & Tools",
-        "list": ["React", "Next.js", "Node.js", "Express", "Flask", "Spring", "Django"]
+        "list": [
+          "React",
+          "Next.js",
+          "Node.js",
+          "Express",
+          "Flask",
+          "Spring",
+          "Django"
+        ]
       }
     },
     "stats": {
