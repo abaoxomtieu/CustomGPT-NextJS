@@ -252,7 +252,7 @@ export function PromptOptimizationMini() {
             <Button
               onClick={handleOptimize}
               disabled={isOptimizing || !originalPrompt.trim()}
-              className="w-full text-xs"
+              className="w-full text-xs bg-blue-primary hover:bg-blue-active"
               size="sm"
             >
               {isOptimizing ? (
