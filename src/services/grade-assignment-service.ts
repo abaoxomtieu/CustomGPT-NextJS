@@ -40,12 +40,6 @@ export const gradeAssignmentApiService = {
     exerciseQuestions: string[]
   ): Promise<{ data: GeneratedAnswer[] | null; error: string | null }> => {
     try {
-      console.log(
-        "📤 Generating answers for",
-        exerciseQuestions.length,
-        "question(s)"
-      );
-
       const response = await axios.post(
         `${ApiDomain}/graded-assignments/generate-answer`,
         { exercise_questions: exerciseQuestions },
@@ -57,7 +51,6 @@ export const gradeAssignmentApiService = {
         }
       );
 
-      console.log("✅ Answers generated successfully");
       return { data: response.data, error: null };
     } catch (err) {
       console.error("❌ Answer generation failed:", err);
@@ -119,21 +112,10 @@ export const gradeAssignmentApiService = {
       const formData = new FormData();
 
       // Add images to form data
-      console.log("📤 Preparing to upload", images.length, "images");
       for (let i = 0; i < images.length; i++) {
         const file = Array.isArray(images) ? images[i] : images[i];
-        console.log(
-          `📎 Adding image ${i + 1}:`,
-          file.name,
-          `(${file.size} bytes)`
-        );
         formData.append("images", file);
       }
-
-      console.log(
-        "🚀 Sending request to:",
-        `${ApiDomain}/graded-assignments/extract-text-from-images`
-      );
       const response = await axios.post<ExtractTextResponse>(
         `${ApiDomain}/graded-assignments/extract-text-from-images`,
         formData,
@@ -144,13 +126,6 @@ export const gradeAssignmentApiService = {
           },
         }
       );
-
-      console.log(
-        "✅ Response received:",
-        response.status,
-        response.statusText
-      );
-      console.log("📥 Response data:", response.data);
 
       if (response.data.success) {
         return { data: response.data.data, error: null };
@@ -202,36 +177,15 @@ export const gradeAssignmentApiService = {
     try {
       const formData = new FormData();
 
-      // Add questions to form data
-      console.log(
-        "📤 Preparing to submit",
-        questions.length,
-        "questions with",
-        files.length,
-        "files"
-      );
       questions.forEach((question, index) => {
-        console.log(
-          `📝 Adding question ${index + 1}:`,
-          question.substring(0, 50) + "..."
-        );
         formData.append("assignment_questions", question);
       });
 
       // Add files to form data
       files.forEach((file, index) => {
-        console.log(
-          `📎 Adding file ${index + 1}:`,
-          file.name,
-          `(${file.size} bytes)`
-        );
         formData.append("files", file);
       });
 
-      console.log(
-        "🚀 Sending grading request to:",
-        `${ApiDomain}/graded-assignments/grade-assignment`
-      );
       const response = await axios.post(
         `${ApiDomain}/graded-assignments/grade-assignment`,
         formData,
@@ -242,14 +196,6 @@ export const gradeAssignmentApiService = {
           },
         }
       );
-
-      console.log(
-        "✅ Grading response received:",
-        response.status,
-        response.statusText
-      );
-      console.log("📥 Grading results:", response.data);
-
       // Backend trả về array trực tiếp, không wrap trong object
       return { data: response.data, error: null };
     } catch (err) {

@@ -927,7 +927,6 @@ const EnhancedIDEEditor: React.FC<EnhancedIDEEditorProps> = ({
               <div className="mt-2">
                 <button
                   onClick={() => {
-                    console.log('Debug: Force analyze clicked');
                     lastAnalyzedRef.current = ''; // Clear analyzed flag
                     analyzeCurrentFile();
                   }}
@@ -956,7 +955,6 @@ const EnhancedIDEEditor: React.FC<EnhancedIDEEditorProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    console.log('Force re-analyze triggered');
                     lastAnalyzedRef.current = ''; // Clear analyzed flag
                     analyzeCurrentFile();
                   }}

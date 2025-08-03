@@ -70,16 +70,6 @@ export function PromptOptimizationMini() {
       const optimizationType =
         activeTab === "system" ? systemOptimizationType : userOptimizationType;
 
-      console.log(
-        "Sending request to:",
-        `${ApiDomain}/prompt-optimization${endpoint}`
-      );
-      console.log("Request body:", {
-        prompt: originalPrompt,
-        optimization_type: optimizationType,
-        model_name: model,
-      });
-
       const response = await fetch(
         `${ApiDomain}/prompt-optimization${endpoint}`,
         {
@@ -95,10 +85,6 @@ export function PromptOptimizationMini() {
           signal: abortControllerRef.current.signal,
         }
       );
-
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Error response:", errorText);
@@ -121,8 +107,6 @@ export function PromptOptimizationMini() {
 
         const chunk = new TextDecoder().decode(value);
         buffer += chunk;
-        console.log("Raw chunk received:", chunk);
-
         // Split by single newlines since each JSON object is on its own line
         const lines = buffer.split("\n");
 
@@ -131,22 +115,17 @@ export function PromptOptimizationMini() {
 
         for (const line of lines) {
           if (line.trim()) {
-            console.log("Processing line:", line);
             try {
               const data = JSON.parse(line.trim());
-              console.log("Parsed data:", data);
 
               if (data.content) {
                 accumulatedContent += data.content;
                 setOptimizedPrompt(accumulatedContent);
-                console.log(
-                  "Updated prompt content, total length:",
-                  accumulatedContent.length
-                );
-                
+
                 // Auto-scroll to bottom
                 if (scrollAreaRef.current) {
-                  scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+                  scrollAreaRef.current.scrollTop =
+                    scrollAreaRef.current.scrollHeight;
                 }
               }
             } catch (e) {
@@ -183,7 +162,7 @@ export function PromptOptimizationMini() {
         console.error("Error optimizing prompt:", error);
         toast.error(
           t("messages.unknownError", {
-            error: error instanceof Error ? error.message : "Unknown error"
+            error: error instanceof Error ? error.message : "Unknown error",
           })
         );
       }
@@ -331,7 +310,9 @@ export function PromptOptimizationMini() {
                   <SelectValue placeholder={t("actions.selectModel")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="gemini-2.5-flash">{t("models.gemini")}</SelectItem>
+                  <SelectItem value="gemini-2.5-flash">
+                    {t("models.gemini")}
+                  </SelectItem>
                   <SelectItem value="gpt-4">{t("models.gpt4")}</SelectItem>
                   <SelectItem value="claude-3">{t("models.claude")}</SelectItem>
                 </SelectContent>

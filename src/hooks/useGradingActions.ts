@@ -15,7 +15,6 @@ export const useGradingActions = ({
   setIsGrading,
   setGradeResults,
 }: UseGradingActionsProps) => {
-  
   const submitGrading = async () => {
     if (questions.length === 0 || questionFiles.size === 0) {
       console.error("Vui lòng upload ít nhất một file để chấm điểm");
@@ -35,12 +34,6 @@ export const useGradingActions = ({
           filesArray.push(file);
         }
       });
-
-      console.log(
-        "🚀 Submitting grading request with",
-        questionsWithFiles.length,
-        "questions"
-      );
 
       // Sử dụng service thay vì gọi API trực tiếp
       const { data: results, error } =
@@ -67,7 +60,6 @@ export const useGradingActions = ({
       );
 
       setGradeResults(mappedResults);
-      console.log("✅ Chấm điểm thành công!");
       toast.success("Chấm điểm thành công!");
     } catch (error) {
       console.error("❌ Error grading assignment:", error);

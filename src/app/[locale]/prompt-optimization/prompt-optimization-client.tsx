@@ -84,16 +84,6 @@ export default function PromptOptimizationClient() {
       const optimizationType =
         activeTab === "system" ? systemOptimizationType : userOptimizationType;
 
-      console.log(
-        "Sending request to:",
-        `${ApiDomain}/prompt-optimization${endpoint}`
-      );
-      console.log("Request body:", {
-        prompt: originalPrompt,
-        optimization_type: optimizationType,
-        model_name: model,
-      });
-
       const response = await fetch(
         `${ApiDomain}/prompt-optimization${endpoint}`,
         {
@@ -109,9 +99,6 @@ export default function PromptOptimizationClient() {
           signal: abortControllerRef.current.signal,
         }
       );
-
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -135,7 +122,6 @@ export default function PromptOptimizationClient() {
 
         const chunk = new TextDecoder().decode(value);
         buffer += chunk;
-        console.log("Raw chunk received:", chunk);
 
         // Split by single newlines since each JSON object is on its own line
         const lines = buffer.split("\n");
@@ -145,18 +131,11 @@ export default function PromptOptimizationClient() {
 
         for (const line of lines) {
           if (line.trim()) {
-            console.log("Processing line:", line);
             try {
               const data = JSON.parse(line.trim());
-              console.log("Parsed data:", data);
-
               if (data.content) {
                 accumulatedContent += data.content;
                 setOptimizedPrompt(accumulatedContent);
-                console.log(
-                  "Updated prompt content, total length:",
-                  accumulatedContent.length
-                );
               }
             } catch (e) {
               console.warn("Failed to parse line:", line, "Error:", e);
@@ -192,7 +171,7 @@ export default function PromptOptimizationClient() {
         console.error("Error optimizing prompt:", error);
         toast.error(
           t("messages.unknownError", {
-            error: error instanceof Error ? error.message : "Unknown error"
+            error: error instanceof Error ? error.message : "Unknown error",
           })
         );
       }
@@ -329,9 +308,13 @@ export default function PromptOptimizationClient() {
                       <SelectValue placeholder={t("actions.selectModel")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="gemini-2.5-flash">{t("models.gemini")}</SelectItem>
+                      <SelectItem value="gemini-2.5-flash">
+                        {t("models.gemini")}
+                      </SelectItem>
                       <SelectItem value="gpt-4">{t("models.gpt4")}</SelectItem>
-                      <SelectItem value="claude-3">{t("models.claude")}</SelectItem>
+                      <SelectItem value="claude-3">
+                        {t("models.claude")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -350,7 +333,9 @@ export default function PromptOptimizationClient() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder={t("actions.selectTemplate")} />
+                        <SelectValue
+                          placeholder={t("actions.selectTemplate")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="general">
@@ -372,7 +357,9 @@ export default function PromptOptimizationClient() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder={t("actions.selectTemplate")} />
+                        <SelectValue
+                          placeholder={t("actions.selectTemplate")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="professional">
@@ -506,7 +493,9 @@ export default function PromptOptimizationClient() {
                       {isOptimizing && (
                         <div className="flex items-center gap-2 mt-4 text-muted-foreground">
                           <Loader2 className="w-3 h-3 animate-spin" />
-                          <span className="text-xs">{t("states.generating")}</span>
+                          <span className="text-xs">
+                            {t("states.generating")}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -518,7 +507,9 @@ export default function PromptOptimizationClient() {
                       {isOptimizing && (
                         <div className="flex items-center gap-2 mt-4 text-muted-foreground">
                           <Loader2 className="w-3 h-3 animate-spin" />
-                          <span className="text-xs">{t("states.generating")}</span>
+                          <span className="text-xs">
+                            {t("states.generating")}
+                          </span>
                         </div>
                       )}
                     </div>

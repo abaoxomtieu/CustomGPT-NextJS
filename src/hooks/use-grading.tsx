@@ -169,7 +169,6 @@ export const useGrading = ({
               }
             })
           ) {
-            console.log("Final chunk detected, breaking loop");
             break;
           }
         }
@@ -183,10 +182,6 @@ export const useGrading = ({
             if (chunk.type === "folder_structure") {
               setGradeFolderStructureResult(chunk.output as string);
             } else if (chunk.type === "criteria_result") {
-              console.log(
-                `✅ Processing remaining criteria ${chunk.criteria_index}/${chunk.total_criteria}:`,
-                chunk.result
-              );
               if (chunk.partial_results) {
                 setGradeResult(chunk.partial_results);
               }

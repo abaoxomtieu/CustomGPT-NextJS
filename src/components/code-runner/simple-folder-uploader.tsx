@@ -42,16 +42,6 @@ const SimpleFolderUploader: React.FC<SimpleFolderUploaderProps> = ({
 
   // Process files to create folder structure
   const processFolderStructure = (files: File[]): FolderStructure => {
-    console.log("=== Processing Folder Structure ===");
-    console.log(
-      "Input files:",
-      files.map((f) => ({
-        name: f.name,
-        path: (f as any).webkitRelativePath || f.name,
-        size: f.size,
-      }))
-    );
-
     const fileNodes: Map<string, FileNode> = new Map();
     const rootNodes: FileNode[] = [];
 
@@ -72,9 +62,6 @@ const SimpleFolderUploader: React.FC<SimpleFolderUploaderProps> = ({
       const extension = fileName.includes(".")
         ? fileName.split(".").pop()?.toLowerCase()
         : "";
-
-      console.log(`Processing file ${index + 1}: ${relativePath}`);
-
       // Create file node
       const fileNode: FileNode = {
         id: `file-${index}`,
@@ -97,7 +84,6 @@ const SimpleFolderUploader: React.FC<SimpleFolderUploaderProps> = ({
 
         let folder = fileNodes.get(currentPath);
         if (!folder) {
-          console.log(`Creating folder: ${currentPath}`);
           folder = {
             id: `folder-${currentPath}`,
             name: pathParts[i],
@@ -128,7 +114,6 @@ const SimpleFolderUploader: React.FC<SimpleFolderUploaderProps> = ({
       totalSize,
     };
 
-    console.log("Created folder structure:", structure);
     return structure;
   };
 
@@ -136,16 +121,6 @@ const SimpleFolderUploader: React.FC<SimpleFolderUploaderProps> = ({
   const handleFolderSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
-
-    console.log("=== Folder Input Selection ===");
-    console.log(
-      "Selected files:",
-      files.map((f) => ({
-        name: f.name,
-        path: (f as any).webkitRelativePath || f.name,
-        size: f.size,
-      }))
-    );
 
     setIsProcessing(true);
 
@@ -175,7 +150,6 @@ const SimpleFolderUploader: React.FC<SimpleFolderUploaderProps> = ({
     e.preventDefault();
     setIsDragOver(false);
 
-    console.log("=== Drag & Drop Event ===");
     const items = e.dataTransfer.items;
     if (!items) return;
 
@@ -199,7 +173,6 @@ const SimpleFolderUploader: React.FC<SimpleFolderUploaderProps> = ({
                 writable: false,
               });
               files.push(file);
-              console.log(`Added file: ${relativePath}`);
               resolve();
             });
           });
@@ -237,15 +210,6 @@ const SimpleFolderUploader: React.FC<SimpleFolderUploaderProps> = ({
           }
         }
       }
-
-      console.log(
-        "Processed files from drag & drop:",
-        files.map((f) => ({
-          name: f.name,
-          path: (f as any).webkitRelativePath || f.name,
-          size: f.size,
-        }))
-      );
 
       if (files.length === 0) {
         console.warn("No files found in dropped content");

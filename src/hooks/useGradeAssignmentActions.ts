@@ -1,6 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
 import { Question, ExtractedData, GradeResult } from "@/types/grade-assignment";
-import { gradeAssignmentApiService, GeneratedAnswer } from "@/services/grade-assignment-service";
+import {
+  gradeAssignmentApiService,
+  GeneratedAnswer,
+} from "@/services/grade-assignment-service";
 import { toast } from "sonner";
 
 interface UseGradeAssignmentActionsProps {
@@ -34,9 +37,7 @@ export const useGradeAssignmentActions = ({
   generatedAnswers,
   generatingAnswerIds,
 }: UseGradeAssignmentActionsProps) => {
-  
   const handleExtractComplete = (data: ExtractedData) => {
-    console.log("Extracted data received:", data);
     setExtractedData(data);
 
     const questionsArray: Question[] = (data.split_questions || []).map(
@@ -90,7 +91,7 @@ export const useGradeAssignmentActions = ({
       text: "",
       type: "manual",
     };
-    
+
     if (index !== undefined) {
       const updated = [...questions];
       updated.splice(index + 1, 0, newQuestion);
@@ -98,16 +99,16 @@ export const useGradeAssignmentActions = ({
     } else {
       setQuestions([...questions, newQuestion]);
     }
-    
+
     setEditingQuestionId(newQuestion.id);
   };
 
   const removeQuestion = (questionId: string, index: number) => {
-    setQuestions(questions.filter(q => q.id !== questionId));
+    setQuestions(questions.filter((q) => q.id !== questionId));
     const newFiles = new Map(questionFiles);
     newFiles.delete(index);
     setQuestionFiles(newFiles);
-    setGeneratedAnswers(prev => {
+    setGeneratedAnswers((prev) => {
       const newMap = new Map(prev);
       newMap.delete(questionId);
       return newMap;
@@ -115,9 +116,9 @@ export const useGradeAssignmentActions = ({
   };
 
   const updateQuestion = (questionId: string, text: string) => {
-    setQuestions(questions.map(q => 
-      q.id === questionId ? { ...q, text } : q
-    ));
+    setQuestions(
+      questions.map((q) => (q.id === questionId ? { ...q, text } : q))
+    );
   };
 
   const generateAnswerForQuestion = async (question: Question) => {
