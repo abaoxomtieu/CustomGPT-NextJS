@@ -40,7 +40,7 @@ import Image from "next/image";
 import ParticlesBackground from "../../components/back-ground";
 import { useTheme } from "next-themes";
 import { useIsMobile } from "@/hooks/use-mobile";
-import PromptOptimizationMini from "@/components/prompt-optimization-mini";
+import { PromptOptimizationMini } from "@/components/prompt-optimization-mini";
 
 // Intersection Observer hook for fade-in animations
 const useIntersectionObserver = () => {

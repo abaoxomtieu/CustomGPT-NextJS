@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ApiDomain } from "@/constant";
 import MarkdownRenderer from "@/components/markdown-render";
+import { useTranslations } from "next-intl";
 
 type OptimizationType = "system" | "user";
 type SystemOptimizationType =
@@ -52,6 +53,7 @@ export default function PromptOptimizationClient() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const t = useTranslations("promptOptimization");
 
   // Auto-scroll to bottom when content updates
   useEffect(() => {
@@ -62,7 +64,7 @@ export default function PromptOptimizationClient() {
 
   const handleOptimize = async () => {
     if (!originalPrompt.trim()) {
-      toast.error("Vui lòng nhập prompt cần tối ưu hóa");
+      toast.error(t("messages.enterPrompt"));
       return;
     }
 
@@ -176,24 +178,22 @@ export default function PromptOptimizationClient() {
         }
       }
 
-      toast.success("Tối ưu hóa prompt thành công!");
+      toast.success(t("messages.optimizationSuccess"));
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
-        toast.info("Đã hủy tối ưu hóa prompt");
+        toast.info(t("messages.optimizationCancelled"));
       } else if (
         error instanceof TypeError &&
         error.message.includes("Failed to fetch")
       ) {
         console.error("Network error - CORS or connection issue:", error);
-        toast.error(
-          "Không thể kết nối tới server. Vui lòng kiểm tra kết nối mạng hoặc server backend."
-        );
+        toast.error(t("messages.networkError"));
       } else {
         console.error("Error optimizing prompt:", error);
         toast.error(
-          `Có lỗi xảy ra khi tối ưu hóa prompt: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`
+          t("messages.unknownError", {
+            error: error instanceof Error ? error.message : "Unknown error"
+          })
         );
       }
     } finally {
@@ -211,7 +211,7 @@ export default function PromptOptimizationClient() {
   const handleCopy = () => {
     if (optimizedPrompt) {
       navigator.clipboard.writeText(optimizedPrompt);
-      toast.success("Đã sao chép prompt!");
+      toast.success(t("messages.copied"));
     }
   };
 
@@ -252,12 +252,12 @@ export default function PromptOptimizationClient() {
               <div className="p-2 rounded-lg bg-primary/10">
                 <Sparkles className="w-5 h-5 text-primary" />
               </div>
-              <h1 className="text-xl font-semibold">Prompt Optimization</h1>
+              <h1 className="text-xl font-semibold">{t("title")}</h1>
             </div>
           </div>
           <Badge variant="secondary" className="hidden sm:flex">
             <Brain className="w-3 h-3 mr-1" />
-            AI Powered
+            {t("badge")}
           </Badge>
         </div>
       </header>
@@ -274,11 +274,11 @@ export default function PromptOptimizationClient() {
                   htmlFor="original-prompt"
                   className="text-base font-medium"
                 >
-                  Original Prompt
+                  {t("originalPrompt")}
                 </Label>
                 <Textarea
                   id="original-prompt"
-                  placeholder="Enter your original prompt to optimize..."
+                  placeholder={t("placeholders.originalPrompt")}
                   value={originalPrompt}
                   onChange={(e) => setOriginalPrompt(e.target.value)}
                   className="min-h-[150px] sm:min-h-[200px] resize-none"
@@ -300,9 +300,9 @@ export default function PromptOptimizationClient() {
                     >
                       <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
                       <span className="hidden sm:inline">
-                        System Prompt Optimization
+                        {t("types.systemFull")}
                       </span>
-                      <span className="sm:hidden">System</span>
+                      <span className="sm:hidden">{t("types.system")}</span>
                     </TabsTrigger>
                     <TabsTrigger
                       value="user"
@@ -310,9 +310,9 @@ export default function PromptOptimizationClient() {
                     >
                       <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                       <span className="hidden sm:inline">
-                        User Prompt Optimization
+                        {t("types.userFull")}
                       </span>
-                      <span className="sm:hidden">User</span>
+                      <span className="sm:hidden">{t("types.user")}</span>
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
@@ -322,23 +322,23 @@ export default function PromptOptimizationClient() {
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">
-                    Optimization Model
+                    {t("labels.optimizationModel")}
                   </Label>
                   <Select value={model} onValueChange={setModel}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select model" />
+                      <SelectValue placeholder={t("actions.selectModel")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="gemini-2.5-flash">Gemini</SelectItem>
-                      <SelectItem value="gpt-4">GPT-4</SelectItem>
-                      <SelectItem value="claude-3">Claude 3</SelectItem>
+                      <SelectItem value="gemini-2.5-flash">{t("models.gemini")}</SelectItem>
+                      <SelectItem value="gpt-4">{t("models.gpt4")}</SelectItem>
+                      <SelectItem value="claude-3">{t("models.claude")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">
-                    Optimization Template
+                    {t("labels.optimizationTemplate")}
                   </Label>
                   {activeTab === "system" ? (
                     <Select
@@ -350,17 +350,17 @@ export default function PromptOptimizationClient() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select template" />
+                        <SelectValue placeholder={t("actions.selectTemplate")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="general">
-                          General Optimization
+                          {t("templates.general")}
                         </SelectItem>
                         <SelectItem value="general_with_output_format">
-                          General with Output Format
+                          {t("templates.generalWithOutput")}
                         </SelectItem>
                         <SelectItem value="analytical_structured">
-                          Analytical Structured Optimization
+                          {t("templates.analyticalStructured")}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -372,17 +372,17 @@ export default function PromptOptimizationClient() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select template" />
+                        <SelectValue placeholder={t("actions.selectTemplate")} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="professional">
-                          Professional Optimization
+                          {t("templates.professional")}
                         </SelectItem>
                         <SelectItem value="basic">
-                          Basic Optimization
+                          {t("templates.basic")}
                         </SelectItem>
                         <SelectItem value="step_by_step_planning">
-                          Step by Step Planning
+                          {t("templates.stepByStep")}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -401,11 +401,11 @@ export default function PromptOptimizationClient() {
                   {isOptimizing ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Optimizing...
+                      {t("actions.optimizing")}
                     </>
                   ) : (
                     <>
-                      Optimize
+                      {t("actions.optimize")}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </>
                   )}
@@ -430,7 +430,7 @@ export default function PromptOptimizationClient() {
             <div className="p-3 sm:p-4 border-b bg-background">
               <div className="flex items-center justify-between">
                 <h3 className="text-base sm:text-lg font-semibold">
-                  Optimized Prompt
+                  {t("optimizedPrompt")}
                 </h3>
                 <div className="flex items-center gap-2">
                   <Tabs
@@ -441,10 +441,10 @@ export default function PromptOptimizationClient() {
                   >
                     <TabsList className="h-7 sm:h-8">
                       <TabsTrigger value="render" className="text-xs px-2">
-                        Render
+                        {t("renderModes.render")}
                       </TabsTrigger>
                       <TabsTrigger value="source" className="text-xs px-2">
-                        Source
+                        {t("renderModes.source")}
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>
@@ -484,10 +484,10 @@ export default function PromptOptimizationClient() {
                       <div className="text-center">
                         <Sparkles className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 opacity-50" />
                         <p className="text-base sm:text-lg">
-                          Optimized prompt will be shown here...
+                          {t("states.emptyState")}
                         </p>
                         <p className="text-xs sm:text-sm mt-2">
-                          Enter a prompt and click optimize to get started
+                          {t("states.emptyStateInstruction")}
                         </p>
                       </div>
                     </div>
@@ -496,7 +496,7 @@ export default function PromptOptimizationClient() {
                       <div className="text-center">
                         <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-4 animate-spin text-primary" />
                         <p className="text-muted-foreground text-sm sm:text-base">
-                          Optimizing your prompt...
+                          {t("states.optimizingPrompt")}
                         </p>
                       </div>
                     </div>
@@ -506,7 +506,7 @@ export default function PromptOptimizationClient() {
                       {isOptimizing && (
                         <div className="flex items-center gap-2 mt-4 text-muted-foreground">
                           <Loader2 className="w-3 h-3 animate-spin" />
-                          <span className="text-xs">Generating...</span>
+                          <span className="text-xs">{t("states.generating")}</span>
                         </div>
                       )}
                     </div>
@@ -518,7 +518,7 @@ export default function PromptOptimizationClient() {
                       {isOptimizing && (
                         <div className="flex items-center gap-2 mt-4 text-muted-foreground">
                           <Loader2 className="w-3 h-3 animate-spin" />
-                          <span className="text-xs">Generating...</span>
+                          <span className="text-xs">{t("states.generating")}</span>
                         </div>
                       )}
                     </div>
@@ -539,7 +539,7 @@ export default function PromptOptimizationClient() {
           className="flex items-center gap-2 px-3 py-2 bg-background/80 backdrop-blur-sm border border-border rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-sm text-muted-foreground hover:text-foreground"
         >
           <Github className="w-4 h-4" />
-          <span>Original by linshenkx</span>
+          <span>{t("credit")}</span>
         </a>
       </div>
     </div>

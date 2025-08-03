@@ -98,6 +98,89 @@
       "vi": "Vietnamese"
     }
   },
+  "promptOptimization": {
+    "title": "Prompt Optimization",
+    "subtitle": "AI-powered prompt enhancement tool",
+    "originalPrompt": "Original Prompt",
+    "optimizedPrompt": "Optimized Prompt",
+    "optimizedResult": "Optimized Result",
+    "placeholders": {
+      "originalPrompt": "Enter your original prompt to optimize...",
+      "miniPrompt": "Enter your prompt to optimize...",
+      "selectTemplate": "Select template..."
+    },
+    "labels": {
+      "optimizationModel": "Optimization Model",
+      "optimizationType": "Type",
+      "optimizationTemplate": "Optimization Template",
+      "template": "Template",
+      "optimizedPrompt": "Optimized Prompt",
+      "render": "Render",
+      "source": "Source"
+    },
+    "types": {
+      "system": "System",
+      "user": "User",
+      "systemFull": "System Prompt Optimization",
+      "userFull": "User Prompt Optimization"
+    },
+    "templates": {
+      "general": "General Optimization",
+      "generalShort": "General",
+      "generalWithOutput": "General with Output Format",
+      "generalWithOutputFormat": "General with Output Format",
+      "generalWithOutputShort": "With Output Format",
+      "analyticalStructured": "Analytical Structured Optimization",
+      "analyticalStructuredShort": "Analytical",
+      "professional": "Professional Optimization",
+      "professionalShort": "Professional",
+      "basic": "Basic Optimization",
+      "basicShort": "Basic",
+      "stepByStep": "Step by Step Planning",
+      "stepByStepShort": "Step by Step",
+      "gpt": "GPT",
+      "claude": "Claude",
+      "gemini": "Gemini"
+    },
+    "models": {
+      "gemini": "Gemini",
+      "gpt4": "GPT-4",
+      "claude": "Claude 3"
+    },
+    "actions": {
+      "optimize": "Optimize",
+      "optimizing": "Optimizing...",
+      "stop": "Stop",
+      "copy": "Copy",
+      "fullVersion": "Full Version",
+      "selectModel": "Select model",
+      "selectTemplate": "Select template"
+    },
+    "renderModes": {
+      "render": "Render",
+      "source": "Source"
+    },
+    "states": {
+      "optimizingPrompt": "Optimizing your prompt...",
+      "optimizing": "Optimizing...",
+      "generating": "Generating...",
+      "emptyState": "Optimized prompt will be shown here...",
+      "emptyStateInstruction": "Enter a prompt and click optimize to get started",
+      "emptyStateMini": "Optimized prompt will appear here..."
+    },
+    "messages": {
+      "enterPrompt": "Please enter a prompt to optimize",
+      "optimizationSuccess": "Prompt optimized successfully!",
+      "optimizationCancelled": "Optimization cancelled",
+      "copied": "Prompt copied!",
+      "networkError": "Cannot connect to server. Please check your network connection or backend server.",
+      "unknownError": "An error occurred while optimizing the prompt: {error}",
+      "emptyState": "Optimized prompt will be shown here...",
+      "error": "Error"
+    },
+    "badge": "AI Powered",
+    "credit": "Original by linshenkx"
+  },
   "aiCombat": {
     "loading": "Loading chatbot list...",
     "title": "AI COMBAT ARENA",

@@ -98,6 +98,89 @@
       "vi": "Tiếng Việt"
     }
   },
+  "promptOptimization": {
+    "title": "Tối Ưu Prompt",
+    "subtitle": "Công cụ cải thiện prompt được hỗ trợ bởi AI",
+    "originalPrompt": "Prompt Gốc",
+    "optimizedPrompt": "Prompt Đã Tối Ưu",
+    "optimizedResult": "Kết Quả Tối Ưu",
+    "placeholders": {
+      "originalPrompt": "Nhập prompt gốc để tối ưu hóa...",
+      "miniPrompt": "Nhập prompt để tối ưu hóa...",
+      "selectTemplate": "Chọn mẫu..."
+    },
+    "labels": {
+      "optimizationModel": "Mô Hình Tối Ưu",
+      "optimizationType": "Loại",
+      "optimizationTemplate": "Mẫu Tối Ưu",
+      "template": "Mẫu",
+      "optimizedPrompt": "Prompt Đã Tối Ưu",
+      "render": "Hiển Thị",
+      "source": "Mã Nguồn"
+    },
+    "types": {
+      "system": "System",
+      "user": "User",
+      "systemFull": "Tối Ưu System Prompt",
+      "userFull": "Tối Ưu User Prompt"
+    },
+    "templates": {
+      "general": "Tối Ưu Tổng Quát",
+      "generalShort": "Tổng Quát",
+      "generalWithOutput": "Tổng Quát với Định Dạng Đầu Ra",
+      "generalWithOutputFormat": "Tổng Quát với Định Dạng Đầu Ra",
+      "generalWithOutputShort": "Với Định Dạng",
+      "analyticalStructured": "Tối Ưu Phân Tích Có Cấu Trúc",
+      "analyticalStructuredShort": "Phân Tích",
+      "professional": "Tối Ưu Chuyên Nghiệp",
+      "professionalShort": "Chuyên Nghiệp",
+      "basic": "Tối Ưu Cơ Bản",
+      "basicShort": "Cơ Bản",
+      "stepByStep": "Lập Kế Hoạch Từng Bước",
+      "stepByStepShort": "Từng Bước",
+      "gpt": "GPT",
+      "claude": "Claude",
+      "gemini": "Gemini"
+    },
+    "models": {
+      "gemini": "Gemini",
+      "gpt4": "GPT-4",
+      "claude": "Claude 3"
+    },
+    "actions": {
+      "optimize": "Tối Ưu",
+      "optimizing": "Đang tối ưu...",
+      "stop": "Dừng",
+      "copy": "Sao chép",
+      "fullVersion": "Phiên Bản Đầy Đủ",
+      "selectModel": "Chọn mô hình",
+      "selectTemplate": "Chọn mẫu"
+    },
+    "renderModes": {
+      "render": "Hiển Thị",
+      "source": "Mã Nguồn"
+    },
+    "states": {
+      "optimizingPrompt": "Đang tối ưu prompt của bạn...",
+      "optimizing": "Đang tối ưu...",
+      "generating": "Đang tạo...",
+      "emptyState": "Prompt đã tối ưu sẽ hiển thị ở đây...",
+      "emptyStateInstruction": "Nhập prompt và nhấn tối ưu để bắt đầu",
+      "emptyStateMini": "Prompt đã tối ưu sẽ xuất hiện ở đây..."
+    },
+    "messages": {
+      "enterPrompt": "Vui lòng nhập prompt cần tối ưu hóa",
+      "optimizationSuccess": "Tối ưu hóa prompt thành công!",
+      "optimizationCancelled": "Đã hủy tối ưu hóa prompt",
+      "copied": "Đã sao chép prompt!",
+      "networkError": "Không thể kết nối tới server. Vui lòng kiểm tra kết nối mạng hoặc server backend.",
+      "unknownError": "Có lỗi xảy ra khi tối ưu hóa prompt: {error}",
+      "emptyState": "Prompt đã tối ưu sẽ hiển thị ở đây...",
+      "error": "Lỗi"
+    },
+    "badge": "Hỗ Trợ AI",
+    "credit": "Nguồn gốc bởi linshenkx"
+  },
   "aiCombat": {
     "loading": "Đang tải danh sách chatbot...",
     "title": "ĐẤU TRƯỜNG AI",
