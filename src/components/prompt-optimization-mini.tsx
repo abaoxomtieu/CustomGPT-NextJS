@@ -16,13 +16,15 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles, Copy, Github } from "lucide-react";
 import MarkdownRenderer from "@/components/markdown-render";
 import { useTranslations } from "next-intl";
+import { ApiDomain } from "@/constant";
+import { toast } from "sonner";
 
 type OptimizationType = "system" | "user";
 type SystemOptimizationType =
   | "general"
   | "general_with_output_format"
   | "analytical_structured";
-type UserOptimizationType = "gpt" | "claude" | "gemini";
+type UserOptimizationType = "professional" | "basic" | "step_by_step_planning";
 
 interface OptimizeRequest {
   prompt: string;
@@ -39,82 +41,151 @@ export function PromptOptimizationMini() {
   const [systemOptimizationType, setSystemOptimizationType] =
     useState<SystemOptimizationType>("general");
   const [userOptimizationType, setUserOptimizationType] =
-    useState<UserOptimizationType>("gpt");
+    useState<UserOptimizationType>("professional");
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [renderMode, setRenderMode] = useState<"render" | "source">("render");
+  const [model, setModel] = useState("gemini-2.5-flash");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const handleOptimize = async () => {
-    if (!originalPrompt.trim()) return;
+    if (!originalPrompt.trim()) {
+      toast.error(t("messages.enterPrompt"));
+      return;
+    }
 
     setIsOptimizing(true);
     setOptimizedPrompt("");
 
-    // Create new AbortController for this request
+    // Cancel previous request if exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
     abortControllerRef.current = new AbortController();
 
     try {
-      const requestData: OptimizeRequest = {
-        prompt: originalPrompt,
-        prompt_type: activeTab,
-        optimization_type:
-          activeTab === "system"
-            ? systemOptimizationType
-            : userOptimizationType,
-      };
+      const endpoint =
+        activeTab === "system" ? "/system-prompt" : "/user-prompt";
+      const optimizationType =
+        activeTab === "system" ? systemOptimizationType : userOptimizationType;
 
-      const response = await fetch("/api/prompt-optimization/optimize", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-        signal: abortControllerRef.current.signal,
+      console.log(
+        "Sending request to:",
+        `${ApiDomain}/prompt-optimization${endpoint}`
+      );
+      console.log("Request body:", {
+        prompt: originalPrompt,
+        optimization_type: optimizationType,
+        model_name: model,
       });
 
+      const response = await fetch(
+        `${ApiDomain}/prompt-optimization${endpoint}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            prompt: originalPrompt,
+            optimization_type: optimizationType,
+            model_name: model,
+          }),
+          signal: abortControllerRef.current.signal,
+        }
+      );
+
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error("Error response:", errorText);
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
       }
 
       const reader = response.body?.getReader();
       if (!reader) {
-        throw new Error("No reader available");
+        throw new Error("Response body is null");
       }
 
-      let accumulatedText = "";
+      let accumulatedContent = "";
+      let buffer = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
         const chunk = new TextDecoder().decode(value);
-        const lines = chunk.split("\n");
+        buffer += chunk;
+        console.log("Raw chunk received:", chunk);
+
+        // Split by single newlines since each JSON object is on its own line
+        const lines = buffer.split("\n");
+
+        // Keep the last incomplete line in buffer
+        buffer = lines.pop() || "";
 
         for (const line of lines) {
-          if (line.startsWith("data: ") && line !== "data: [DONE]") {
+          if (line.trim()) {
+            console.log("Processing line:", line);
             try {
-              const jsonData = JSON.parse(line.slice(6));
-              if (jsonData.content) {
-                accumulatedText += jsonData.content;
-                setOptimizedPrompt(accumulatedText);
+              const data = JSON.parse(line.trim());
+              console.log("Parsed data:", data);
 
+              if (data.content) {
+                accumulatedContent += data.content;
+                setOptimizedPrompt(accumulatedContent);
+                console.log(
+                  "Updated prompt content, total length:",
+                  accumulatedContent.length
+                );
+                
                 // Auto-scroll to bottom
                 if (scrollAreaRef.current) {
-                  scrollAreaRef.current.scrollTop =
-                    scrollAreaRef.current.scrollHeight;
+                  scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
                 }
               }
             } catch (e) {
-              console.error("Error parsing JSON:", e);
+              console.warn("Failed to parse line:", line, "Error:", e);
             }
           }
         }
       }
-    } catch (error: any) {
-      if (error.name !== "AbortError") {
+
+      // Process any remaining buffer
+      if (buffer.trim()) {
+        try {
+          const data = JSON.parse(buffer.trim());
+          if (data.content) {
+            accumulatedContent += data.content;
+            setOptimizedPrompt(accumulatedContent);
+          }
+        } catch (e) {
+          console.warn("Failed to parse final buffer:", buffer, "Error:", e);
+        }
+      }
+
+      toast.success(t("messages.optimizationSuccess"));
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        toast.info(t("messages.optimizationCancelled"));
+      } else if (
+        error instanceof TypeError &&
+        error.message.includes("Failed to fetch")
+      ) {
+        console.error("Network error - CORS or connection issue:", error);
+        toast.error(t("messages.networkError"));
+      } else {
         console.error("Error optimizing prompt:", error);
-        setOptimizedPrompt(`${t("messages.error")}: ${error.message}`);
+        toast.error(
+          t("messages.unknownError", {
+            error: error instanceof Error ? error.message : "Unknown error"
+          })
+        );
       }
     } finally {
       setIsOptimizing(false);
@@ -125,13 +196,13 @@ export function PromptOptimizationMini() {
   const handleStopOptimization = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
-      setIsOptimizing(false);
     }
   };
 
   const handleCopy = async () => {
     if (optimizedPrompt) {
       await navigator.clipboard.writeText(optimizedPrompt);
+      toast.success(t("messages.copied"));
     }
   };
 
@@ -236,16 +307,35 @@ export function PromptOptimizationMini() {
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="gpt">{t("templates.gpt")}</SelectItem>
-                    <SelectItem value="claude">
-                      {t("templates.claude")}
+                    <SelectItem value="professional">
+                      {t("templates.professional")}
                     </SelectItem>
-                    <SelectItem value="gemini">
-                      {t("templates.gemini")}
+                    <SelectItem value="basic">
+                      {t("templates.basic")}
+                    </SelectItem>
+                    <SelectItem value="step_by_step_planning">
+                      {t("templates.stepByStep")}
                     </SelectItem>
                   </SelectContent>
                 </Select>
               )}
+            </div>
+
+            {/* Model Selection */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">
+                {t("labels.optimizationModel")}
+              </Label>
+              <Select value={model} onValueChange={setModel}>
+                <SelectTrigger className="text-xs">
+                  <SelectValue placeholder={t("actions.selectModel")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="gemini-2.5-flash">{t("models.gemini")}</SelectItem>
+                  <SelectItem value="gpt-4">{t("models.gpt4")}</SelectItem>
+                  <SelectItem value="claude-3">{t("models.claude")}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Optimize Button */}
