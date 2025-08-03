@@ -204,10 +204,7 @@ const HomeClient: React.FC = () => {
                   className="text-sm sm:text-base md:text-lg text-foreground leading-relaxed max-w-3xl mx-auto opacity-0"
                   data-fade
                 >
-                  {t("description")} Platform tích hợp đầy đủ các công cụ AI
-                  tiên tiến: API Testing tự động, Code Grader thông minh,
-                  Assignment Grader với OCR, và AI Image Generator - tất cả
-                  trong một nền tảng thống nhất.
+                  {t("description")} {t("platform_description")}
                 </p>
               </div>
 
@@ -246,14 +243,12 @@ const HomeClient: React.FC = () => {
         </div>
 
         <div className="text-center mb-16 opacity-0 relative z-10" data-fade>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-blue-60/20">
+          <div className="bg-background backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-blue-60/20">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
               {t("features_title")}
             </h2>
             <p className="text-lg text-foreground max-w-2xl mx-auto">
-              Khám phá những tính năng mạnh mẽ và công cụ AI tiên tiến giúp bạn
-              tạo ra những trải nghiệm tuyệt vời trong phát triển phần mềm và
-              giáo dục
+              {t("features_subtitle")}
             </p>
           </div>
         </div>
@@ -304,9 +299,8 @@ const HomeClient: React.FC = () => {
             },
             {
               icon: <TestTube className="text-4xl text-blue-500" />,
-              title: "Smart API Testing",
-              description:
-                "AI-powered REST API test case generation and validation. Automatically create comprehensive test suites with intelligent assertions and detailed reporting.",
+              title: t("features.api_testing.title"),
+              description: t("features.api_testing.description"),
               direction: "right",
               image: "4.jpeg",
               href: "/api-testing",
@@ -319,9 +313,8 @@ const HomeClient: React.FC = () => {
             },
             {
               icon: <Code className="text-4xl text-green-500" />,
-              title: "Intelligent Code Grader",
-              description:
-                "Advanced AI evaluation for code quality, structure, and best practices across multiple programming languages with detailed feedback.",
+              title: t("features.code_grader.title"),
+              description: t("features.code_grader.description"),
               direction: "left",
               image: "5.jpeg",
               href: "/code-grader",
@@ -334,9 +327,8 @@ const HomeClient: React.FC = () => {
             },
             {
               icon: <GraduationCap className="text-4xl text-purple-500" />,
-              title: "Assignment Grader",
-              description:
-                "Automated grading system with OCR text extraction and AI-powered answer evaluation for educational assignments.",
+              title: t("features.assignment_grader.title"),
+              description: t("features.assignment_grader.description"),
               direction: "right",
               image: "6.jpeg",
               href: "/grade-assignment",
@@ -349,9 +341,8 @@ const HomeClient: React.FC = () => {
             },
             {
               icon: <ImageIcon className="text-4xl text-pink-500" />,
-              title: "AI Image Creator",
-              description:
-                "Generate stunning images from text prompts or transform existing images with advanced AI technology and multiple artistic styles.",
+              title: t("features.image_generator.title"),
+              description: t("features.image_generator.description"),
               direction: "left",
               image: "7.jpeg",
               href: "/image-gen",
@@ -412,12 +403,12 @@ const HomeClient: React.FC = () => {
                   <div className="flex gap-3 mt-6">
                     <Link href={feature.href || "#"}>
                       <Button className="bg-blue-primary hover:bg-blue-active text-white">
-                        Try Now
+                        {t("ui.try_now")}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
                     <Button variant="outline" className="group">
-                      Learn More
+                      {t("ui.learn_more")}
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
@@ -463,7 +454,7 @@ const HomeClient: React.FC = () => {
               {t("management_title")}
             </h2>
             <p className="text-lg text-foreground max-w-2xl mx-auto">
-              Quản lý và tối ưu hóa chatbot của bạn với bộ công cụ toàn diện
+              {t("management_subtitle")}
             </p>
           </div>
 
@@ -484,7 +475,7 @@ const HomeClient: React.FC = () => {
                   {t("management.manage.description")}
                 </p>
                 <Button className="sm:w-auto bg-blue-primary text-background hover:bg-blue-active h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg transition-all duration-200 rounded-full shadow-lg hover:shadow-xl border-0">
-                  Bắt đầu quản lý
+                  {t("management.manage.button")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -557,7 +548,7 @@ const HomeClient: React.FC = () => {
                     variant="outline"
                     className="h-12 px-8 text-lg rounded-full border-blue-60 text-blue-primary hover:bg-blue-40/20 hover:border-blue-primary"
                   >
-                    Xem demo
+                    {t("cta.demo_button")}
                   </Button>
                 </div>
               </div>

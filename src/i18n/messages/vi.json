@@ -4,9 +4,11 @@
     "about": "FTES là nền tảng giúp bạn quản lý doanh nghiệp hiệu quả",
     "subtitle": "First Technology Education Services",
     "description": "FTES (First Technology Education Services) là hệ thống học tập thông minh ứng dụng trí tuệ nhân tạo (AI) nhằm mang đến trải nghiệm học tập cá nhân hóa, hiện đại và hiệu quả cho mọi đối tượng yêu thích công nghệ thông tin.",
+    "platform_description": "Platform tích hợp đầy đủ các công cụ AI tiên tiến: API Testing tự động, Code Grader thông minh, Assignment Grader với OCR, và AI Image Generator - tất cả trong một nền tảng thống nhất.",
     "start_now": "Bắt đầu ngay",
     "create_chatbot": "Tạo Chatbot",
     "features_title": "Tính năng nổi bật",
+    "features_subtitle": "Khám phá những tính năng mạnh mẽ và công cụ AI tiên tiến giúp bạn tạo ra những trải nghiệm tuyệt vời trong phát triển phần mềm và giáo dục",
     "features": {
       "create_chatbot": {
         "title": "Tạo Chatbot với AI",
@@ -19,13 +21,31 @@
       "api_integration": {
         "title": "API Integration",
         "description": "Export chatbot thành API để tích hợp vào các trang web khác, phục vụ nhu cầu phát triển của developer."
+      },
+      "api_testing": {
+        "title": "Kiểm thử API thông minh",
+        "description": "Tạo và xác thực test case cho REST API bằng AI. Tự động tạo bộ test toàn diện với assertion thông minh và báo cáo chi tiết."
+      },
+      "code_grader": {
+        "title": "Đánh giá Code thông minh",
+        "description": "Đánh giá chất lượng code, cấu trúc và best practices bằng AI cho nhiều ngôn ngữ lập trình với phản hồi chi tiết."
+      },
+      "assignment_grader": {
+        "title": "Chấm bài tập tự động",
+        "description": "Hệ thống chấm điểm tự động với OCR trích xuất văn bản và đánh giá câu trả lời bằng AI cho bài tập giáo dục."
+      },
+      "image_generator": {
+        "title": "Tạo ảnh AI",
+        "description": "Tạo hình ảnh tuyệt đẹp từ văn bản hoặc biến đổi hình ảnh hiện có với công nghệ AI tiên tiến và nhiều phong cách nghệ thuật."
       }
     },
     "management_title": "Quản lý Chatbot Thông Minh",
+    "management_subtitle": "Quản lý và tối ưu hóa chatbot của bạn với bộ công cụ toàn diện",
     "management": {
       "manage": {
         "title": "Quản lý Chatbot",
-        "description": "Dễ dàng quản lý và tổ chức các chatbot đã tạo, với khả năng chỉnh sửa và cập nhật thông tin."
+        "description": "Dễ dàng quản lý và tổ chức các chatbot đã tạo, với khả năng chỉnh sửa và cập nhật thông tin.",
+        "button": "Bắt đầu quản lý"
       },
       "public": {
         "title": "Public Chatbot",
@@ -43,7 +63,12 @@
     "cta": {
       "title": "Bắt đầu hành trình học tập thông minh",
       "description": "Khám phá ngay các công cụ AI được thiết kế đặc biệt cho việc học tập và phát triển kỹ năng.",
-      "button": "Xem Chatbot"
+      "button": "Xem Chatbot",
+      "demo_button": "Xem demo"
+    },
+    "ui": {
+      "try_now": "Thử ngay",
+      "learn_more": "Tìm hiểu thêm"
     }
   },
   "sidebar": {

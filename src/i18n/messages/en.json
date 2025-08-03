@@ -4,9 +4,11 @@
     "about": "FTES is a platform that helps you manage your business effectively",
     "subtitle": "First Technology Education Services",
     "description": "FTES (First Technology Education Services) is an intelligent learning system that applies artificial intelligence (AI) to provide personalized, modern, and effective learning experiences for everyone interested in information technology.",
+    "platform_description": "Comprehensive platform integrating advanced AI tools: Automated API Testing, Intelligent Code Grader, Assignment Grader with OCR, and AI Image Generator - all in one unified platform.",
     "start_now": "Start Now",
     "create_chatbot": "Create Chatbot",
     "features_title": "Outstanding Features",
+    "features_subtitle": "Discover powerful features and advanced AI tools that help you create amazing experiences in software development and education",
     "features": {
       "create_chatbot": {
         "title": "Create Chatbot with AI",
@@ -19,13 +21,31 @@
       "api_integration": {
         "title": "API Integration",
         "description": "Export chatbot as API to integrate into other websites, serving developer needs."
+      },
+      "api_testing": {
+        "title": "Smart API Testing",
+        "description": "AI-powered REST API test case generation and validation. Automatically create comprehensive test suites with intelligent assertions and detailed reporting."
+      },
+      "code_grader": {
+        "title": "Intelligent Code Grader",
+        "description": "Advanced AI evaluation for code quality, structure, and best practices across multiple programming languages with detailed feedback."
+      },
+      "assignment_grader": {
+        "title": "Assignment Grader",
+        "description": "Automated grading system with OCR text extraction and AI-powered answer evaluation for educational assignments."
+      },
+      "image_generator": {
+        "title": "AI Image Creator",
+        "description": "Generate stunning images from text prompts or transform existing images with advanced AI technology and multiple artistic styles."
       }
     },
     "management_title": "Smart Chatbot Management",
+    "management_subtitle": "Manage and optimize your chatbots with comprehensive toolset",
     "management": {
       "manage": {
         "title": "Manage Chatbot",
-        "description": "Easily manage and organize created chatbots, with the ability to edit and update information."
+        "description": "Easily manage and organize created chatbots, with the ability to edit and update information.",
+        "button": "Start Managing"
       },
       "public": {
         "title": "Public Chatbot",
@@ -43,7 +63,12 @@
     "cta": {
       "title": "Start Your Smart Learning Journey",
       "description": "Discover AI tools specially designed for learning and skill development.",
-      "button": "View Chatbots"
+      "button": "View Chatbots",
+      "demo_button": "View Demo"
+    },
+    "ui": {
+      "try_now": "Try Now",
+      "learn_more": "Learn More"
     }
   },
   "sidebar": {
