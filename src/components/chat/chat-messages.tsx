@@ -64,8 +64,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   const t = useTranslations("chatMessages");
 
   return (
-    <div className="flex-1 overflow-y-auto py-2 md:py-4 px-2 md:px-4 chat-messages-container">
-      <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
+    <div className="flex-1 overflow-y-auto py-1 px-1 md:px-2">
+      <div className="max-w-full space-y-2 md:space-y-3"
+    >
         <AnimatePresence>
           {messages.length === 0 && renderChatbotDetails ? (
             <motion.div
@@ -89,7 +90,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                       animate={{ scale: 1 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <Bot className="text-3xl md:text-4xl text-blue-primary mb-3 md:mb-4 mx-auto" />
+                      <Bot className="text-3xl md:text-4xl text-blue-primary mb-3 md:mb-4" />
                     </motion.div>
                     <h3 className="text-base md:text-lg font-medium text-card-foreground mb-2">
                       {chatbotDetails?.name || t("emptyState.title")}
@@ -133,25 +134,25 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="flex justify-start py-2"
+              className="flex justify-start py-1"
             >
-              <div className="flex items-start w-full max-w-2xl mx-auto">
-                <Avatar className="bg-blue-primary/10 ring-2 ring-blue-primary/20">
+              <div className="flex items-start w-full">
+                <Avatar className="bg-blue-primary/10 ring-2 ring-blue-primary/20 w-8 h-8">
                   <AvatarFallback className="text-blue-primary">
-                    <Bot className="w-4 h-4" />
+                    <Bot className="w-3 h-3" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="ml-4 flex-1">
+                <div className="ml-2 flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-base text-foreground"></span>
-                    <span className="bg-foreground/10 text-foreground text-xs px-2 py-0.5 rounded-full">
+                    <span className="font-semibold text-sm text-foreground"></span>
+                    <span className="bg-foreground/10 text-foreground text-xs px-1.5 py-0.5 rounded-full">
                       AI
                     </span>
                   </div>
-                  <div className="rounded-2xl px-5 py-4 shadow-md bg-background space-y-2">
-                    <Skeleton className="h-4 w-3/4 bg-muted" />
-                    <Skeleton className="h-4 w-1/2 bg-muted" />
-                    <Skeleton className="h-4 w-2/3 bg-muted" />
+                  <div className="rounded-lg px-3 py-2 shadow-sm bg-background space-y-1.5">
+                    <Skeleton className="h-3 w-3/4 bg-muted" />
+                    <Skeleton className="h-3 w-1/2 bg-muted" />
+                    <Skeleton className="h-3 w-2/3 bg-muted" />
                   </div>
                 </div>
               </div>
@@ -206,12 +207,12 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
               open={isDocumentsOpen}
               onOpenChange={setIsDocumentsOpen}
             >
-              <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+              <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
                 <CollapsibleTrigger className="w-full bg-secondary hover:bg-secondary/80 transition-colors duration-200">
-                  <div className="flex items-center justify-between p-3 md:p-4">
+                  <div className="flex items-center justify-between p-2 md:p-3">
                     <div className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-blue-primary rounded-full"></div>
-                      <span className="text-sm md:text-base font-medium text-card-foreground">
+                      <span className="text-xs md:text-sm font-medium text-card-foreground">
                         {t("sourceDocuments.title", {
                           count: selectedDocuments.length,
                         })}
@@ -221,30 +222,30 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                       animate={{ rotate: isDocumentsOpen ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <ChevronDown className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                      <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
                     </motion.div>
                   </div>
                 </CollapsibleTrigger>
 
                 <CollapsibleContent>
-                  <div className="px-3 md:px-4 pb-3 md:pb-4">
-                    <div className="space-y-2 md:space-y-3">
+                  <div className="px-2 md:px-3 pb-2 md:pb-3">
+                    <div className="space-y-1.5 md:space-y-2">
                       {selectedDocuments.map((doc, index) => (
                         <motion.div
                           key={index}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.3, delay: index * 0.1 }}
-                          className="border-b border-border pb-2 md:pb-3 last:border-b-0 hover:bg-muted/30 transition-colors rounded-lg p-2"
+                          className="border-b border-border pb-1.5 md:pb-2 last:border-b-0 hover:bg-muted/30 transition-colors rounded-lg p-1.5"
                         >
                           <div className="w-full">
-                            <div className="flex items-start gap-2 md:gap-3">
+                            <div className="flex items-start gap-2">
                               <div className="flex-1">
-                                <div className="text-xs md:text-sm text-muted-foreground mb-1 leading-relaxed">
+                                <div className="text-xs text-muted-foreground mb-0.5 leading-relaxed">
                                   {doc.metadata?.content || doc.page_content}
                                 </div>
                                 {doc.metadata?.source && (
-                                  <div className="text-[10px] md:text-xs text-muted-foreground/70">
+                                  <div className="text-[10px] text-muted-foreground/70">
                                     {t("sourceDocuments.source", {
                                       source: doc.metadata.source,
                                     })}

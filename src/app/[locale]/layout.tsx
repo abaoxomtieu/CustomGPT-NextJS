@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
-import { AppSidebar } from "./app-sidebar";
+import { AppHeader } from "./app-header";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { QueryProvider } from "@/providers/query-provider";
 import "./globals.css";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
@@ -100,20 +99,16 @@ export default async function RootLayout({
         <NextIntlClientProvider>
           <QueryProvider>
             <GoogleOAuthProvider clientId="486285301849-fjcp1e941fdrhkpj0ufjom8mqu8r0chv.apps.googleusercontent.com">
-              <SidebarProvider defaultOpen={true}>
-                <Toaster />
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="light"
-                  enableSystem
-                  disableTransitionOnChange
-                >
-                  <AppSidebar />
-                  <SidebarInset>
-                    <div className="w-full">{children}</div>
-                  </SidebarInset>
-                </ThemeProvider>
-              </SidebarProvider>
+              <Toaster />
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="light"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <AppHeader />
+                <main className="w-full">{children}</main>
+              </ThemeProvider>
             </GoogleOAuthProvider>
           </QueryProvider>
         </NextIntlClientProvider>

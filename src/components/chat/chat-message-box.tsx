@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Image from "next/image";
 import MarkdownRenderer from "@/components/markdown-render";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -31,7 +31,7 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
       setCopiedCode(code);
       setTimeout(() => setCopiedCode(null), 2000);
     } catch (err) {
-      console.error('Failed to copy code:', err);
+      console.error("Failed to copy code:", err);
     }
   };
 
@@ -79,11 +79,7 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
         return <div className="whitespace-pre-wrap">{message.content}</div>;
       }
       // For AI messages, use markdown
-      return (
-        <MarkdownRenderer
-          content={formatContent(message.content)}
-        />
-      );
+      return <MarkdownRenderer content={formatContent(message.content)} />;
     } else {
       // Complex content with text and images
       return (
@@ -98,7 +94,7 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
                 );
               }
               return (
-                <MarkdownRenderer 
+                <MarkdownRenderer
                   key={`text-${index}`}
                   content={formatContent(item.text)}
                 />
@@ -159,41 +155,63 @@ const ChatMessageAgent: React.FC<{ message: AgentMessage }> = ({ message }) => {
   const senderName = isAI ? "" : userInfo?.name;
 
   return (
-    <div className={`flex py-2 ${!isAI ? 'justify-end' : 'justify-start'}`}>
-      <div className={`flex items-start w-full max-w-2xl mx-auto ${!isAI ? 'flex-row-reverse' : ''}`}>
-        <Avatar className={`ring-2 ${isAI ? 'bg-blue-primary/10 ring-blue-primary/20' : 'bg-blue-active/10 ring-blue-active/20'}`}>
-          <AvatarImage
-            src={!isAI ? userInfo?.picture : undefined}
-            alt="avatar"
-          />
-          <AvatarFallback className={isAI ? 'text-blue-primary' : 'text-blue-active'}>
-            {isAI ? <Bot className="w-4 h-4" /> : userInfo?.name?.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
+    <div className={`flex py-1 ${!isAI ? "justify-end" : "justify-start"}`}>
+      <div
+        className={`flex items-start ${
+          isAI ? "w-full" : "w-full max-w-2xl mx-auto"
+        } ${
+          !isAI ? "flex-row-reverse" : ""
+        }`}
+      >
+        {isAI ? (
+          <Avatar className="ring-2 w-8 h-8 bg-blue-primary/10 ring-blue-primary/20">
+            <AvatarFallback className="text-blue-primary">
+              <Bot className="w-3 h-3" />
+            </AvatarFallback>
+          </Avatar>
+        ) : (
+          <div className="relative w-8 h-8">
+            <Image
+              src={userInfo?.picture || "/default-avatar.svg"}
+              alt="avatar"
+              width={32}
+              height={32}
+              className="rounded-full object-cover ring-2 ring-blue-active/20"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/default-avatar.svg";
+              }}
+            />
+          </div>
+        )}
 
-        <div className={`flex-1 ${!isAI ? 'mr-4' : 'ml-4'}`}>
-          <div className={`flex items-center gap-2 mb-1 ${!isAI ? 'justify-end' : ''}`}>
+        <div className={`flex-1 ${!isAI ? "mr-3" : "ml-2"}`}>
+          <div
+            className={`flex items-center gap-2 mb-1 ${
+              !isAI ? "justify-end" : ""
+            }`}
+          >
             <span
-              className={`font-semibold text-base ${
+              className={`font-semibold text-sm ${
                 isAI ? "text-blue-primary" : "text-blue-active"
               }`}
             >
               {senderName}
             </span>
             {isAI && (
-              <span className="bg-blue-primary/10 text-blue-primary text-xs px-2 py-0.5 rounded-full ml-1">
+              <span className="bg-blue-primary/10 text-blue-primary text-xs px-1.5 py-0.5 rounded-full ml-1">
                 AI
               </span>
             )}
           </div>
           <div
-            className={`rounded-2xl px-5 py-4 shadow-md transition-all duration-200 group
+            className={`rounded-lg px-3 py-2 shadow-sm transition-all duration-200 group
               ${
                 isAI
-                  ? "bg-blue-primary/5 border border-blue-60/20 hover:bg-blue-primary/10 hover:border-blue-primary/30"
-                  : "bg-blue-active/5 border border-blue-active/20 hover:bg-blue-active/10 hover:border-blue-active/30 ml-8"
+                  ? "bg-background"
+                  : "bg-blue-active/5 border border-blue-active/20 hover:bg-blue-active/10 hover:border-blue-active/30 ml-6"
               }
-              text-foreground text-[15px] leading-relaxed
+              text-foreground text-sm leading-relaxed
             `}
           >
             {renderContent()}

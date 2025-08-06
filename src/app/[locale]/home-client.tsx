@@ -24,16 +24,7 @@ import {
   ImageIcon,
   CheckCircle,
   Star,
-  Globe,
-  Sun,
-  Moon,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, useRouter, usePathname } from "@/i18n/navigation";
 import Image from "next/image";
@@ -41,6 +32,7 @@ import ParticlesBackground from "../../components/back-ground";
 import { useTheme } from "next-themes";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PromptOptimizationMini } from "@/components/prompt-optimization-mini";
+import OptimizedFeaturesSection from "./features-section";
 
 // Intersection Observer hook for fade-in animations
 const useIntersectionObserver = () => {
@@ -101,64 +93,8 @@ const HomeClient: React.FC = () => {
     router.replace(pathname, { locale: newLocale });
   };
 
-  // Mobile Controls Component
-  const MobileControls = () => {
-    if (!isMobile) return null;
-
-    return (
-      <div className="fixed top-4 right-4 z-50 flex gap-2 md:hidden">
-        {/* Language Switcher */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-background/80 backdrop-blur-sm border-blue-primary/20 hover:border-blue-primary/50 shadow-lg"
-            >
-              <Globe className="w-4 h-4 mr-2" />
-              {locale.toUpperCase()}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-background/95 backdrop-blur-sm border-blue-primary/20">
-            <DropdownMenuItem
-              onClick={() => switchLanguage("en")}
-              className="hover:bg-blue-primary/10"
-            >
-              <span className="mr-2">🇺🇸</span>
-              English
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => switchLanguage("vi")}
-              className="hover:bg-blue-primary/10"
-            >
-              <span className="mr-2">🇻🇳</span>
-              Tiếng Việt
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Theme Switcher */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="bg-background/80 backdrop-blur-sm border-blue-primary/20 hover:border-blue-primary/50 shadow-lg"
-        >
-          {theme === "dark" ? (
-            <Sun className="w-4 h-4" />
-          ) : (
-            <Moon className="w-4 h-4" />
-          )}
-        </Button>
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-blue-primary/35 to-background/95">
-      {/* Mobile Controls - Only visible on mobile */}
-      <MobileControls />
-      
       {/* Enhanced Hero Section with Parallax and Particles */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
         {/* Particles Background */}
@@ -234,211 +170,7 @@ const HomeClient: React.FC = () => {
       </section>
 
       {/* Features Section with Zigzag Layout */}
-      <section className="container mx-auto px-4 py-12 md:py-20 relative">
-        {/* Subtle particles for other sections */}
-        <div className="absolute inset-0 overflow-hidden opacity-30">
-          <div className="absolute top-10 left-10 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-          <div className="absolute top-32 right-20 w-1 h-1 bg-blue-500 rounded-full animate-ping"></div>
-          <div className="absolute bottom-20 left-1/4 w-1.5 h-1.5 bg-blue-300 rounded-full animate-pulse delay-300"></div>
-          <div className="absolute top-1/2 right-10 w-1 h-1 bg-blue-600 rounded-full animate-ping delay-700"></div>
-        </div>
-
-        <div className="text-center mb-16 opacity-0 relative z-10" data-fade>
-          <div className="bg-background backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-blue-60/20">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t("features_title")}
-            </h2>
-            <p className="text-lg text-foreground max-w-2xl mx-auto">
-              {t("features_subtitle")}
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-20 relative z-10">
-          {[
-            {
-              icon: <FcReading className="text-4xl" />,
-              title: t("features.create_chatbot.title"),
-              description: t("features.create_chatbot.description"),
-              direction: "left",
-              image: "1.jpeg",
-              href: "/create-prompt",
-              features: [
-                "AI-powered chatbot creation",
-                "Custom personality design",
-                "Multi-purpose assistants",
-                "Easy configuration",
-              ],
-            },
-            {
-              icon: <Brain className="text-4xl" />,
-              title: t("features.ai_combat.title"),
-              description: t("features.ai_combat.description"),
-              direction: "right",
-              image: "2.jpeg",
-              href: "/ai-combat",
-              features: [
-                "AI vs AI battles",
-                "Strategic thinking",
-                "Performance analysis",
-                "Learning insights",
-              ],
-            },
-            {
-              icon: <FcDataBackup className="text-4xl" />,
-              title: t("features.api_integration.title"),
-              description: t("features.api_integration.description"),
-              direction: "left",
-              image: "3.jpeg",
-              href: "/assistants",
-              features: [
-                "REST API export",
-                "Easy integration",
-                "Developer-friendly",
-                "Real-time responses",
-              ],
-            },
-            {
-              icon: <TestTube className="text-4xl text-blue-500" />,
-              title: t("features.api_testing.title"),
-              description: t("features.api_testing.description"),
-              direction: "right",
-              image: "4.jpeg",
-              href: "/api-testing",
-              features: [
-                "Auto test case generation",
-                "Multi-method support",
-                "Smart assertions",
-                "Detailed reporting",
-              ],
-            },
-            {
-              icon: <Code className="text-4xl text-green-500" />,
-              title: t("features.code_grader.title"),
-              description: t("features.code_grader.description"),
-              direction: "left",
-              image: "5.jpeg",
-              href: "/code-grader",
-              features: [
-                "Multi-language support",
-                "Code quality analysis",
-                "Structure evaluation",
-                "Detailed feedback",
-              ],
-            },
-            {
-              icon: <GraduationCap className="text-4xl text-purple-500" />,
-              title: t("features.assignment_grader.title"),
-              description: t("features.assignment_grader.description"),
-              direction: "right",
-              image: "6.jpeg",
-              href: "/grade-assignment",
-              features: [
-                "OCR text extraction",
-                "Auto question detection",
-                "AI-powered grading and anwering",
-                "Statistical analysis",
-              ],
-            },
-            {
-              icon: <ImageIcon className="text-4xl text-pink-500" />,
-              title: t("features.image_generator.title"),
-              description: t("features.image_generator.description"),
-              direction: "left",
-              image: "7.jpeg",
-              href: "/image-gen",
-              features: [
-                "Text-to-image",
-                "Image-to-image",
-                "High quality output",
-                "Multiple styles",
-              ],
-            },
-          ].map((feature, index) => (
-            <div
-              key={index}
-              className={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-center opacity-0 px-4 sm:px-6 lg:px-0 ${
-                feature.direction === "right" ? "lg:grid-flow-col-dense" : ""
-              }`}
-              data-fade
-            >
-              {/* Content */}
-              <div
-                className={`space-y-6 ${
-                  // Mobile: alternate left/right positioning based on index
-                  index % 2 === 0
-                    ? "translate-x-0 sm:translate-x-3"
-                    : "translate-x-0 sm:-translate-x-3"
-                } ${
-                  // Desktop: follow feature direction
-                  feature.direction === "left"
-                    ? "lg:translate-x-0"
-                    : "lg:translate-x-0"
-                }`}
-              >
-                <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-blue-60/20 hover:border-blue-primary/50 transition-all duration-300">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-20 h-20 flex items-center justify-center rounded-full bg-primary/10 transition-transform duration-200 hover:scale-105">
-                      {feature.icon}
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
-                      {feature.title}
-                    </h3>
-                  </div>
-                  <p className="text-lg text-foreground leading-relaxed mt-4">
-                    {feature.description}
-                  </p>
-
-                  {/* Feature highlights */}
-                  <div className="grid grid-cols-2 gap-2 mt-4">
-                    {feature.features?.map((feat, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                        <span className="text-sm text-muted-foreground">
-                          {feat}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex gap-3 mt-6">
-                    <Link href={feature.href || "#"}>
-                      <Button className="bg-blue-primary hover:bg-blue-active text-white">
-                        {t("ui.try_now")}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </Link>
-                    <Button variant="outline" className="group">
-                      {t("ui.learn_more")}
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Image */}
-              <div
-                className={`${
-                  feature.direction === "right" ? "lg:order-first" : ""
-                }`}
-              >
-                <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden group">
-                  <Image
-                    src={`/${feature.image}`}
-                    alt={`Feature ${index + 1}`}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  {/* Hover overlay effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <OptimizedFeaturesSection />
 
       {/* Interactive Prompt Optimization Section */}
       <section className="container mx-auto px-4 py-12 md:py-20 relative">

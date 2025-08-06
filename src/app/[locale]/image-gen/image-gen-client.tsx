@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Dialog,
   DialogContent,
@@ -204,11 +203,6 @@ export default function ImageGenClient() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          {/* Mobile Sidebar Trigger */}
-          <div className="flex items-center gap-3 mb-4 md:hidden">
-            <SidebarTrigger className="flex items-center justify-center w-8 h-8 rounded-lg border border-border" />
-          </div>
-          
           {/* Breadcrumb */}
           <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">
             <Link 
